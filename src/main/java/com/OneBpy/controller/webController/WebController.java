@@ -88,12 +88,12 @@ public class WebController {
         return "main";
     }
 
-    @GetMapping("/all-product")
-    public String showProductPage(@RequestParam(defaultValue = "0") int page, Model model) {
-        Page<Product> products = userService.getAllProducts(page, 10); // Số sản phẩm trên mỗi trang
-        model.addAttribute("products", products);
-        return "main";
-    }
+//    @GetMapping("/all-product")
+//    public String showProductPage(@RequestParam(defaultValue = "0") int page, Model model) {
+//        Page<Product> products = userService.getAllProducts(page, 10); // Số sản phẩm trên mỗi trang
+//        model.addAttribute("products", products);
+//        return "main";
+//    }
 
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts(

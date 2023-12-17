@@ -30,7 +30,7 @@ public class HomeController {
     private final UserService userService;
 
 
-    @GetMapping("/all-products")
+    @GetMapping("/all-product")
     List<PDTO> getAllProduct(){
         List<Product> productList =  productRepository.findAllActiveProducts();
         List<PDTO> pdtos = new ArrayList<>();

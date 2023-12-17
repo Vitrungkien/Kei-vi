@@ -39,5 +39,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             , nativeQuery = true)
     List<Product> findAllStoreProducts(Long store_id);
 
-    Page<Product> findAll(Pageable pageable);
+//    Page<Product> findAll(Pageable pageable);
 }

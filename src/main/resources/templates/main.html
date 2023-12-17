@@ -45,6 +45,19 @@
             display: flex;
             justify-content: space-around;
         }
+        #curP {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin: 10px 30px;
+            padding: 3px 20px;
+            background-color: lightgreen;
+        }
+        #nextP, #preP {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
     </style>
     <title>Đặt xe ghép</title>
 </head>
@@ -210,6 +223,12 @@
                     <!-- Placeholder for product list -->
                 </div>
 
+                <div id="pagination" style="text-align: center;">
+<!--                    <a id="preP">Trang trước</a>-->
+<!--                    <a id="curP"></a>-->
+<!--                    <a id="aftP">Trang sau</a>-->
+                </div>
+
             </div>
         </div>
     </div>
@@ -262,31 +281,35 @@
         }
     </script>
 
-<!--Lấy ra tất cả sản phẩm    -->
+
+    <!--Lấy ra tất cả sản phẩm    -->
     <script th:inline="javascript">
+
+        var products = []; // Khai báo mảng products ở đây
+        var pageSize = 10; // Số sản phẩm trên mỗi trang
+        var currentPage = 0;
+
         function displayValue(value) {
             return (value !== null && value !== undefined) ? value : 'null';
         }
 
-        var productListDiv = document.getElementById('productList');
+        function displayProducts(page) {
+            // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
+            var start = page * pageSize;
+            var end = Math.min((page + 1) * pageSize, products.length);
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/all-product', true);
+            // Hiển thị sản phẩm trên trang hiện tại
+            var productListDiv = document.getElementById('productList');
+            productListDiv.innerHTML = ''; // Xóa nội dung cũ
 
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    var products = JSON.parse(xhr.responseText);
-
-                    if (products && products.length > 0) {
-                        products.forEach(function (product) {
-                            var productDiv = document.createElement('div');
-                            productDiv.classList.add('product-div');
-                            productDiv.innerHTML =
-    `<div class="ve-xe" id="productId${product.productID}">
+            for (var i = start; i < end; i++) {
+                var productDiv = document.createElement('div');
+                productDiv.classList.add('product-div');
+                productDiv.innerHTML =
+                    `<div class="ve-xe" id="productId${products[i].productID}">
         <div>
-            <h6 id="n-hover${product.productID}" onmouseover="showNoticeList(${product.productID})"
-         onmouseout="hideNoticeList(${product.productID})" class="icon-notice"
+            <h6 id="n-hover${products[i].productID}" onmouseover="showNoticeList(${products[i].productID})"
+         onmouseout="hideNoticeList(${products[i].productID})" class="icon-notice"
          >Thông báo<i class="fa-solid fa-bell" style="color: #fff"></i></h6>
             <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
         </div>
@@ -294,22 +317,22 @@
       <div class="info-ve">
         <div class="info-ve-p1">
           <div class="ten-nha-xe-rate">
-            <p class="ten-nha-xe">${product.productName}</p>
+            <p class="ten-nha-xe">${products[i].productName}</p>
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
           </div>
-          <p class="price">${product.price}đ</p>
+          <p class="price">${products[i].price}đ</p>
         </div>
-        <p class="car-type">${product.type}</p>
+        <p class="car-type">${products[i].type}</p>
         <div class="info-ve-p2">
           <div class="info-ve-p2-1">
             <div class="info-p2-1-1">
               <img class="start-icon" src="/img/clock-regular.svg" alt="" />
-              <p class="info-time">${product.startTime}</p>
-              <p>- ${product.startAddress}</p>
+              <p class="info-time">${products[i].startTime}</p>
+              <p>- ${products[i].startAddress}</p>
             </div>
 
             <div class="info-p2-1-1">
@@ -318,65 +341,65 @@
             </div>
             <div class="info-p2-1-1">
               <img class="start-icon" src="/img/location.png" alt="" />
-              <p class="info-time">${product.endTime}</p>
-              <p>- ${product.endAddress}</p>
+              <p class="info-time">${products[i].endTime}</p>
+              <p>- ${products[i].endAddress}</p>
             </div>
           </div>
           <div class="info-ve-p2-2">
-            <p id="blank">Còn ${product.remainSeat} chỗ trống</p>
+            <p id="blank">Còn ${products[i].remainSeat} chỗ trống</p>
             <div>
-              <p id="info-button" class="info-button" onclick="showProductDetail(${product.productID})">
+              <p id="info-button" class="info-button" onclick="showProductDetail(${products[i].productID})">
                 Thông tin chi tiết
                 <i
                   style="transform: rotate(0deg)"
-                  id="arrow-icon${product.productID}"
+                  id="arrow-icon${products[i].productID}"
                   class="fa-solid fa-caret-down"
                 ></i>
               </p>
               <!-- <p>Thông tin chi tiết</p> -->
-              <button onclick="showOrderForm(${product.productID})">Đặt xe</button>
+              <button onclick="showOrderForm(${products[i].productID})">Đặt xe</button>
             </div>
           </div>
         </div>
       </div>
       <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
-        <div id="noticeList${product.productID}" class="noticeList"></div>
-      <div id="productDetail${product.productID}" class="detail" style="display: none">
+        <div id="noticeList${products[i].productID}" class="noticeList"></div>
+      <div id="productDetail${products[i].productID}" class="detail" style="display: none">
         <div class="detail-info">
           <ul class="list-info">
             <li>
-                <button class="menu-detail${product.productID} detail-img-b" id="detail-img-b${product.productID}"
-                onclick="showPartDetail(${product.productID}, 1)">
+                <button class="menu-detail${products[i].productID} detail-img-b" id="detail-img-b${products[i].productID}"
+                onclick="showPartDetail(${products[i].productID}, 1)">
                   Hình ảnh
                 </button>
 
             </li>
             <li>
-              <button class="menu-detail${product.productID} tien-ich-b" id="tien-ich-b${product.productID}"
-              onclick="showPartDetail(${product.productID}, 2)">
+              <button class="menu-detail${products[i].productID} tien-ich-b" id="tien-ich-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 2)">
                 Tiện ích
               </button>
             </li>
             <li>
-              <button class="menu-detail${product.productID} diem-don-tra-b" id="diem-don-tra-b${product.productID}"
-              onclick="showPartDetail(${product.productID}, 3)">
+              <button class="menu-detail${products[i].productID} diem-don-tra-b" id="diem-don-tra-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 3)">
                 Điểm đón trả
               </button>
             </li>
             <li>
-              <button class="menu-detail${product.productID} chinh-sach-b" id="chinh-sach-b${product.productID}"
-              onclick="showPartDetail(${product.productID}, 4)"> Chính sách </button>
+              <button class="menu-detail${products[i].productID} chinh-sach-b" id="chinh-sach-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 4)"> Chính sách </button>
             </li>
             <li>
-              <button class="menu-detail${product.productID} review-b" id="review-b${product.productID}"
-              onclick="showPartDetail(${product.productID}, 5)"> Thông tin </button>
+              <button class="menu-detail${products[i].productID} review-b" id="review-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 5)"> Thông tin </button>
             </li>
           </ul>
         </div>
 
         <div class="five-info" id="five-info">
           <!--Hinh anh-->
-          <div class="part-detail${product.productID} detai-img" id="detai-img${product.productID}">
+          <div class="part-detail${products[i].productID} detai-img" id="detai-img${products[i].productID}">
             <img class="main-detail-img" src="/img/Picture1.png" alt="" />
             <div class="sub-img">
               <img src="/img/Picture1.png" alt="" />
@@ -385,7 +408,7 @@
             </div>
           </div>
           <!--Diem don tra-->
-          <div class="part-detail${product.productID} diem-don-tra" id="diem-don-tra${product.productID}">
+          <div class="part-detail${products[i].productID} diem-don-tra" id="diem-don-tra${products[i].productID}">
             <div class="luu-y">
               <h3>Lưu ý</h3>
               <p>
@@ -394,42 +417,34 @@
               </p>
             </div>
 
-            <div id="stopList${product.productID}">
+            <div id="stopList${products[i].productID}">
 
             </div>
-<!--            <div class="diem-don">-->
-<!--              <h3>Điểm đón</h3>-->
-<!--              <p>15:30 - Văn phòng Mỹ Đình</p>-->
-<!--            </div>-->
-<!--            <div class="diem-tra">-->
-<!--              <h3>Điểm trả</h3>-->
-<!--              <p>17:35 Bến xe Thượng Lý</p>-->
-<!--            </div>-->
           </div>
           <!--Tien ich-->
-          <div class="part-detail${product.productID} tien-ich" id="tien-ich${product.productID}">
+          <div class="part-detail${products[i].productID} tien-ich" id="tien-ich${products[i].productID}">
             <ul class="list-tien-ich">
             <h3>Tiện ích</h3>
-            ${product.tienIch}
+            ${products[i].tienIch}
             </ul>
           </div>
           <!--Chinh sach -->
-          <div class="part-detail${product.productID} chinh-sach" id="chinh-sach${product.productID}">
+          <div class="part-detail${products[i].productID} chinh-sach" id="chinh-sach${products[i].productID}">
 <!--            <h3>Chính sách nhà xe</h3>-->
-            ${product.policy}
+            ${products[i].policy}
           </div>
           <!--Review-->
-          <div class="part-detail${product.productID} review" id="review${product.productID}">
+          <div class="part-detail${products[i].productID} review" id="review${products[i].productID}">
 <!--          <h3>Mô tả</h3>-->
-             ${product.description}
+             ${products[i].description}
           </div>
         </div>
       </div>
     </div>
 
     <form class="frmDatVe p-4 rounded-1 m-auto"
-            action="/api/v1/user/${product.productID}/order"
-            method="post" id="frmDatVe${product.productID}"
+            action="/api/v1/user/${products[i].productID}/order"
+            method="post" id="frmDatVe${products[i].productID}"
             object="orderRequest"
     >
       <h3 class="text-center">Đặt vé</h3>
@@ -437,21 +452,21 @@
       <div class="row mb-3 d-flex">
         <p class="col-sm-3">Tên vé:</p>
         <div class="col-sm-9">
-          <p class="">${product.productName}</p>
+          <p class="">${products[i].productName}</p>
         </div>
       </div>
 
       <div class="row mb-3 d-flex">
         <p class="col-sm-3">Nhà Xe:</p>
         <div class="col-sm-9">
-          <p class="">${product.storeName}</p>
+          <p class="">${products[i].storeName}</p>
         </div>
       </div>
 
       <div class="row mb-3 d-flex">
         <p class="col-sm-3">Giá vé:</p>
         <div class="col-sm-9">
-          <p class="">${product.price}đ</p>
+          <p class="">${products[i].price}đ</p>
         </div>
       </div>
 
@@ -515,7 +530,7 @@
       <div class="row mb-3">
         <div class="col-sm-6 offset-sm-3">
           <button type="submit" class="btn btn-primary">Đặt vé</button>
-          <button type="button" class="btn btn-secondary" onclick="dismissForm(${product.productID})">
+          <button type="button" class="btn btn-secondary" onclick="dismissForm(${products[i].productID})">
             Hủy
           </button>
         </div>
@@ -524,38 +539,38 @@
 
 `;
 
-                            productListDiv.appendChild(productDiv);
+                productListDiv.appendChild(productDiv);
 
-                            const stopListDiv = document.getElementById(`stopList${product.productID}`);
-                            if (product.stopList && product.stopList.length > 0) {
-                                const ul = document.createElement('ul');
-                                product.stopList.forEach(function (stop) {
-                                    const li = document.createElement('li');
-                                    li.innerHTML =
-                                        displayValue(stop.stopTime) +
-                                        ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
-                                    if (displayValue(stop.rightNow) == true) {
-                                        li.style.color = 'green';
-                                    }
-                                    ul.appendChild(li);
-                                });
-                                stopListDiv.appendChild(ul);
-                            }
+                const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
+                if (products[i].stopList && products[i].stopList.length > 0) {
+                    const ul = document.createElement('ul');
+                    products[i].stopList.forEach(function (stop) {
+                        const li = document.createElement('li');
+                        li.innerHTML =
+                            displayValue(stop.stopTime) +
+                            ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                        if (displayValue(stop.rightNow) == true) {
+                            li.style.color = 'green';
+                        }
+                        ul.appendChild(li);
+                    });
+                    stopListDiv.appendChild(ul);
+                }
 
-                            const noticeListDiv = document.getElementById(`noticeList${product.productID}`);
+                const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
 
-                            if (product.noticeList && product.noticeList.length > 0) {
-                                const noticeListChild = document.createElement('div');
-                                noticeListChild.classList.add('notice-list-child');
-                                // Lấy 3 notice cuối cùng
-                                const lastThreeNotices = product.noticeList.slice(-3);
+                if (products[i].noticeList && products[i].noticeList.length > 0) {
+                    const noticeListChild = document.createElement('div');
+                    noticeListChild.classList.add('notice-list-child');
+                    // Lấy 3 notice cuối cùng
+                    const lastThreeNotices = products[i].noticeList.slice(-3);
 
-                                lastThreeNotices.forEach(function (notice) {
-                                    const noticeDiv = document.createElement('div');
-                                    noticeDiv.classList.add('notice-div');
-                                    var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
-                                    const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
-                                    noticeDiv.innerHTML = `
+                    lastThreeNotices.forEach(function (notice) {
+                        const noticeDiv = document.createElement('div');
+                        noticeDiv.classList.add('notice-div');
+                        var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+                        const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+                        noticeDiv.innerHTML = `
                                         <h6>${notice.title}</h6>
                                         <p>Nội dung: ${notice.content}</p>
                                         <div class="d-flex" style="justify-content: space-between;">
@@ -565,27 +580,94 @@
 
 
                                     `;
-                                    noticeListChild.appendChild(noticeDiv);
-                                });
-                                noticeListDiv.appendChild(noticeListChild);
-                            }
-
-
-
-
-
-                        });
-                    } else {
-                        // Xử lý trường hợp không có sản phẩm
-                    }
-                } else {
-                    // Xử lý lỗi khi nhận được một phản hồi không phải 200 OK
+                        noticeListChild.appendChild(noticeDiv);
+                    });
+                    noticeListDiv.appendChild(noticeListChild);
                 }
+
+                console.log("Hien thi san pham");
+
+
+            }
+        }
+
+        function displayPagination() {
+            // Tính toán tổng số trang
+            var totalPages = Math.ceil(products.length / pageSize);
+
+            // Hiển thị liên kết phân trang
+            var paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            // Hiển thị nút trở về trang trước
+            var prevPageLink = document.createElement('a');
+            prevPageLink.href = '#';
+            prevPageLink.id = 'preP';
+            prevPageLink.textContent = '< Trang trước ';
+            prevPageLink.onclick = function ( event) {
+                if (currentPage > 0) {
+                    changePage(currentPage - 1,  event);
+                }
+            };
+            paginationContainer.appendChild(prevPageLink);
+
+            // Hiển thị liên kết phân trang
+            var startPage = Math.max(0, currentPage - 2);
+            var endPage = Math.min(totalPages - 1, currentPage + 2);
+
+            // for (var i = startPage; i <= endPage; i++) {
+                var pageLink = document.createElement('a');
+                pageLink.href = '#';
+                pageLink.id = 'curP';
+                // pageLink.textContent = i + 1;
+                pageLink.textContent = currentPage + 1;
+
+                // Bắt sự kiện khi nhấp vào liên kết để chuyển đến trang mới
+                // pageLink.onclick = (function (pageNumber) {
+                //     return function () {
+                //         changePage(pageNumber);
+                //     };
+                // })(i);
+
+                paginationContainer.appendChild(pageLink);
+            // }
+
+            // Hiển thị nút chuyển đến trang tiếp theo
+            var nextPageLink = document.createElement('a');
+            nextPageLink.href = '#';
+            nextPageLink.id = 'nextP';
+            nextPageLink.textContent = ' Trang sau >';
+            nextPageLink.onclick = function (event) {
+                if (currentPage < totalPages - 1) {
+                    changePage(currentPage + 1,  event);
+                }
+            };
+            paginationContainer.appendChild(nextPageLink);
+        }
+        function changePage(page, event) {
+            currentPage = page;
+            displayProducts(currentPage);
+            var curP = document.getElementById('curP');
+            curP.innerHTML = '';
+            curP.textContent = currentPage + 1;
+            event.preventDefault();
+        }
+
+        // Gọi API để lấy danh sách sản phẩm khi trang web được tải
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/all-product', true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                products = JSON.parse(xhr.responseText);
+                console.log("Lay san pham");
+                displayProducts(currentPage);
+                console.log("Hien thi san pham success");
+                displayPagination();
+                console.log("Hien thi chuyen trang");
             }
         };
         xhr.send();
     </script>
-
 
     <script>
         // Hàm để hiển thị thẻ chứa noticeList

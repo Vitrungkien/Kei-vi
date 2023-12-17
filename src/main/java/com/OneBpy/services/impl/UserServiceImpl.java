@@ -120,10 +120,10 @@ public class UserServiceImpl implements UserService {
         return orderRepository.save(newOrder);
     }
 
-    @Override
-    public Page<Product> getAllProducts(int pageNo, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return productRepository.findAll(pageable);
-    }
+//    @Override
+//    public Page<Product> getAllProducts(int pageNo, int pageSize) {
+//        Pageable pageable = PageRequest.of(pageNo, pageSize);
+//        return productRepository.findAll(pageable);
+//    }
 
 }
