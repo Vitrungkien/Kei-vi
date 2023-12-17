@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/management.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/update.css}">-->
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        button {
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add {
+            background-color: #2474E5;
+            color: #fff
+        }
+        .search-btn {
+            background-color: #FFD333;
+            color: black;
+            width: 60px;
+        }
+
+        .tim-sp {
+            padding: 10px;
+        }
+        .them-sua-sp {
+            padding: 10px;
+        }
+
+        .delete {
+            background-color: red;
+            color: #fff;
+        }
+        th {
+            background-color: #212529;
+            color: white;
+            padding: 10px;
+        }
+        td {
+            border: 2px solid #eae6e6;
+            padding: 5px 5px 5px 10px;
+            max-width: 250px;
+        }
+        .me1:hover{
+            background-color: #ccc;
+            color: black;
+        }
+        .me2:hover {
+            background-color: #564e4e;
+        }
+        .me {
+            cursor: pointer;
+            margin: 0;
+        }
+        .don-hang {
+            display: none;
+        }
+        .chi-tiet {
+            background-color: #55acee;
+        }
+        .max-column {
+            max-width: 150px;
+        }
+        #tb-order {
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        #qlsp {
+            background-color: #ccc;
+            /*color: black;*/
+        }
+        #qlsp a {
+            color: black;
+        }
+        .frmDatVe {
+            background-color: rgb(64, 176, 112);
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 0;
+            transform: translateX(91%);
+            width: 40%;
+        }
+        .btn-order {
+            display: none;
+            margin: 5px;
+        }
+        .btn-secondary {
+            margin: 5px;
+        }
+        .totalPrice {
+            display: none;
+        }
+        .ve-xe {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            display: none;
+            transform: translateX(50%);
+            width: 50%;
+            background-color: #fff;
+            border-radius: 5px;
+            margin: 16px 0;
+            padding: 16px;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        .btn-action {
+            margin-bottom: 5px;
+            margin-right: 5px;
+            width: 53px;
+            padding: 6px;
+        }
+        .actions { display: flex}
+        .me1 {
+            /*padding: 10px;*/
+            height: 50px;
+            padding: 8px 20px;
+        }
+        .me1 a {
+            line-height: 32px;
+            margin: 0;
+        }
+    </style>
+    <title>Management</title>
+</head>
+<body>
+<div class="header">
+    <div class="left-menu">
+        <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>
+    </div>
+    <ul class="right-menu">
+        <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
+        <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
+        <li class="main-menu">
+            <a class="main-menu-a" href="">Thuê xe</a>
+            <ul class="sub-main-menu">
+                <li>Hợp đồng du lịch</li>
+                <li>Thuê xe tự lái</li>
+            </ul>
+        </li>
+        <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
+        <li class="main-menu">
+            <a class="main-menu-a" href="">Tin tức</a>
+            <ul class="sub-main-menu">
+                <li>Thông báo nghỉ tết</li>
+                <li>Thông báo bảo trì 30/12</li>
+            </ul>
+        </li>
+        <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+            <a class="main-menu-a" href="" >Tôi</a>
+            <ul class="sub-main-menu sub-main-menu-toi">
+                <li><a th:href="@{/profile}">My Profile</a></li>
+                <div id="management" class="some-element"
+                     th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+                    <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+                </div>
+                <li>Quản lý đơn hàng</li>
+                <li><a>Giỏ hàng</a></li>
+                <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
+            </ul>
+        </li>
+
+        <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+            <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
+        </li>
+    </ul>
+</div>
+
+    <div class="">
+        <div class="col-2 position-fixed bg-dark top-0 text-white p-0" style="height: 713px;">
+            <div class="me row ">
+                <h5 class="me1 " id="qlsp" onclick="showMenu(1)"><a th:href="@{/management}">Quản lý sản phẩm</a></h5>
+            </div>
+            <div class="me row " >
+<!--                <h5 class="me1 p-2" id="qldh" onclick="showSubMenu(), showMenu(2)">Quản lý đơn hàng</h5>-->
+                <h5 class="me1 " id="qldh" ><a th:href="@{/management-order}">Quản lý đơn hàng</a></h5>
+                <ul class="" id="subOrder" style="display: none; margin-left: 15px;">
+                    <li class="me2">Tất cả đơn hàng</li>
+                    <li class="me2">Đơn chờ xác nhận</li>
+                    <li class="me2">Đơn đã đã xác nhận</li>
+                    <li class="me2">Đơn đã hoàn thành</li>
+                </ul>
+            </div>
+            <div class="me row " >
+                <h5 class="me1 " id="qltb" ><a th:href="@{/management-notice}">Quản lý thông báo</a></h5>
+            </div>
+        </div>
+        <div class="col-10 ms-auto p-4" style="background-color: #fff;">
+            <div class="san-pham" id="san-pham">
+                <h1>Danh sách vé</h1>
+<!--                <div class="row-cols tim-sp">-->
+<!--                    <input type="text" placeholder="Tìm sản phẩm">-->
+<!--                    <input type="text" placeholder="Danh mục">-->
+<!--                    <button class="search-btn">Tìm</button>-->
+<!--                </div>-->
+
+                <div class="row-cols-8 them-sua-sp">
+                    <button class="add btn btn-primary"> <a th:href="@{/management/add-product}">Thêm mới</a> </button>
+<!--                    <button class="delete">Xóa nhiều bản ghi</button>-->
+                </div>
+
+                <table class="row-cols-1" id="tb-product">
+                    <tr>
+                        <th>STT</th>
+                        <th>Ảnh</th>
+                        <th>Tên vé</th>
+                        <th style="max-width: 200px">Điểm xuất phát</th>
+                        <th style="max-width: 200px">Điểm kết thúc</th>
+                        <th>Giờ đi</th>
+                        <th>Còn trống</th>
+                        <th>Giá vé</th>
+                        <th>Số điện thoại</th>
+                        <th>Ngày thêm</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</body>
+
+
+<!--menu-->
+<script>
+    function showSubMenu() {
+        const subOder = document.getElementById('subOrder');
+        if (subOder.style.display === 'none' || subOder.style.display === '') {
+            subOder.style.display = 'block';
+        }
+        else {
+            subOder.style.display = 'none';
+        }
+    }
+
+    function showMenu(number) {
+        const sanPham = document.getElementById('san-pham');
+        const donHang = document.getElementById('don-hang');
+        const subOder = document.getElementById('subOrder');
+        const qlsp = document.getElementById('qlsp');
+        const qldh = document.getElementById('qldh');
+        if (number === 1) {
+            sanPham.style.display = 'block';
+            donHang.style.display = 'none';
+            subOder.style.display = 'none';
+            qlsp.style.backgroundColor = '#ccc';
+            qlsp.style.color = 'black';
+            qldh.style.color = 'white';
+            qldh.style.backgroundColor = 'inherit';
+        }
+        else if (number === 2) {
+            sanPham.style.display = 'none';
+            donHang.style.display = 'block';
+            qldh.style.backgroundColor = '#ccc';
+            qldh.style.color = 'black';
+            qlsp.style.color = 'white';
+            qlsp.style.backgroundColor = 'inherit';
+
+        }
+    }
+
+</script>
+
+<!--Danh sach products-->
+<script th:inline="javascript">
+    // Sử dụng JavaScript để gọi API từ Spring Boot và tạo bảng
+    fetch('/api/v1/seller/my-store/all-product').then(response => response.json()).then(products => {
+        // var products = /*[[${products}]]*/ [];
+        const table = document.getElementById('tb-product');
+        products.forEach(product => {
+            // const serverDate = new Date(product['createdAt']);
+            // const formattedDate = `${('0' + serverDate.getDate()).slice(-2)}/${('0' + (serverDate.getMonth() + 1)).slice(-2)}/${serverDate.getFullYear() % 100}`;
+            const formattedStartTime = moment(product['startTime'], "HH:mm:ss").format('HH:mm');
+            const formattedCreatedAt = moment(product['createdAt']).format('HH:mm DD/MM/YYYY');
+            const row = table.insertRow();
+            row.insertCell().textContent = product['productID'];
+            row.insertCell().innerHTML = '<img src="./img/Picture1.png" alt="Image">';
+            row.insertCell().textContent = product['productName'];
+            row.insertCell().textContent = product['startAddress'];
+            row.insertCell().textContent = product['endAddress'];
+            row.insertCell().textContent = formattedStartTime;
+            row.insertCell().textContent = product['remainSeat'] + ' ghế';
+            row.insertCell().textContent = product['price'];
+            row.insertCell().textContent = product['phoneNumber'];
+            row.insertCell().textContent = formattedCreatedAt;
+            var displays = product['display'] ? 'Hiển thị' : 'Ẩn';
+            row.insertCell().textContent = displays;
+            row.insertCell().innerHTML = `
+<div class="actions">
+    <button class="chi-tiet btn-action btn btn-info" onclick="showDetailProduct(${product.productID})">Chi tiết</button>
+<div class="ve-xe" id="productId${product.productID}">
+      <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
+      <div class="info-ve">
+        <div class="info-ve-p1">
+          <div class="ten-nha-xe-rate">
+            <p class="ten-nha-xe">${product.productName}</p>
+            <i class="fa-solid fa-star" style="color: #ffd500"></i>
+            <i class="fa-solid fa-star" style="color: #ffd500"></i>
+            <i class="fa-solid fa-star" style="color: #ffd500"></i>
+            <i class="fa-solid fa-star" style="color: #ffd500"></i>
+            <i class="fa-solid fa-star" style="color: #ffd500"></i>
+          </div>
+          <p class="price">${product.price}đ</p>
+        </div>
+        <p class="car-type">Limousine 11 chỗ</p>
+        <div class="info-ve-p2">
+          <div class="info-ve-p2-1">
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/clock-regular.svg" alt="" />
+              <p class="info-time">${product.startTime}</p>
+              <p>- ${product.startAddress}</p>
+            </div>
+
+            <div class="info-p2-1-1">
+              <img class="dot-dot" src="/img/dot.png" alt="" />
+              <p class="info-time" id="info-take-time">6h55m</p>
+            </div>
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/location.png" alt="" />
+              <p class="info-time">${product.endTime}</p>
+              <p>- ${product.endAddress}</p>
+            </div>
+          </div>
+          <div class="info-ve-p2-2">
+            <p id="blank">Còn ${product.remainSeat} chỗ trống</p>
+            <button type="button" class="btn btn-secondary"
+            onclick="dismissDetailProduct(${product.productID})">
+            Thoát
+          </button>
+          </div>
+        </div>
+      </div>
+      <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
+
+      <div id="productDetail${product.productID}" class="detail">
+<!--      style="display: none"-->
+        <div class="detail-info">
+          <ul class="list-info">
+            <li>
+                <button class="menu-detail${product.productID} detail-img-b" id="detail-img-b${product.productID}"
+                onclick="showPartDetail(${product.productID}, 1)">
+                  Hình ảnh
+                </button>
+
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} tien-ich-b" id="tien-ich-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 2)">
+                Tiện ích
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} diem-don-tra-b" id="diem-don-tra-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 3)">
+                Điểm đón trả
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} chinh-sach-b" id="chinh-sach-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 4)"> Chính sách </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} review-b" id="review-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 5)"> Đánh giá </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="five-info" id="five-info">
+          <!--Hinh anh-->
+          <div class="part-detail${product.productID} detai-img" id="detai-img${product.productID}">
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+<!--            <div class="sub-img">-->
+<!--              <img src="/img/Picture1.png" alt="" />-->
+<!--              <img src="@{/img/Picture1.png" alt="" />-->
+<!--              <img src="/img/Picture1.png" alt="" />-->
+<!--            </div>-->
+          </div>
+          <!--Diem don tra-->
+          <div class="part-detail${product.productID} diem-don-tra" id="diem-don-tra${product.productID}">
+            <div class="luu-y">
+              <h3>Lưu ý</h3>
+              <p>
+                Các mốc thời gian đón trả bên dưới là thời gian dự kiến. <br />
+                Lịch này có thể thay đổi tùy tình hình thực tế
+              </p>
+            </div>
+
+            <div id="stopList${product.productID}">
+
+            </div>
+<!--            <div class="diem-don">-->
+<!--              <h3>Điểm đón</h3>-->
+<!--              <p>15:30 - Văn phòng Mỹ Đình</p>-->
+<!--            </div>-->
+<!--            <div class="diem-tra">-->
+<!--              <h3>Điểm trả</h3>-->
+<!--              <p>17:35 Bến xe Thượng Lý</p>-->
+<!--            </div>-->
+          </div>
+          <!--Tien ich-->
+          <div class="part-detail${product.productID} tien-ich" id="tien-ich${product.productID}">
+            <ul class="list-tien-ich">
+              <li>Điều hòa</li>
+              <li>Rèm cửa</li>
+              <li>Sạc các loại điện thoại</li>
+            </ul>
+          </div>
+          <!--Chinh sach -->
+          <div class="part-detail${product.productID} chinh-sach" id="chinh-sach${product.productID}">
+            <h3>Chính sách nhà xe</h3>
+            <ul>
+              <li>
+                <h4>Yêu cầu khi lên xe</h4>
+                <ul>
+                  <li>Không vứt rác trên xe</li>
+                  <li>Không mang đồ ăn, thức ăn có mùi lên xe</li>
+                  <li> Không hút thuốc, uống rượu, sử dụng chất kích thích trên xe</li>
+                  <li>Không mang các vật dễ cháy nổ lên xe</li>
+                  <li>Không làm ồn, gây mất trật tự trên xe</li>
+                </ul>
+              </li>
+              <li>
+                <h4>Hành lý sách tay</h4>
+                <ul>
+                  <li>Tổng trọng lượng sách tay không quá 10kg</li>
+                </ul>
+              </li>
+              <li>
+                <h4>Trẻ em và phụ nữ có thai</h4>
+                <ul>
+                  <li>
+                    Trẻ em dưới 3 tuổi hoặc dưới 110 cm được miễn phí vé nếu
+                    ngồi cùng ghế/giường với bố mẹ
+                  </li>
+                  <li>
+                    Trẻ em từ 3 tuổi hoặc cao từ 110 cm trở lên mua vé như người
+                    lớn
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <h4>Động vật cảnh/thú cưng</h4>
+                <ul>
+                  <li>Nhận chở chó, mèo</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <!--Review-->
+          <div class="part-detail${product.productID} review" id="review${product.productID}">
+            <div class="total-review">
+              <p>4.8</p>
+              <span class="fa fa-star checked custom-icon rate"></span>
+              <p>(1000 đánh giá)</p>
+            </div>
+            <h3>Đánh giá</h3>
+
+            <div class="review-box">
+              <img src="/img/avatar.jpg" alt="" class="reviewer-avatar" />
+              <div class="review-name-and-content">
+                <p class="reviewer-name">0343579228</p>
+                <p class="rate">
+                  <span class="fa fa-star checked custom-icon"></span>
+                  <span class="fa fa-star checked custom-icon"></span>
+                  <span class="fa fa-star checked custom-icon"></span>
+                  <span class="fa fa-star checked custom-icon"></span>
+                  <span class="fa fa-star checked custom-icon"></span>
+                </p>
+                <p class="content-review">
+                  Tài xế vui tính, xe sạch sẽ thoáng mát và giá cả hợp lý.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+            <button class="update btn-action btn btn-primary"> <a href="/management/${product.productID}/update-product" >Sửa</a> </button>
+            <button class="delete btn-action btn btn-danger"
+                data-bs-toggle="modal" data-bs-target="#myModal${product.productID}"
+            >Xóa</button>
+            <!-- The Modal -->
+<div class="modal" id="myModal${product.productID}">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Xóa vé</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa vé này?
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+        onclick="softDelete('true', ${product.productID})"
+      >Đồng ý</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+            <button class="hide btn-action btn btn-dark" id="hide${product.productID}"
+                onclick="hideProduct(${product.productID})">Ẩn</button>
+
+            <button class="show btn-action btn btn-success" id="show${product.productID}"
+                onclick="displayProduct(${product.productID})">Hiện</button>
+</div>`;
+            const showBtn = document.getElementById(`show${product.productID}`);
+            const hideBtn = document.getElementById(`hide${product.productID}`);
+
+            if (displays == 'Ẩn') {
+                showBtn.style.display = 'block';
+                hideBtn.style.display = 'none';
+            }
+            else {
+                showBtn.style.display = 'none';
+                hideBtn.style.display = 'block';
+            }
+
+
+            const stopListDiv = document.getElementById(`stopList${product.productID}`);
+            if (product.stopList && product.stopList.length > 0) {
+                const ul = document.createElement('ul');
+                product.stopList.forEach(function (stop) {
+                    const li = document.createElement('li');
+                    li.innerHTML =
+                        stop['stopTime'] +
+                        ' - ' + stop['stopAddress'];
+                    ul.appendChild(li);
+                });
+                stopListDiv.appendChild(ul);
+            }
+        });
+    })
+        .catch(error => console.error('Error fetching products:', error));
+</script>
+
+<!--Chuyển đổi giữa các tab menu chi tiet-->
+<script>
+    function showPartDetail(productId, typeDetail) {
+        const partDetails = document.querySelectorAll('.part-detail'+ productId);
+        partDetails.forEach(function (partDetail) {
+            partDetail.style.display = 'none';
+        });
+
+        const menuDetails = document.querySelectorAll('.menu-detail'+ productId);
+        menuDetails.forEach(function (menuDetail) {
+            menuDetail.style.color = 'black';
+        });
+
+        if (typeDetail === 1) {
+            const detailImgElement = document.getElementById('detai-img' + productId);
+            const menuImgElement = document.getElementById('detail-img-b' + productId);
+            // displayAndChangeColor(detailImgElement, menuImgElement);
+            menuImgElement.style.color = '#2474E5';
+            detailImgElement.style.display = 'flex';
+        }
+        else if (typeDetail === 2) {
+            const detailTienIchElement = document.getElementById('tien-ich' + productId);
+            const menuTienIchElement = document.getElementById('tien-ich-b' + productId);
+            displayAndChangeColor(detailTienIchElement, menuTienIchElement);
+        }
+        else if (typeDetail === 3) {
+            const detailDiemDonTraElement = document.getElementById('diem-don-tra' + productId);
+            const menuDiemDonTraElement = document.getElementById('diem-don-tra-b' + productId);
+            displayAndChangeColor(detailDiemDonTraElement, menuDiemDonTraElement);
+        }
+        else if (typeDetail === 4) {
+            const detailChinhSachElement = document.getElementById('chinh-sach' + productId);
+            const menuChinhSachElement = document.getElementById('chinh-sach-b' + productId);
+            displayAndChangeColor(detailChinhSachElement, menuChinhSachElement);
+        }
+        else if (typeDetail === 5) {
+            const detailReviewElement = document.getElementById('review' + productId);
+            const menuReviewElement = document.getElementById('review-b' + productId);
+            displayAndChangeColor(detailReviewElement, menuReviewElement);
+        }
+    }
+
+    function displayAndChangeColor(detail, menu) {
+        menu.style.color = '#2474E5';
+        detail.style.display = 'block';
+    }
+
+</script>
+
+<script>
+    function showDetailProduct(productId) {
+        hideAllProductForm();
+        const productFrm = document.getElementById('productId' + productId);
+        if (productFrm.style.display === 'none' || productFrm.style.display === '') {
+            productFrm.style.display = 'grid';
+        }
+        else if (productFrm.style.display === 'grid') {
+            productFrm.style.display = "none";
+        }
+    }
+    function hideAllProductForm() {
+        const productForms = document.querySelectorAll('.ve-xe');
+        productForms.forEach(function (productForm) {
+            productForm.style.display = 'none';
+        });
+    }
+
+    function dismissDetailProduct(productId) {
+        const productFrm = document.getElementById('productId' + productId);
+        productFrm.style.display = "none";
+    }
+
+    function displayProduct(product_id) {
+        const showBtn = document.getElementById('show' + product_id);
+        const hideBtn = document.getElementById('hide' + product_id);
+        showBtn.style.display = 'none';
+        hideBtn.style.display = 'block';
+        sendForm('true', product_id);
+
+    }
+    function hideProduct(product_id) {
+        const showBtn = document.getElementById('show' + product_id);
+        const hideBtn = document.getElementById('hide' + product_id);
+        showBtn.style.display = 'block';
+        hideBtn.style.display = 'none';
+
+        // Kiểm tra nếu product_id không phải là undefined hoặc null trước khi gửi form
+        if (product_id) {
+            sendForm('false', product_id);
+        } else {
+            console.error('Invalid product_id');
+        }
+    }
+
+    function sendForm(status, product_id) {
+        // Kiểm tra nếu product_id không phải là undefined hoặc null trước khi tạo form
+        if (product_id) {
+            // Tạo và cấu hình form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/management/${product_id}/display-status`;
+            form.style.display = 'none';
+            form.setAttribute('object', 'hideShowProduct'); // Thêm attribute "object" vào form
+
+            // Tạo input ẩn và cấu hình nó
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'display';
+            input.value = status;
+
+            // Thêm input vào form
+            form.appendChild(input);
+
+            // Thêm form vào body và submit form
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            console.error('Invalid product_id');
+        }
+    }
+
+    function softDelete(status, product_id) {
+        if (product_id) {
+            // Tạo và cấu hình form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/management/${product_id}/remove`;
+            form.style.display = 'none';
+            form.setAttribute('object', 'removeProductDTO'); // Thêm attribute "object" vào form
+
+            // Tạo input ẩn và cấu hình nó
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'deleted';
+            input.value = status;
+
+            // Thêm input vào form
+            form.appendChild(input);
+
+            // Thêm form vào body và submit form
+            document.body.appendChild(form);
+            form.submit();
+        } else {
+            console.error('Invalid product_id');
+        }
+    }
+
+
+</script>
+
+<!--Logout click-->
+<script>
+    // Gán sự kiện click cho thẻ button
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                    window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+                } else {
+                    console.error('Logout failed:', response.status);
+                }
+            })
+            .catch(error => console.error('Error during logout:', error));
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,8 +1,7 @@
 package com.OneBpy.models;
 
 public enum Role {
-    ADMIN,
-    SELLER,
-    USER
-
+    ROLE_ADMIN,
+    ROLE_SELLER,
+    ROLE_USER
 }

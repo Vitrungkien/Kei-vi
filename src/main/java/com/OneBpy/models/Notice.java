@@ -17,8 +17,8 @@ public class Notice {
     private String title;
     private String content;
     private Date createdAt;
-    @Column(name = "is_active")
-    private boolean isActive;
+    private boolean expired;
+    private Date lastUpdate;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -29,4 +29,5 @@ public class Notice {
     protected void onCreate() {
         createdAt = new java.util.Date();
     }
+
 }

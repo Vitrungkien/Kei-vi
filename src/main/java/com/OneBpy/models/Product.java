@@ -9,6 +9,8 @@ import lombok.Data;
 
 
 import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -23,19 +25,24 @@ public class Product {
     private String productName;
     private String productImage;
     private int remainSeat;
-    private int Rate;
     private boolean display;
     private String bienSoXe;
     private String phoneNumber;
+    private String phoneNumber2;
     private String description;
+    private String policy;
+    private String tienIch;
+    private String type;
     private int price;
-    private Time startTime;
-    private Time endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String startAddress;
     private String endAddress;
+    private boolean deleted;
+    private Date lastUpdate;
     private Date createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     @JsonBackReference  // Đánh dấu mối quan hệ không quản lý
     private Store store;
@@ -48,7 +55,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = true)
     @JsonManagedReference  // Đánh dấu mối quan hệ quản lý
-    @JsonIgnore
+//    @JsonIgnore
     private List<Notice> noticeList;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalTime;
 import java.util.Date;
 import java.sql.Time;
 
@@ -15,8 +17,11 @@ public class Stop {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stop_id")
     private Long stopID;
-    private Time stopTime;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime stopTime;
     private String stopAddress;
+    private boolean rightNow;
+    private boolean deleted;
     private Date createdAt;
 
     @ManyToOne
@@ -28,4 +33,8 @@ public class Stop {
     protected void onCreate() {
         createdAt = new java.util.Date();
     }
+
+//    public boolean getDeleted() {
+//        return this.deleted;
+//    }
 }

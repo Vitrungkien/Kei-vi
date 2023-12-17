@@ -31,10 +31,15 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/api/v1/admin").hasAnyAuthority(Role.ADMIN.name())
-                        .requestMatchers("/api/v1/user").hasAnyAuthority(Role.USER.name())
-                        .requestMatchers("/api/v1/seller").hasAnyAuthority(Role.SELLER.name())
+                        .requestMatchers("/login", "/signup", "/signup-seller", "/").permitAll()
+                        .requestMatchers("/swagger-ui/**", "swagger-ui.html").permitAll()
+                        .requestMatchers( "/js/**", "/css/**", "/img/**").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name())
+                        .requestMatchers("/api/v1/user/**").hasAnyAuthority(Role.ROLE_USER.name(), Role.ROLE_SELLER.name(), Role.ROLE_ADMIN.name())
+                        .requestMatchers("/api/v1/seller/**").hasAnyAuthority(Role.ROLE_SELLER.name())
+                        .requestMatchers("/profile", "/cart", "/orders", "/order").hasAnyAuthority(
+                                Role.ROLE_ADMIN.name(), Role.ROLE_SELLER.name(), Role.ROLE_USER.name())
+                        .requestMatchers("/all-product").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -42,6 +47,11 @@ public class SecurityConfiguration {
                                 .defaultSuccessUrl("/")
                 )
                 .logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+                        .logoutUrl("/logout")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("Authorization")
+                        .logoutSuccessUrl("/login?logout")
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

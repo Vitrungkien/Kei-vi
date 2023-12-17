@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+    />
+    <style>
+        #frmDatVe {
+            background-color: rgb(64, 176, 112);
+        }
+        .product-div {
+            /*max-height: 266px;*/
+        }
+        .notice-div {
+
+        }
+        .noticeList {
+            max-width: 375px;
+            width: 375px;
+            position: absolute;
+            top: 52px;
+            left: 16px;
+            z-index: 999;
+            display: none;
+        }
+        .notice-list-child {
+            background-color: lightgreen;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .icon-notice {
+            background-color: #007AFF;
+            padding: 5px;
+            color: white;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+    <title>Đặt xe ghép</title>
+</head>
+<body>
+    <div class="header">
+        <div class="left-menu">
+            <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>
+        </div>
+            <ul class="right-menu">
+                <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
+                <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
+                <li class="main-menu">
+                    <a class="main-menu-a" href="">Thuê xe</a>
+                    <ul class="sub-main-menu">
+                        <li>Hợp đồng du lịch</li>
+                        <li>Thuê xe tự lái</li>
+                    </ul>
+                </li>
+                <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
+                <li class="main-menu">
+                    <a class="main-menu-a" href="">Tin tức</a>
+                    <ul class="sub-main-menu">
+                        <li>Thông báo nghỉ tết</li>
+                        <li>Thông báo bảo trì 30/12</li>
+                    </ul>
+                </li>
+                <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+                    <a class="main-menu-a" href="" >Tôi</a>
+                    <ul class="sub-main-menu sub-main-menu-toi">
+                        <li><a th:href="@{/profile}">My Profile</a></li>
+                        <div id="management" class="some-element"
+                             th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+                            <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+                        </div>
+                        <li>Quản lý đơn hàng</li>
+                        <li><a>Giỏ hàng</a></li>
+                        <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
+                    </ul>
+                </li>
+
+                <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+                    <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
+                </li>
+            </ul>
+    </div>
+
+    <div class="container">
+
+        <div class="search-form">
+
+            <div class="search-input">
+
+                <div class="input-box">
+                    <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
+                    <div class="input-and-label">
+                        <p class="input-box-label">Điểm đón</p>
+                        <input type="text" placeholder="Nhập điểm đón">
+                    </div>
+                </div>
+                <div class="input-box">
+                    <img class="search-form-icon" th:src="@{./img/location.png}" alt="">
+                    <div class="input-and-label">
+                        <p class="input-box-label">Điểm trả</p>
+                        <input type="text" placeholder="Nhập điểm trả">
+                    </div>
+                </div>
+                <div class="input-box">
+                    <img class="search-form-icon" th:src="@{./img/clock.png}" alt="">
+                    <div class="input-and-label">
+                        <p class="input-box-label" >Giờ đi</p>
+                        <input type="datetime-local" placeholder="Nhập giờ đi">
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-button">
+                <button>Tìm kiếm</button>
+            </div>
+
+        </div>
+
+
+        <div class="filter-and-list-product">
+            <div class="left-body">
+                <div class="sap-xep">
+                    <h3>Sắp xếp</h3>
+                    <form>
+                        <p><input type="radio" name="sort" id="gio-som-nhat">Giờ sớm nhất</p>
+                        <p><input type="radio" name="sort" id="gio-muon-nhat">Giờ muộn nhất</p>
+                        <p><input type="radio" name="sort" id="gia-tang-dan">Giá tăng dần</p>
+                        <p><input type="radio" name="sort" id="gia-giam-dan">Giá giảm dần</p>
+                    </form>
+                </div>
+        
+                <div class="filter-form">
+                    <div class="filter-title">
+                        <h3>Lọc</h3>
+                        <p>Xoá lọc</p>
+                    </div>
+                    <div class="loc-thoi-gian">
+                        <h4>Giờ đi</h4>
+                        <div class="nut-loc-thoi-gian">
+                            <button>
+                                <p>Sáng sớm</p>
+                                <p>00:00 - 6:00</p>
+                            </button>
+                            <button>
+                                <p>Sáng</p>
+                                <p>6:00 - 12:00</p>
+                            </button>
+                            <button>
+                                <p>Chiều </p>
+                                <p>12:01 - 18:00</p>
+                            </button>
+                            <button>
+                                <p>Tối (183)</p>
+                                <p>18:01 - 23:59</p>
+                            </button>
+                        </div>
+                    </div>
+        
+                    <div class="loc-nha-xe">
+                        <h4>Nhà xe</h4>
+                        <input type="text" placeholder="Tìm trong sanh sách">
+                        <form>
+                            <p><input type="checkbox" name="" >Hoa Huệ</p>
+                            <p><input type="checkbox" name="" >Mạnh Hà</p>
+                            <p><input type="checkbox" name="" >Bông Khoai</p>
+                            <p><input type="checkbox" name="" >Thùy Linh</p>
+
+                        </form>
+                    </div>
+        
+                    <div class="loc-diem-don"></div>
+                        <h4>Điểm đón</h4>
+                        <input type="text" placeholder="Tìm trong sanh sách">
+                        <p><input type="checkbox" name="" >Tp.Lạng Sơn</p>
+                        <p><input type="checkbox" name="" >Thất Khê</p>
+                        <p><input type="checkbox" name="" >Lộc Bình</p>
+                        <p><input type="checkbox" name="" >Na Dương</p>
+                        <p><input type="checkbox" name="" >Hữu Lũng</p>
+        
+                    <div class="loc-diem-tra"></div>
+                        <h4>Điểm trả</h4>
+                        <input type="text" placeholder="Tìm trong sanh sách">
+                        <p><input type="checkbox" name="" >Bến Mỹ Đình</p>
+                        <p><input type="checkbox" name="" >Bến Yên Nghĩa</p>
+                        <p><input type="checkbox" name="" >Bến Giáp Bát</p>
+                        <p><input type="checkbox" name="" >Bến Gia Lâm</p>
+                        <p><input type="checkbox" name="" >Bến Nước Ngầm</p>
+        
+                    <div class="loc-loai-xe">
+                        <h4>Loại Xe</h4>
+                        <span><input type="checkbox" name="" >Merc</span>
+                        <span><input type="checkbox" name="" >Ford</span>
+                    </div>
+                </div>          
+            </div>
+            <div class="right-body">
+                <h2>Product List</h2>
+
+                <div id="productList">
+                    <!-- Placeholder for product list -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="footer"></div>
+
+<!--Logout click-->
+    <script>
+        // Gán sự kiện click cho thẻ button
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                        window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+                    } else {
+                        console.error('Logout failed:', response.status);
+                    }
+                })
+                .catch(error => console.error('Error during logout:', error));
+        });
+    </script>
+
+<!--Handle render Ui for Guest-->
+    <script>
+        // Kiểm tra xem có cookie có tên "Authorization" hay không
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Lấy giá trị của cookie "Authorization"
+        const authToken = getCookie('Authorization');
+
+        // Lấy phần tử cần ẩn
+        const meElement = document.getElementById('me');
+        const loginElement = document.getElementById('login');
+
+        // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
+        if (!authToken) {
+            meElement.style.display = 'none'; // Ẩn phần tử
+            loginElement.style.display = 'block'
+
+        }
+    </script>
+
+<!--Lấy ra tất cả sản phẩm    -->
+    <script th:inline="javascript">
+        function displayValue(value) {
+            return (value !== null && value !== undefined) ? value : 'null';
+        }
+
+        var productListDiv = document.getElementById('productList');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/all-product', true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var products = JSON.parse(xhr.responseText);
+
+                    if (products && products.length > 0) {
+                        products.forEach(function (product) {
+                            var productDiv = document.createElement('div');
+                            productDiv.classList.add('product-div');
+                            productDiv.innerHTML =
+    `<div class="ve-xe" id="productId${product.productID}">
+        <div>
+            <h6 id="n-hover${product.productID}" onmouseover="showNoticeList(${product.productID})"
+         onmouseout="hideNoticeList(${product.productID})" class="icon-notice"
+         >Thông báo<i class="fa-solid fa-bell" style="color: #fff"></i></h6>
+            <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
+        </div>
+
+      <div class="info-ve">
+        <div class="info-ve-p1">
+          <div class="ten-nha-xe-rate">
+            <p class="ten-nha-xe">${product.productName}</p>
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+          </div>
+          <p class="price">${product.price}đ</p>
+        </div>
+        <p class="car-type">${product.type}</p>
+        <div class="info-ve-p2">
+          <div class="info-ve-p2-1">
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/clock-regular.svg" alt="" />
+              <p class="info-time">${product.startTime}</p>
+              <p>- ${product.startAddress}</p>
+            </div>
+
+            <div class="info-p2-1-1">
+              <img class="dot-dot" src="/img/dot.png" alt="" />
+              <p class="info-time" id="info-take-time">6h55m</p>
+            </div>
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/location.png" alt="" />
+              <p class="info-time">${product.endTime}</p>
+              <p>- ${product.endAddress}</p>
+            </div>
+          </div>
+          <div class="info-ve-p2-2">
+            <p id="blank">Còn ${product.remainSeat} chỗ trống</p>
+            <div>
+              <p id="info-button" class="info-button" onclick="showProductDetail(${product.productID})">
+                Thông tin chi tiết
+                <i
+                  style="transform: rotate(0deg)"
+                  id="arrow-icon${product.productID}"
+                  class="fa-solid fa-caret-down"
+                ></i>
+              </p>
+              <!-- <p>Thông tin chi tiết</p> -->
+              <button onclick="showOrderForm(${product.productID})">Đặt xe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
+        <div id="noticeList${product.productID}" class="noticeList"></div>
+      <div id="productDetail${product.productID}" class="detail" style="display: none">
+        <div class="detail-info">
+          <ul class="list-info">
+            <li>
+                <button class="menu-detail${product.productID} detail-img-b" id="detail-img-b${product.productID}"
+                onclick="showPartDetail(${product.productID}, 1)">
+                  Hình ảnh
+                </button>
+
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} tien-ich-b" id="tien-ich-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 2)">
+                Tiện ích
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} diem-don-tra-b" id="diem-don-tra-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 3)">
+                Điểm đón trả
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} chinh-sach-b" id="chinh-sach-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 4)"> Chính sách </button>
+            </li>
+            <li>
+              <button class="menu-detail${product.productID} review-b" id="review-b${product.productID}"
+              onclick="showPartDetail(${product.productID}, 5)"> Thông tin </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="five-info" id="five-info">
+          <!--Hinh anh-->
+          <div class="part-detail${product.productID} detai-img" id="detai-img${product.productID}">
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <div class="sub-img">
+              <img src="/img/Picture1.png" alt="" />
+              <img src="@{/img/Picture1.png" alt="" />
+              <img src="/img/Picture1.png" alt="" />
+            </div>
+          </div>
+          <!--Diem don tra-->
+          <div class="part-detail${product.productID} diem-don-tra" id="diem-don-tra${product.productID}">
+            <div class="luu-y">
+              <h3>Lưu ý</h3>
+              <p>
+                Các mốc thời gian đón trả bên dưới là thời gian dự kiến. <br />
+                Lịch này có thể thay đổi tùy tình hình thực tế
+              </p>
+            </div>
+
+            <div id="stopList${product.productID}">
+
+            </div>
+<!--            <div class="diem-don">-->
+<!--              <h3>Điểm đón</h3>-->
+<!--              <p>15:30 - Văn phòng Mỹ Đình</p>-->
+<!--            </div>-->
+<!--            <div class="diem-tra">-->
+<!--              <h3>Điểm trả</h3>-->
+<!--              <p>17:35 Bến xe Thượng Lý</p>-->
+<!--            </div>-->
+          </div>
+          <!--Tien ich-->
+          <div class="part-detail${product.productID} tien-ich" id="tien-ich${product.productID}">
+            <ul class="list-tien-ich">
+            <h3>Tiện ích</h3>
+            ${product.tienIch}
+            </ul>
+          </div>
+          <!--Chinh sach -->
+          <div class="part-detail${product.productID} chinh-sach" id="chinh-sach${product.productID}">
+<!--            <h3>Chính sách nhà xe</h3>-->
+            ${product.policy}
+          </div>
+          <!--Review-->
+          <div class="part-detail${product.productID} review" id="review${product.productID}">
+<!--          <h3>Mô tả</h3>-->
+             ${product.description}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form class="frmDatVe p-4 rounded-1 m-auto"
+            action="/api/v1/user/${product.productID}/order"
+            method="post" id="frmDatVe${product.productID}"
+            object="orderRequest"
+    >
+      <h3 class="text-center">Đặt vé</h3>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Tên vé:</p>
+        <div class="col-sm-9">
+          <p class="">${product.productName}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Nhà Xe:</p>
+        <div class="col-sm-9">
+          <p class="">${product.storeName}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Giá vé:</p>
+        <div class="col-sm-9">
+          <p class="">${product.price}đ</p>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="pickUpAddress" class="col-sm-3 col-form-label">Điểm đón:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="pickUpAddress" name="pickUpAddress"
+          placeholder="Điểm đón" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="destinationAddress" class="col-sm-3 col-form-label">Điểm đến:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="destinationAddress" name="destinationAddress"
+          placeholder="Điểm đến" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="pickTime" class="col-sm-3 col-form-label">Thời gian đón:</label>
+        <div class="col-sm-9">
+          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"
+          required autofocus="autofocus"
+          />
+<!--          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"-->
+<!--       pattern="yyyy-MM-ddThh:mm" required autofocus="autofocus" />-->
+
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="message" class="col-sm-3 col-form-label">Lời nhắn:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" id="message" name="message" rows="3" ></textarea>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="phoneNumber" class="col-sm-3 col-form-label">
+            Số điện thoại:
+        </label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
+          placeholder="Số điện thoại" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="quantity" class="col-sm-3 col-form-label">Số lượng vé:</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="quantity" name="quantity"
+          placeholder="Số lượng vé" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-sm-6 offset-sm-3">
+          <button type="submit" class="btn btn-primary">Đặt vé</button>
+          <button type="button" class="btn btn-secondary" onclick="dismissForm(${product.productID})">
+            Hủy
+          </button>
+        </div>
+      </div>
+    </form>
+
+`;
+
+                            productListDiv.appendChild(productDiv);
+
+                            const stopListDiv = document.getElementById(`stopList${product.productID}`);
+                            if (product.stopList && product.stopList.length > 0) {
+                                const ul = document.createElement('ul');
+                                product.stopList.forEach(function (stop) {
+                                    const li = document.createElement('li');
+                                    li.innerHTML =
+                                        displayValue(stop.stopTime) +
+                                        ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                                    if (displayValue(stop.rightNow) == true) {
+                                        li.style.color = 'green';
+                                    }
+                                    ul.appendChild(li);
+                                });
+                                stopListDiv.appendChild(ul);
+                            }
+
+                            const noticeListDiv = document.getElementById(`noticeList${product.productID}`);
+
+                            if (product.noticeList && product.noticeList.length > 0) {
+                                const noticeListChild = document.createElement('div');
+                                noticeListChild.classList.add('notice-list-child');
+                                // Lấy 3 notice cuối cùng
+                                const lastThreeNotices = product.noticeList.slice(-3);
+
+                                lastThreeNotices.forEach(function (notice) {
+                                    const noticeDiv = document.createElement('div');
+                                    noticeDiv.classList.add('notice-div');
+                                    var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+                                    const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+                                    noticeDiv.innerHTML = `
+                                        <h6>${notice.title}</h6>
+                                        <p>Nội dung: ${notice.content}</p>
+                                        <div class="d-flex" style="justify-content: space-between;">
+                                            <p>${status}</p>
+                                            <p>Cập nhật lúc: ${formattedLastUpdate}</p>
+                                        </div>
+
+
+                                    `;
+                                    noticeListChild.appendChild(noticeDiv);
+                                });
+                                noticeListDiv.appendChild(noticeListChild);
+                            }
+
+
+
+
+
+                        });
+                    } else {
+                        // Xử lý trường hợp không có sản phẩm
+                    }
+                } else {
+                    // Xử lý lỗi khi nhận được một phản hồi không phải 200 OK
+                }
+            }
+        };
+        xhr.send();
+    </script>
+
+
+    <script>
+        // Hàm để hiển thị thẻ chứa noticeList
+        function showNoticeList(id) {
+            document.getElementById('noticeList' + id).style.display = 'block';
+        }
+
+        // Hàm để ẩn thẻ chứa noticeList
+        function hideNoticeList(id) {
+            document.getElementById('noticeList' + id).style.display = 'none';
+        }
+    </script>
+
+<!--Xử lý ẩn thông tin chi tiết của tất cả sản phẩm và hiện khi ấn vào-->
+<script>
+    // Hàm JavaScript để hiển thị thông tin chi tiết của sản phẩm khi click
+    function showProductDetail(productId) {
+        // Ẩn tất cả các chi tiết sản phẩm
+        // hideAllProductDetails();
+
+        // Hiển thị chi tiết của sản phẩm được click
+        const productDetailDiv = document.getElementById('productDetail' + productId);
+        if (productDetailDiv.style.display === 'none' || productDetailDiv.style.display === '') {
+            productDetailDiv.style.display = 'block';
+        }
+        else {
+            productDetailDiv.style.display = 'none';
+        }
+
+        const arrow_icon = document.getElementById('arrow-icon'+ productId);
+        //xoay mũi tên
+        if (arrow_icon.style.transform === 'rotate(0deg)') {
+            arrow_icon.style.transform = 'rotate(180deg)';
+        }
+        else {
+            arrow_icon.style.transform = 'rotate(0deg)';
+        }
+    }
+
+
+    // Hàm JavaScript để ẩn tất cả các chi tiết sản phẩm
+    function hideAllProductDetails() {
+        const productDetails = document.querySelectorAll('[id^="productDetail"]');
+        productDetails.forEach(function (detail) {
+            detail.style.display = 'none';
+        });
+
+
+    }
+</script>
+
+<!--Chuyển đổi giữa các tab menu chi tiet-->
+<script>
+    function showPartDetail(productId, typeDetail) {
+        const partDetails = document.querySelectorAll('.part-detail'+ productId);
+        partDetails.forEach(function (partDetail) {
+            partDetail.style.display = 'none';
+        });
+
+        const menuDetails = document.querySelectorAll('.menu-detail'+ productId);
+        menuDetails.forEach(function (menuDetail) {
+            menuDetail.style.color = 'black';
+        });
+
+        if (typeDetail === 1) {
+            const detailImgElement = document.getElementById('detai-img' + productId);
+            const menuImgElement = document.getElementById('detail-img-b' + productId);
+            //displayAndChangeColor(detailImgElement, menuImgElement);
+            menuImgElement.style.color = '#2474E5';
+            detailImgElement.style.display = 'flex';
+        }
+        else if (typeDetail === 2) {
+            const detailTienIchElement = document.getElementById('tien-ich' + productId);
+            const menuTienIchElement = document.getElementById('tien-ich-b' + productId);
+            displayAndChangeColor(detailTienIchElement, menuTienIchElement);
+        }
+        else if (typeDetail === 3) {
+            const detailDiemDonTraElement = document.getElementById('diem-don-tra' + productId);
+            const menuDiemDonTraElement = document.getElementById('diem-don-tra-b' + productId);
+            displayAndChangeColor(detailDiemDonTraElement, menuDiemDonTraElement);
+        }
+        else if (typeDetail === 4) {
+            const detailChinhSachElement = document.getElementById('chinh-sach' + productId);
+            const menuChinhSachElement = document.getElementById('chinh-sach-b' + productId);
+            displayAndChangeColor(detailChinhSachElement, menuChinhSachElement);
+        }
+        else if (typeDetail === 5) {
+            const detailReviewElement = document.getElementById('review' + productId);
+            const menuReviewElement = document.getElementById('review-b' + productId);
+            displayAndChangeColor(detailReviewElement, menuReviewElement);
+        }
+    }
+
+    function displayAndChangeColor(detail, menu) {
+        menu.style.color = '#2474E5';
+        detail.style.display = 'block';
+    }
+
+</script>
+
+<!--Ẩn/hiện order form-->
+<script>
+    function showOrderForm(productId) {
+        hideAllOrderForm();
+        const clickedForm = document.getElementById('frmDatVe' + productId);
+        clickedForm.style.display = 'block';
+    }
+
+    function hideAllOrderForm() {
+        const orderForms = document.querySelectorAll('.frmDatVe');
+        orderForms.forEach(function (orderForm) {
+            orderForm.style.display = 'none';
+        });
+    }
+
+    function dismissForm(productId) {
+        // Get the form element
+        var formDatVe = document.getElementById('frmDatVe' + productId);
+        // Change the display property of the form to none
+        formDatVe.style.display = "none";
+    }
+
+</script>
+
+</body>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</html>
+
+

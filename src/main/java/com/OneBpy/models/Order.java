@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
-import java.sql.Time;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -16,11 +16,12 @@ public class Order {
     @Column(name = "order_id")
     private Long orderID;
     private String pickUpAddress;
-    private String detinationAddress;
-    private Time pickTime;
+    private String destinationAddress;
+    private LocalDateTime pickTime;
     private String message;
     private int quantity;
     private String phoneNumber;
+    private int price;
     private int totalPrice;
     private String orderStatus;
     private Date createdAt;
@@ -39,5 +40,4 @@ public class Order {
     protected void onCreate() {
         createdAt = new java.util.Date();
     }
-
 }

@@ -1,101 +1,86 @@
 package com.OneBpy.controller.webController;
 
-import com.OneBpy.dtos.AddProductRequest;
-import com.OneBpy.dtos.AddStopRequest;
-import com.OneBpy.dtos.EditStore;
-import com.OneBpy.models.Product;
-import com.OneBpy.models.ResponseObject;
-import com.OneBpy.models.Stop;
-import com.OneBpy.models.Store;
+//import ch.qos.logback.core.model.Model;
+import com.OneBpy.dtos.*;
+import com.OneBpy.models.*;
 import com.OneBpy.repositories.*;
+import com.OneBpy.services.OrderDto;
 import com.OneBpy.services.SellerService;
 import com.OneBpy.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/v1/seller")
+@RequestMapping("/management")
+@Controller
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class SellerController {
     private final UserService userService;
     private final SellerService sellerService;
+    private final OrderRepository orderRepository;
 
-    //Get store info (active)
-    @GetMapping("/my-store")
-    Store getStore() {
-        return ((userService.getCurrentUser().getStore()));
+
+    //Excepted order
+//    @PostMapping("/my-store/{order_id}/except")
+//    public String except(@PathVariable("order_id") Long order_id, @ModelAttribute OrderRequest orderRequest) {
+//        sellerService.exceptedOrder(order_id, orderRequest);
+//                return "redirect:/management";
+//    }
+
+    // Xac nhan don hang
+    @PostMapping("/my-store/{order_id}/except")
+    public String except(@PathVariable("order_id") Long order_id, @ModelAttribute UpdatedOrder updatedOrder) {
+        sellerService.exceptedOrder(order_id, updatedOrder);
+        return "redirect:/management-order";
     }
 
-    //Edit store (active)
-    @PutMapping("/my-store/edit")
-    public ResponseEntity<ResponseObject> editStore(@RequestBody EditStore editStore) {
-        Store editedStore = sellerService.editStore(editStore);
-        return ResponseEntity.ok(new ResponseObject("ok", "Edit Store successfully", editedStore));
-    }
-
-    //Get product list (active)
-    @GetMapping("/my-store/all-product")
-    List<Product> getAllProduct(){
-        return ((userService.getCurrentUser().getStore()).getProductList());
-    }
-
-    //Product details (active)
-    @GetMapping("/my-store/{product_id}")
-    ResponseEntity<Product> productDetails(@PathVariable("product_id") Long product_id) {
-        return ResponseEntity.ok(sellerService.getProductDetails(product_id));
-    }
-
-    //Add a product (active)
+//    Thêm sản phẩm
     @PostMapping("/my-store/add-product")
-    ResponseEntity<Product> addProduct(@RequestBody AddProductRequest addProductRequest) {
-        return ResponseEntity.ok(sellerService.addProduct(addProductRequest));
+    public String addProduct(@ModelAttribute ProductDTO productDTO) {
+        sellerService.addProduct(productDTO);
+        return "redirect:/management";
     }
 
-    //Update product (active)
-    @PutMapping("/my-store/{product_id}/update-product")
-    ResponseEntity<Product> updateProduct(@RequestBody AddProductRequest addProductRequest,
-                                          @PathVariable("product_id") Long product_id) {
-        return ResponseEntity.ok(sellerService.updateProduct(addProductRequest, product_id));
+    //Cập nhật sản phẩm
+    @PostMapping("/my-store/{product_id}/update-product")
+    public String updateProduct(@PathVariable("product_id") Long product_id,
+                                @ModelAttribute ProductDTO productDTO) {
+        sellerService.updateProduct(productDTO, product_id);
+        return "redirect:/management";
     }
 
-    //Get stop list (active)
-    @GetMapping("/my-store/{product_id}/stop-list")
-    ResponseEntity<List<Stop>> getStopList(@PathVariable("product_id") Long product_id) {
-        return ResponseEntity.ok(sellerService.getStopList(product_id));
-    }
-    //Add a stop (active)
-    @PostMapping("/my-store/{product_id}/update-product/add-stop")
-    ResponseEntity<Stop> addStop(@RequestBody AddStopRequest addStopRequest,
-                                 @PathVariable("product_id") Long product_id) {
-      return ResponseEntity.ok(sellerService.addStop(addStopRequest, product_id));
+    // Ẩn hiện sản phẩm
+    @PostMapping("/{product_id}/display-status")
+    public String hideP(@PathVariable("product_id") Long product_id,
+                        @ModelAttribute HideShowProduct hideShowProduct) {
+        sellerService.displayStatus(product_id, hideShowProduct);
+        return "redirect:/management";
     }
 
-    //Update stop (active)
-    @PutMapping("/my-store/{product_id}/update-product/{stop_id}")
-    ResponseEntity<Stop> updateStop(@RequestBody AddStopRequest addStopRequest,
-                                    @PathVariable("stop_id") Long stop_id, @PathVariable Long product_id) {
-        return ResponseEntity.ok(sellerService.updateStop(addStopRequest, stop_id));
+    //Xóa mềm một sản phẩm
+    @PostMapping("/{product_id}/remove")
+    public String softRemoveProduct(@PathVariable("product_id") Long product_id,
+                                                     @ModelAttribute RemoveProductDTO removeProductDTO) {
+        sellerService.softRemoveProduct(product_id, removeProductDTO);
+        return "redirect:/management";
     }
 
-    //Delete stop (active)
-    @DeleteMapping("/my-store/{product_id}/update-product/{stop_id}")
-    ResponseEntity<ResponseObject> deleteStop(@PathVariable("stop_id") Long stop_id, @PathVariable Long product_id)
-    {
-        Boolean isSuccess = sellerService.deleteStop(stop_id);
-        if (isSuccess) {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObject("ok", "Delete stop has " + stop_id + " Successfully", ""));
-
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObject("failed", "Cannot find stop " + stop_id + " to delete", ""));
+    //Thêm thông báo
+    @PostMapping("/my-store/create-notice")
+    public String createNotice(@ModelAttribute CreateNoticeDTO noticeDTO) {
+        sellerService.createNotice(noticeDTO);
+        return "redirect:/management-notice";
     }
 
-
-
+    // Cập nhật thông báo
+    @PostMapping("/my-store/update-notice")
+    public String updateNotice(@ModelAttribute UpdateNoticeDTO noticeDTO) {
+        sellerService.updateNotice(noticeDTO);
+        return "redirect:/management-notice";
+    }
 }

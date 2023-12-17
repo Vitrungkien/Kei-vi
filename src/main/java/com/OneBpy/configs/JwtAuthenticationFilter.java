@@ -5,6 +5,7 @@ import com.OneBpy.services.UserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +30,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
 
-        if (StringUtils.isEmpty(authHeader)
-                || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, "Bearer ")) {
+        final Cookie[] cookies = request.getCookies();
+        String jwt = null;
+        String userEmail = null;
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("Authorization".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (StringUtils.isEmpty(jwt)) {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
+
+
         userEmail = jwtService.extractUserName(jwt);
 
         if (StringUtils.isNotEmpty(userEmail) && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -60,3 +71,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
+//        final String authHeader = request.getHeader("Authorization");
+//        final String jwt;
+//        final String userEmail;
+//
+//        if (StringUtils.isEmpty(authHeader)
+//                || !org.apache.commons.lang3.StringUtils.startsWith(authHeader, "Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//        jwt = authHeader.substring(7);

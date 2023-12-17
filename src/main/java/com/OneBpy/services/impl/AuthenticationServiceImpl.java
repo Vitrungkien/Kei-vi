@@ -12,18 +12,14 @@ import com.OneBpy.repositories.UserRepository;
 import com.OneBpy.services.AuthenticationService;
 import com.OneBpy.services.JWTService;
 import com.OneBpy.services.SellerService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 
 @Service
@@ -38,11 +34,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final SellerService sellerService;
 
     public User signUp(SignUpRequest signUpRequest) {
-        return saveUser(signUpRequest, Role.USER);
+        return saveUser(signUpRequest, Role.ROLE_USER);
     }
 
     public User signUpSeller(SignUpRequest signUpRequest) {
-        User newSeller = saveUser(signUpRequest, Role.SELLER);
+        User newSeller = saveUser(signUpRequest, Role.ROLE_SELLER);
         Store newStore = sellerService.creatStore(newSeller);
         newStore.setUser(userRepository.save(newSeller));
         storeRepository.save(newStore);
@@ -60,7 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse signIn(SignInRequest signInRequest) {
+    public JwtAuthenticationResponse logIn(SignInRequest signInRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(),
                     signInRequest.getPassword()));

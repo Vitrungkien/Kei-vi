@@ -4,12 +4,35 @@
     <meta charset="UTF-8">
     <title>Vikcorp</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
 </head>
 <body>
     <h1>Start my Kingdom</h1>
     <input type="text" id="searchInput" placeholder="Tìm kiếm ...">
     <a sec:isAuthenticated() th:href="@{/logout}" class="login-tag">Logout</a>
     Wellcome <span sec:authentication="principal.username"></span>
+
+    <div th:text="${#authentication.getPrincipal().lastName}">
+        Xin chào
+    </div>
+
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <!-- Hiển thị nội dung cho người dùng có vai trò ROLE_ADMIN -->
+        <p>User has ROLE_ADMIN</p>
+    </div>
+    <div th:if="${#authorization.expression('hasRole(''ROLE_SELLER'')')}">
+        <!-- Hiển thị nội dung cho người dùng có vai trò ROLE_ADMIN -->
+        <p>User has ROLE_SELLER</p>
+    </div>
+
+    <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
+        <!-- Hiển thị nội dung cho người dùng có vai trò ROLE_USER -->
+        <p>User has ROLE_USER</p>
+    </div>
+
+    <a th:href="@{/management}">Quản lý sản phẩm</a>
+    <a th:href="@{/main}">Trang chủ</a>
+
     <table id="userTable">
       <tr>
         <th>ID</th>

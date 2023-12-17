@@ -1,0 +1,90 @@
+
+body {
+    margin: 0;
+}
+
+
+.container {
+
+}
+button {
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.add {
+    background-color: #04AA6D;
+    color: #fff
+}
+.search-btn {
+    background-color: #FFD333;
+    color: black;
+    width: 60px;
+}
+.update {
+    background-color: #2474E5;
+    color: #fff;
+}
+
+.duong-dan {
+    background-color: rgb(64, 176, 112);
+}
+.duong-dan .duong-dan-list {
+    display: flex;
+    list-style: none;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.duong-dan .duong-dan-list a{
+    text-decoration: none;
+}
+
+
+
+.tim-sp {
+    padding: 10px;
+}
+
+
+.quan-ly-sp {
+    /* background-color: #ccc; */
+}
+.quan-ly-sp .table-sp {
+    padding: 10px;
+}
+
+.them-sua-sp {
+    padding: 10px;
+}
+
+.quan-ly-sp .delete {
+    background-color: red;
+    color: #fff;
+}
+
+
+table img {
+    width: 56px;
+    height: 42px;
+}
+th {
+    background-color: antiquewhite;
+    padding: 5px;
+}
+td {
+    /*background-color: aliceblue;*/
+    padding: 5px;
+}
+table, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table {
+    padding-bottom: 2000px;
+}
+
+

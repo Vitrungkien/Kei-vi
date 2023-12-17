@@ -46,6 +46,7 @@ public class User implements UserDetails {
         createdAt = new Date();
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
