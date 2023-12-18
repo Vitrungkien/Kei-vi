@@ -8,14 +8,14 @@ import com.OneBpy.models.Order;
 import com.OneBpy.models.Product;
 import com.OneBpy.models.Stop;
 import com.OneBpy.repositories.ProductRepository;
+import com.OneBpy.response.SearchForm;
 import com.OneBpy.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -33,39 +33,27 @@ public class HomeController {
     @GetMapping("/all-product")
     List<PDTO> getAllProduct(){
         List<Product> productList =  productRepository.findAllActiveProducts();
-        List<PDTO> pdtos = new ArrayList<>();
-        for (Product product : productList) {
-             Long productID = product.getProductID();
-             String productName = product.getProductName();
-             String productImage = product.getProductImage();
-             int remainSeat = product.getRemainSeat();
-             boolean display = product.isDisplay();
-             String bienSoXe = product.getBienSoXe();
-             String phoneNumber = product.getPhoneNumber();
-             String phoneNumber2 = product.getPhoneNumber2();
-             String description = product.getDescription();
-             String policy = product.getPolicy();
-             String tienIch = product.getTienIch();
-             String type = product.getType();
-             int price = product.getPrice();
-             LocalTime startTime = product.getStartTime();
-             LocalTime endTime = product.getEndTime();
-             String startAddress = product.getStartAddress();
-             String endAddress = product.getEndAddress();
-             boolean deleted = product.isDeleted();
-             Date lastUpdate = product.getLastUpdate();
-             Date createdAt = product.getCreatedAt();
-             List<Stop> stopList = product.getStopList();
-             List<Notice> noticeList = product.getNoticeList();
-             List<Order> orderList = product.getOrderList();
-             String storeName = product.getStore().getStoreName();
-             pdtos.add(new PDTO(productID, productName, productImage, remainSeat, display,
-                     bienSoXe, phoneNumber, phoneNumber2, description, policy, tienIch, type, price,
-                     startTime, endTime, startAddress, endAddress, deleted, lastUpdate, createdAt, stopList,
-                     noticeList, orderList, storeName));
-        }
-        return pdtos;
+        return userService.getAllProduct(productList);
     }
+
+
+//    @GetMapping("/search")
+//    public ResponseEntity<List<PDTO>> searchProducts(
+//            @RequestParam("startTime1") LocalTime startTime1,
+//            @RequestParam("startAddress") String startAddress,
+//            @RequestParam("endAddress") String endAddress) {
+//
+//        LocalTime startTime2 = startTime1.plusHours(1);
+////        LocalTime endTime = startTime2;
+//        try {
+//            List<Product> products = productRepository.findProductsByTimeAndAddress(startTime1, startTime2, startAddress, endAddress);
+//            List<PDTO> pdtoList = userService.getAllProduct(products);
+//            return new ResponseEntity<>(pdtoList, HttpStatus.OK);
+//        } catch (Exception e) {
+//            // Xử lý lỗi nếu có
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 

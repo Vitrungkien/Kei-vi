@@ -1,10 +1,12 @@
 package com.OneBpy.controller.webController;
 
+import com.OneBpy.dtos.PDTO;
 import com.OneBpy.dtos.ProductDTO;
 import com.OneBpy.models.Product;
 import com.OneBpy.repositories.ProductRepository;
 import com.OneBpy.repositories.StopRepository;
 import com.OneBpy.repositories.StoreRepository;
+import com.OneBpy.response.SearchForm;
 import com.OneBpy.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalTime;
 import java.util.List;
 @Controller
 @RequiredArgsConstructor
@@ -26,7 +29,8 @@ public class WebController {
     private final StoreRepository storeRepository;
     private final UserService userService;
     @GetMapping("/")
-    public String Home() {
+    public String Home(Model model) {
+        model.addAttribute("searchForm", new SearchForm());
         return "main";
     }
 
@@ -95,20 +99,21 @@ public class WebController {
 //        return "main";
 //    }
 
+    @GetMapping("/search-form")
+    public String showSearchForm(Model model) {
+        model.addAttribute("searchForm", new SearchForm());
+        return "search";
+    }
+
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProducts(
-            @RequestParam("startTime") String startTime,
-            @RequestParam("endTime") String endTime,
-            @RequestParam("startAddress") String startAddress,
-            @RequestParam("endAddress") String endAddress) {
-
-        try {
-            List<Product> products = productRepository.findProductsByTimeAndAddress(startTime, endTime, startAddress, endAddress);
-
-            return new ResponseEntity<>(products, HttpStatus.OK);
-        } catch (Exception e) {
-            // Xử lý lỗi nếu có
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public String searchProducts(@ModelAttribute("searchForm") SearchForm searchForm, Model model) {
+        LocalTime startTime2 = searchForm.getStartTime1().plusHours(1);
+        List<Product> productList = productRepository.findProductsByTimeAndAddress(
+                searchForm.getStartTime1(), startTime2,
+                searchForm.getStartAddress(), searchForm.getEndAddress()
+        );
+        List<PDTO> products = userService.getAllProduct(productList);
+        model.addAttribute("products", products);
+        return "search";
     }
 }

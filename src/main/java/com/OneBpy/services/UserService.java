@@ -1,6 +1,7 @@
 package com.OneBpy.services;
 
 import com.OneBpy.dtos.OrderRequest;
+import com.OneBpy.dtos.PDTO;
 import com.OneBpy.models.Order;
 import com.OneBpy.models.Product;
 import com.OneBpy.models.User;
@@ -24,4 +25,6 @@ public interface UserService {
     //List<Product> findProductsByTimeAndAddress(String startTime, String endTime, String address);
 
 //    Page<Product> getAllProducts(int pageNo, int pageSize);
+
+    List<PDTO> getAllProduct(List<Product> productList);
 }

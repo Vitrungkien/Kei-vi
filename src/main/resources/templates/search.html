@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -62,54 +62,54 @@
     <title>Đặt xe ghép</title>
 </head>
 <body>
-    <div class="header">
-        <div class="left-menu">
-            <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>
-        </div>
-            <ul class="right-menu">
-                <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
-                <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
-                <li class="main-menu">
-                    <a class="main-menu-a" href="">Thuê xe</a>
-                    <ul class="sub-main-menu">
-                        <li>Hợp đồng du lịch</li>
-                        <li>Thuê xe tự lái</li>
-                    </ul>
-                </li>
-                <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
-                <li class="main-menu">
-                    <a class="main-menu-a" href="">Tin tức</a>
-                    <ul class="sub-main-menu">
-                        <li>Thông báo nghỉ tết</li>
-                        <li>Thông báo bảo trì 30/12</li>
-                    </ul>
-                </li>
-                <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
-                    <a class="main-menu-a" href="" >Tôi</a>
-                    <ul class="sub-main-menu sub-main-menu-toi">
-                        <li><a th:href="@{/profile}">My Profile</a></li>
-                        <div id="management" class="some-element"
-                             th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
-                            <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
-                        </div>
-                        <li>Quản lý đơn hàng</li>
-                        <li><a>Giỏ hàng</a></li>
-                        <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
-                    </ul>
-                </li>
-
-                <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
-                    <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
-                </li>
-            </ul>
+<div class="header">
+    <div class="left-menu">
+        <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>
     </div>
+    <ul class="right-menu">
+        <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
+        <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
+        <li class="main-menu">
+            <a class="main-menu-a" href="">Thuê xe</a>
+            <ul class="sub-main-menu">
+                <li>Hợp đồng du lịch</li>
+                <li>Thuê xe tự lái</li>
+            </ul>
+        </li>
+        <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
+        <li class="main-menu">
+            <a class="main-menu-a" href="">Tin tức</a>
+            <ul class="sub-main-menu">
+                <li>Thông báo nghỉ tết</li>
+                <li>Thông báo bảo trì 30/12</li>
+            </ul>
+        </li>
+        <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+            <a class="main-menu-a" href="" >Tôi</a>
+            <ul class="sub-main-menu sub-main-menu-toi">
+                <li><a th:href="@{/profile}">My Profile</a></li>
+                <div id="management" class="some-element"
+                     th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+                    <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+                </div>
+                <li>Quản lý đơn hàng</li>
+                <li><a>Giỏ hàng</a></li>
+                <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
+            </ul>
+        </li>
 
-    <div class="container">
+        <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+            <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
+        </li>
+    </ul>
+</div>
 
-        <div class="search-form">
+<div class="container">
 
-            <div class="search-input">
-                <form th:action="@{/search}" th:object="${searchForm}" method="get" class="searchFrm">
+    <div class="search-form">
+
+        <div class="search-input">
+            <form th:action="@{/search}" th:object="${searchForm}" method="get" class="searchFrm">
                 <div class="input-box">
                     <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
                     <div class="input-and-label">
@@ -133,184 +133,184 @@
                 </div>
 
                 <div class="search-button">
-                        <button type="submit">Tìm kiếm</button>
+                    <button type="submit">Tìm kiếm</button>
                 </div>
 
+            </form>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="filter-and-list-product">
+        <div class="left-body">
+            <div class="sap-xep">
+                <h3>Sắp xếp</h3>
+                <form>
+                    <p><input type="radio" name="sort" id="gio-som-nhat">Giờ sớm nhất</p>
+                    <p><input type="radio" name="sort" id="gio-muon-nhat">Giờ muộn nhất</p>
+                    <p><input type="radio" name="sort" id="gia-tang-dan">Giá tăng dần</p>
+                    <p><input type="radio" name="sort" id="gia-giam-dan">Giá giảm dần</p>
                 </form>
             </div>
 
+            <div class="filter-form">
+                <div class="filter-title">
+                    <h3>Lọc</h3>
+                    <p>Xoá lọc</p>
+                </div>
+                <div class="loc-thoi-gian">
+                    <h4>Giờ đi</h4>
+                    <div class="nut-loc-thoi-gian">
+                        <button>
+                            <p>Sáng sớm</p>
+                            <p>00:00 - 6:00</p>
+                        </button>
+                        <button>
+                            <p>Sáng</p>
+                            <p>6:00 - 12:00</p>
+                        </button>
+                        <button>
+                            <p>Chiều </p>
+                            <p>12:01 - 18:00</p>
+                        </button>
+                        <button>
+                            <p>Tối (183)</p>
+                            <p>18:01 - 23:59</p>
+                        </button>
+                    </div>
+                </div>
 
-
-        </div>
-
-
-        <div class="filter-and-list-product">
-            <div class="left-body">
-                <div class="sap-xep">
-                    <h3>Sắp xếp</h3>
+                <div class="loc-nha-xe">
+                    <h4>Nhà xe</h4>
+                    <input type="text" placeholder="Tìm trong sanh sách">
                     <form>
-                        <p><input type="radio" name="sort" id="gio-som-nhat">Giờ sớm nhất</p>
-                        <p><input type="radio" name="sort" id="gio-muon-nhat">Giờ muộn nhất</p>
-                        <p><input type="radio" name="sort" id="gia-tang-dan">Giá tăng dần</p>
-                        <p><input type="radio" name="sort" id="gia-giam-dan">Giá giảm dần</p>
+                        <p><input type="checkbox" name="" >Hoa Huệ</p>
+                        <p><input type="checkbox" name="" >Mạnh Hà</p>
+                        <p><input type="checkbox" name="" >Bông Khoai</p>
+                        <p><input type="checkbox" name="" >Thùy Linh</p>
+
                     </form>
                 </div>
-        
-                <div class="filter-form">
-                    <div class="filter-title">
-                        <h3>Lọc</h3>
-                        <p>Xoá lọc</p>
-                    </div>
-                    <div class="loc-thoi-gian">
-                        <h4>Giờ đi</h4>
-                        <div class="nut-loc-thoi-gian">
-                            <button>
-                                <p>Sáng sớm</p>
-                                <p>00:00 - 6:00</p>
-                            </button>
-                            <button>
-                                <p>Sáng</p>
-                                <p>6:00 - 12:00</p>
-                            </button>
-                            <button>
-                                <p>Chiều </p>
-                                <p>12:01 - 18:00</p>
-                            </button>
-                            <button>
-                                <p>Tối (183)</p>
-                                <p>18:01 - 23:59</p>
-                            </button>
-                        </div>
-                    </div>
-        
-                    <div class="loc-nha-xe">
-                        <h4>Nhà xe</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <form>
-                            <p><input type="checkbox" name="" >Hoa Huệ</p>
-                            <p><input type="checkbox" name="" >Mạnh Hà</p>
-                            <p><input type="checkbox" name="" >Bông Khoai</p>
-                            <p><input type="checkbox" name="" >Thùy Linh</p>
 
-                        </form>
-                    </div>
-        
-                    <div class="loc-diem-don"></div>
-                        <h4>Điểm đón</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <p><input type="checkbox" name="" >Tp.Lạng Sơn</p>
-                        <p><input type="checkbox" name="" >Thất Khê</p>
-                        <p><input type="checkbox" name="" >Lộc Bình</p>
-                        <p><input type="checkbox" name="" >Na Dương</p>
-                        <p><input type="checkbox" name="" >Hữu Lũng</p>
-        
-                    <div class="loc-diem-tra"></div>
-                        <h4>Điểm trả</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <p><input type="checkbox" name="" >Bến Mỹ Đình</p>
-                        <p><input type="checkbox" name="" >Bến Yên Nghĩa</p>
-                        <p><input type="checkbox" name="" >Bến Giáp Bát</p>
-                        <p><input type="checkbox" name="" >Bến Gia Lâm</p>
-                        <p><input type="checkbox" name="" >Bến Nước Ngầm</p>
-        
-                    <div class="loc-loai-xe">
-                        <h4>Loại Xe</h4>
-                        <span><input type="checkbox" name="" >Merc</span>
-                        <span><input type="checkbox" name="" >Ford</span>
-                    </div>
-                </div>          
-            </div>
-            <div class="right-body">
-                <h2>Product List</h2>
+                <div class="loc-diem-don"></div>
+                <h4>Điểm đón</h4>
+                <input type="text" placeholder="Tìm trong sanh sách">
+                <p><input type="checkbox" name="" >Tp.Lạng Sơn</p>
+                <p><input type="checkbox" name="" >Thất Khê</p>
+                <p><input type="checkbox" name="" >Lộc Bình</p>
+                <p><input type="checkbox" name="" >Na Dương</p>
+                <p><input type="checkbox" name="" >Hữu Lũng</p>
 
-                <div id="productList">
-                    <!-- Placeholder for product list -->
+                <div class="loc-diem-tra"></div>
+                <h4>Điểm trả</h4>
+                <input type="text" placeholder="Tìm trong sanh sách">
+                <p><input type="checkbox" name="" >Bến Mỹ Đình</p>
+                <p><input type="checkbox" name="" >Bến Yên Nghĩa</p>
+                <p><input type="checkbox" name="" >Bến Giáp Bát</p>
+                <p><input type="checkbox" name="" >Bến Gia Lâm</p>
+                <p><input type="checkbox" name="" >Bến Nước Ngầm</p>
+
+                <div class="loc-loai-xe">
+                    <h4>Loại Xe</h4>
+                    <span><input type="checkbox" name="" >Merc</span>
+                    <span><input type="checkbox" name="" >Ford</span>
                 </div>
-
-                <div id="pagination" style="text-align: center;">
-<!--                    <a id="preP">Trang trước</a>-->
-<!--                    <a id="curP"></a>-->
-<!--                    <a id="aftP">Trang sau</a>-->
-                </div>
-
             </div>
         </div>
-    </div>
+        <div class="right-body">
+            <h2>Product List</h2>
 
-    <!-- footer -->
-    <div class="footer"></div>
+            <div id="productList">
+                <!-- Placeholder for product list -->
+            </div>
+
+            <div id="pagination" style="text-align: center;">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- footer -->
+<div class="footer"></div>
 
 <!--Logout click-->
-    <script>
-        // Gán sự kiện click cho thẻ button
-        document.getElementById('logoutButton').addEventListener('click', function () {
-            // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
-            fetch('/logout', {
-                method: 'POST',
-                credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+<script>
+    // Gán sự kiện click cho thẻ button
+    document.getElementById('logoutButton').addEventListener('click', function () {
+        // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                    window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+                } else {
+                    console.error('Logout failed:', response.status);
+                }
             })
-                .then(response => {
-                    if (response.ok) {
-                        // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
-                        window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
-                    } else {
-                        console.error('Logout failed:', response.status);
-                    }
-                })
-                .catch(error => console.error('Error during logout:', error));
-        });
-    </script>
+            .catch(error => console.error('Error during logout:', error));
+    });
+</script>
 
 <!--Handle render Ui for Guest-->
-    <script>
-        // Kiểm tra xem có cookie có tên "Authorization" hay không
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-        }
+<script>
+    // Kiểm tra xem có cookie có tên "Authorization" hay không
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
 
-        // Lấy giá trị của cookie "Authorization"
-        const authToken = getCookie('Authorization');
+    // Lấy giá trị của cookie "Authorization"
+    const authToken = getCookie('Authorization');
 
-        // Lấy phần tử cần ẩn
-        const meElement = document.getElementById('me');
-        const loginElement = document.getElementById('login');
+    // Lấy phần tử cần ẩn
+    const meElement = document.getElementById('me');
+    const loginElement = document.getElementById('login');
 
-        // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
-        if (!authToken) {
-            meElement.style.display = 'none'; // Ẩn phần tử
-            loginElement.style.display = 'block'
+    // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
+    if (!authToken) {
+        meElement.style.display = 'none'; // Ẩn phần tử
+        loginElement.style.display = 'block'
 
-        }
-    </script>
+    }
+</script>
 
 
-    <!--Lấy ra tất cả sản phẩm    -->
-    <script th:inline="javascript">
+<!--Lấy ra tất cả sản phẩm    -->
+<script th:inline="javascript">
 
-        var products = []; // Khai báo mảng products ở đây
-        var pageSize = 10; // Số sản phẩm trên mỗi trang
-        var currentPage = 0;
+    var products = []; // Khai báo mảng products ở đây
+    var pageSize = 10; // Số sản phẩm trên mỗi trang
+    var currentPage = 0;
 
-        function displayValue(value) {
-            return (value !== null && value !== undefined) ? value : 'null';
-        }
+    function displayValue(value) {
+        return (value !== null && value !== undefined) ? value : 'null';
+    }
 
-        function displayProducts(page) {
-            // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
-            var start = page * pageSize;
-            var end = Math.min((page + 1) * pageSize, products.length);
+    function displayProducts(page) {
+        // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
+        var start = page * pageSize;
+        var end = Math.min((page + 1) * pageSize, products.length);
 
-            // Hiển thị sản phẩm trên trang hiện tại
-            var productListDiv = document.getElementById('productList');
-            productListDiv.innerHTML = ''; // Xóa nội dung cũ
+        // Hiển thị sản phẩm trên trang hiện tại
+        var productListDiv = document.getElementById('productList');
+        productListDiv.innerHTML = ''; // Xóa nội dung cũ
 
-            for (var i = start; i < end; i++) {
-                var productDiv = document.createElement('div');
-                productDiv.classList.add('product-div');
-                productDiv.innerHTML =
-                    `<div class="ve-xe" id="productId${products[i].productID}">
+        for (var i = start; i < end; i++) {
+            var productDiv = document.createElement('div');
+            productDiv.classList.add('product-div');
+
+            const timeDifferenceString = calculateTimeDifference(products[i].startTime, products[i].endTime);
+            productDiv.innerHTML =
+                `<div class="ve-xe" id="productId${products[i].productID}">
         <div>
             <h6 id="n-hover${products[i].productID}" onmouseover="showNoticeList(${products[i].productID})"
          onmouseout="hideNoticeList(${products[i].productID})" class="icon-notice"
@@ -322,7 +322,6 @@
         <div class="info-ve-p1">
           <div class="ten-nha-xe-rate">
             <p class="ten-nha-xe">${products[i].storeName}</p>
-
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
 <!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
@@ -343,7 +342,7 @@
 
             <div class="info-p2-1-1">
               <img class="dot-dot" src="/img/dot.png" alt="" />
-              <p class="info-time" id="info-take-time">6h55m</p>
+              <p class="info-time" id="info-take-time">${timeDifferenceString}</p>
             </div>
             <div class="info-p2-1-1">
               <img class="start-icon" src="/img/location.png" alt="" />
@@ -353,8 +352,7 @@
           </div>
           <div class="info-ve-p2-2">
             <p id="blank">Còn ${products[i].remainSeat} chỗ trống</p>
-            <p class="contact">Liên hệ: ${products[i].phoneNumber} - ${products[i].phoneNumber2}</p>
-
+            <p class="contact">Liên hệ: ${products[i].phoneNumber}${products[i].phoneNumber2 ? ` - ${products[i].phoneNumber2}` : ''}</p>
             <div>
               <p id="info-button" class="info-button" onclick="showProductDetail(${products[i].productID})">
                 Thông tin chi tiết
@@ -547,38 +545,38 @@
 
 `;
 
-                productListDiv.appendChild(productDiv);
+            productListDiv.appendChild(productDiv);
 
-                const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
-                if (products[i].stopList && products[i].stopList.length > 0) {
-                    const ul = document.createElement('ul');
-                    products[i].stopList.forEach(function (stop) {
-                        const li = document.createElement('li');
-                        li.innerHTML =
-                            displayValue(stop.stopTime) +
-                            ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
-                        if (displayValue(stop.rightNow) == true) {
-                            li.style.color = 'green';
-                        }
-                        ul.appendChild(li);
-                    });
-                    stopListDiv.appendChild(ul);
-                }
+            const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
+            if (products[i].stopList && products[i].stopList.length > 0) {
+                const ul = document.createElement('ul');
+                products[i].stopList.forEach(function (stop) {
+                    const li = document.createElement('li');
+                    li.innerHTML =
+                        displayValue(stop.stopTime) +
+                        ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                    if (displayValue(stop.rightNow) == true) {
+                        li.style.color = 'green';
+                    }
+                    ul.appendChild(li);
+                });
+                stopListDiv.appendChild(ul);
+            }
 
-                const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
+            const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
 
-                if (products[i].noticeList && products[i].noticeList.length > 0) {
-                    const noticeListChild = document.createElement('div');
-                    noticeListChild.classList.add('notice-list-child');
-                    // Lấy 3 notice cuối cùng
-                    const lastThreeNotices = products[i].noticeList.slice(-3);
+            if (products[i].noticeList && products[i].noticeList.length > 0) {
+                const noticeListChild = document.createElement('div');
+                noticeListChild.classList.add('notice-list-child');
+                // Lấy 3 notice cuối cùng
+                const lastThreeNotices = products[i].noticeList.slice(-3);
 
-                    lastThreeNotices.forEach(function (notice) {
-                        const noticeDiv = document.createElement('div');
-                        noticeDiv.classList.add('notice-div');
-                        var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
-                        const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
-                        noticeDiv.innerHTML = `
+                lastThreeNotices.forEach(function (notice) {
+                    const noticeDiv = document.createElement('div');
+                    noticeDiv.classList.add('notice-div');
+                    var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+                    const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+                    noticeDiv.innerHTML = `
                                         <h6>${notice.title}</h6>
                                         <p>Nội dung: ${notice.content}</p>
                                         <div class="d-flex" style="justify-content: space-between;">
@@ -588,108 +586,121 @@
 
 
                                     `;
-                        noticeListChild.appendChild(noticeDiv);
-                    });
-                    noticeListDiv.appendChild(noticeListChild);
-                }
-
-                console.log("Hien thi san pham");
-
-
+                    noticeListChild.appendChild(noticeDiv);
+                });
+                noticeListDiv.appendChild(noticeListChild);
             }
+
+            console.log("Hien thi san pham");
+
+
         }
+    }
 
-        function displayPagination() {
-            // Tính toán tổng số trang
-            var totalPages = Math.ceil(products.length / pageSize);
+    function displayPagination() {
+        // Tính toán tổng số trang
+        var totalPages = Math.ceil(products.length / pageSize);
 
-            // Hiển thị liên kết phân trang
-            var paginationContainer = document.getElementById('pagination');
-            paginationContainer.innerHTML = '';
+        // Hiển thị liên kết phân trang
+        var paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
 
-            // Hiển thị nút trở về trang trước
-            var prevPageLink = document.createElement('a');
-            prevPageLink.href = '#';
-            prevPageLink.id = 'preP';
-            prevPageLink.textContent = '< Trang trước ';
-            prevPageLink.onclick = function ( event) {
-                if (currentPage > 0) {
-                    changePage(currentPage - 1,  event);
-                }
-            };
-            paginationContainer.appendChild(prevPageLink);
-
-            // Hiển thị liên kết phân trang
-            var startPage = Math.max(0, currentPage - 2);
-            var endPage = Math.min(totalPages - 1, currentPage + 2);
-
-            // for (var i = startPage; i <= endPage; i++) {
-                var pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.id = 'curP';
-                // pageLink.textContent = i + 1;
-                pageLink.textContent = currentPage + 1;
-
-                // Bắt sự kiện khi nhấp vào liên kết để chuyển đến trang mới
-                // pageLink.onclick = (function (pageNumber) {
-                //     return function () {
-                //         changePage(pageNumber);
-                //     };
-                // })(i);
-
-                paginationContainer.appendChild(pageLink);
-            // }
-
-            // Hiển thị nút chuyển đến trang tiếp theo
-            var nextPageLink = document.createElement('a');
-            nextPageLink.href = '#';
-            nextPageLink.id = 'nextP';
-            nextPageLink.textContent = ' Trang sau >';
-            nextPageLink.onclick = function (event) {
-                if (currentPage < totalPages - 1) {
-                    changePage(currentPage + 1,  event);
-                }
-            };
-            paginationContainer.appendChild(nextPageLink);
-        }
-        function changePage(page, event) {
-            currentPage = page;
-            displayProducts(currentPage);
-            var curP = document.getElementById('curP');
-            curP.innerHTML = '';
-            curP.textContent = currentPage + 1;
-            event.preventDefault();
-        }
-
-        // Gọi API để lấy danh sách sản phẩm khi trang web được tải
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/all-product', true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                products = JSON.parse(xhr.responseText);
-                console.log("Lay san pham");
-                displayProducts(currentPage);
-                console.log("Hien thi san pham success");
-                if (products.length > 10) {
-                    displayPagination();
-                }
-                console.log("Hien thi chuyen trang");
+        // Hiển thị nút trở về trang trước
+        var prevPageLink = document.createElement('a');
+        prevPageLink.href = '#';
+        prevPageLink.id = 'preP';
+        prevPageLink.textContent = '< Trang trước ';
+        prevPageLink.onclick = function ( event) {
+            if (currentPage > 0) {
+                changePage(currentPage - 1,  event);
             }
         };
-        xhr.send();
-    </script>
+        paginationContainer.appendChild(prevPageLink);
 
-    <script>
-        // Hàm để hiển thị thẻ chứa noticeList
-        function showNoticeList(id) {
-            document.getElementById('noticeList' + id).style.display = 'block';
+        // Hiển thị liên kết phân trang
+        var startPage = Math.max(0, currentPage - 2);
+        var endPage = Math.min(totalPages - 1, currentPage + 2);
+
+        // for (var i = startPage; i <= endPage; i++) {
+        var pageLink = document.createElement('a');
+        pageLink.href = '#';
+        pageLink.id = 'curP';
+        pageLink.textContent = currentPage + 1;
+        paginationContainer.appendChild(pageLink);
+
+
+        // Hiển thị nút chuyển đến trang tiếp theo
+        var nextPageLink = document.createElement('a');
+        nextPageLink.href = '#';
+        nextPageLink.id = 'nextP';
+        nextPageLink.textContent = ' Trang sau >';
+        nextPageLink.onclick = function (event) {
+            if (currentPage < totalPages - 1) {
+                changePage(currentPage + 1,  event);
+            }
+        };
+        paginationContainer.appendChild(nextPageLink);
+    }
+    function changePage(page, event) {
+        currentPage = page;
+        displayProducts(currentPage);
+        var curP = document.getElementById('curP');
+        curP.innerHTML = '';
+        curP.textContent = currentPage + 1;
+        event.preventDefault();
+    }
+
+    // Gọi API để lấy danh sách sản phẩm khi trang web được tải
+
+    /*<![CDATA[*/
+    products = /*[[${products}]]*/ [];
+    /*]]>*/
+    console.log("Lay san pham");
+    displayProducts(currentPage);
+    console.log("Hien thi san pham success");
+    if (products.length > 10) {
+        displayPagination();
+    }
+    console.log("Hien thi chuyen trang");
+
+
+    function calculateTimeDifference(startTimeString, endTimeString) {
+        // Chuyển đổi chuỗi thời gian thành số giây
+        function timeStringToSeconds(timeString) {
+            const [hours, minutes, seconds] = timeString.split(':').map(Number);
+            return hours * 3600 + minutes * 60 + seconds;
         }
 
-        // Hàm để ẩn thẻ chứa noticeList
-        function hideNoticeList(id) {
-            document.getElementById('noticeList' + id).style.display = 'none';
-        }
-    </script>
+        // Lấy số giây từ chuỗi thời gian
+        const startTimeInSeconds = timeStringToSeconds(startTimeString);
+        const endTimeInSeconds = timeStringToSeconds(endTimeString);
+
+        // Tính chênh lệch thời gian trong giây
+        const timeDifferenceInSeconds = endTimeInSeconds - startTimeInSeconds;
+
+        // Chuyển đổi chênh lệch thời gian thành giờ, phút, giây
+        const hours = Math.floor(timeDifferenceInSeconds / 3600);
+        const minutes = Math.floor((timeDifferenceInSeconds % 3600) / 60);
+        const seconds = Math.floor(timeDifferenceInSeconds % 60);
+
+        // Định dạng chuỗi kết quả
+        const resultString = `${hours} Giờ ${minutes} phút`;
+
+        return resultString;
+    }
+</script>
+
+<script>
+    // Hàm để hiển thị thẻ chứa noticeList
+    function showNoticeList(id) {
+        document.getElementById('noticeList' + id).style.display = 'block';
+    }
+
+    // Hàm để ẩn thẻ chứa noticeList
+    function hideNoticeList(id) {
+        document.getElementById('noticeList' + id).style.display = 'none';
+    }
+</script>
 
 <!--Xử lý ẩn thông tin chi tiết của tất cả sản phẩm và hiện khi ấn vào-->
 <script>
@@ -811,3 +822,76 @@
 </html>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Search Products</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<form th:action="@{/search}" th:object="${searchForm}" method="get">-->
+<!--    <label>Start Time 1:</label>-->
+<!--    <input type="time" th:field="*{startTime1}" placeholder="HH:mm:ss" />-->
+
+<!--    <label>Start Address:</label>-->
+<!--    <input type="text" th:field="*{endAddress}" />-->
+
+<!--    <label>End Address:</label>-->
+<!--    <input type="text" th:field="*{startAddress}" />-->
+
+<!--    <button type="submit">Search</button>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; Display search results &ndash;&gt;-->
+<!--<div th:if="${not #lists.isEmpty(products)}">-->
+<!--    <h2>Search Results</h2>-->
+<!--    <table>-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Product ID</th>-->
+<!--            <th>Product Name</th>-->
+<!--            &lt;!&ndash; Add other fields as needed &ndash;&gt;-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="product : ${products}">-->
+<!--            <td th:text="${product.productID}"></td>-->
+<!--            <td th:text="${product.productName}"></td>-->
+<!--            &lt;!&ndash; Add other fields as needed &ndash;&gt;-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->

@@ -1,9 +1,8 @@
 package com.OneBpy.services.impl;
 
 import com.OneBpy.dtos.OrderRequest;
-import com.OneBpy.models.Order;
-import com.OneBpy.models.Product;
-import com.OneBpy.models.User;
+import com.OneBpy.dtos.PDTO;
+import com.OneBpy.models.*;
 import com.OneBpy.repositories.OrderRepository;
 import com.OneBpy.repositories.ProductRepository;
 import com.OneBpy.repositories.UserRepository;
@@ -22,6 +21,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -118,6 +120,43 @@ public class UserServiceImpl implements UserService {
         product.setRemainSeat(remainSeat);
         productRepository.save(product);
         return orderRepository.save(newOrder);
+    }
+
+    @Override
+    public List<PDTO> getAllProduct(List<Product> productList) {
+
+        List<PDTO> pdtos = new ArrayList<>();
+        for (Product product : productList) {
+            Long productID = product.getProductID();
+            String productName = product.getProductName();
+            String productImage = product.getProductImage();
+            int remainSeat = product.getRemainSeat();
+            boolean display = product.isDisplay();
+            String bienSoXe = product.getBienSoXe();
+            String phoneNumber = product.getPhoneNumber();
+            String phoneNumber2 = product.getPhoneNumber2();
+            String description = product.getDescription();
+            String policy = product.getPolicy();
+            String tienIch = product.getTienIch();
+            String type = product.getType();
+            int price = product.getPrice();
+            LocalTime startTime = product.getStartTime();
+            LocalTime endTime = product.getEndTime();
+            String startAddress = product.getStartAddress();
+            String endAddress = product.getEndAddress();
+            boolean deleted = product.isDeleted();
+            Date lastUpdate = product.getLastUpdate();
+            Date createdAt = product.getCreatedAt();
+            List<Stop> stopList = product.getStopList();
+            List<Notice> noticeList = product.getNoticeList();
+            List<Order> orderList = product.getOrderList();
+            String storeName = product.getStore().getStoreName();
+            pdtos.add(new PDTO(productID, productName, productImage, remainSeat, display,
+                    bienSoXe, phoneNumber, phoneNumber2, description, policy, tienIch, type, price,
+                    startTime, endTime, startAddress, endAddress, deleted, lastUpdate, createdAt, stopList,
+                    noticeList, orderList, storeName));
+        }
+        return pdtos;
     }
 
 //    @Override
