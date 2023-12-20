@@ -27,4 +27,5 @@ public interface UserService {
 //    Page<Product> getAllProducts(int pageNo, int pageSize);
 
     List<PDTO> getAllProduct(List<Product> productList);
+    PDTO getProductById(Long product_id);
 }

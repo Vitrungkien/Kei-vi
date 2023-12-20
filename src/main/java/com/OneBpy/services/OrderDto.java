@@ -15,4 +15,5 @@ public interface OrderDto {
     Long getUserId();
 
     Integer getPrice();
+    Long getProductID();
 }

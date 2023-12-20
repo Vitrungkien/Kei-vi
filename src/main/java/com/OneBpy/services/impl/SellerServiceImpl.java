@@ -163,6 +163,7 @@ public class SellerServiceImpl implements SellerService {
         Stop updateStop = getStopById(stop_id);
         updateStop.setStopTime(stopDTO.getStopTime());
         updateStop.setStopAddress(stopDTO.getStopAddress());
+        updateStop.setRightNow(stopDTO.isRightNow());
         return stopRepository.save(updateStop);
     }
 
@@ -283,5 +284,13 @@ public class SellerServiceImpl implements SellerService {
         updateNotice.setExpired(noticeDTO.isExpired());
         updateNotice.setLastUpdate(new Date());
         return noticeRepository.save(updateNotice);
+    }
+
+    @Override
+    public void markStop(List<StopDTO> stopDTOList) {
+        for (StopDTO stop : stopDTOList) {
+            Long stopId = stop.getStopID();
+            updateStop(stop, stopId);
+        }
     }
 }

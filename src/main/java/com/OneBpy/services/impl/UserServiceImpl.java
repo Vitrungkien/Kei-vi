@@ -127,42 +127,47 @@ public class UserServiceImpl implements UserService {
 
         List<PDTO> pdtos = new ArrayList<>();
         for (Product product : productList) {
-            Long productID = product.getProductID();
-            String productName = product.getProductName();
-            String productImage = product.getProductImage();
-            int remainSeat = product.getRemainSeat();
-            boolean display = product.isDisplay();
-            String bienSoXe = product.getBienSoXe();
-            String phoneNumber = product.getPhoneNumber();
-            String phoneNumber2 = product.getPhoneNumber2();
-            String description = product.getDescription();
-            String policy = product.getPolicy();
-            String tienIch = product.getTienIch();
-            String type = product.getType();
-            int price = product.getPrice();
-            LocalTime startTime = product.getStartTime();
-            LocalTime endTime = product.getEndTime();
-            String startAddress = product.getStartAddress();
-            String endAddress = product.getEndAddress();
-            boolean deleted = product.isDeleted();
-            Date lastUpdate = product.getLastUpdate();
-            Date createdAt = product.getCreatedAt();
-            List<Stop> stopList = product.getStopList();
-            List<Notice> noticeList = product.getNoticeList();
-            List<Order> orderList = product.getOrderList();
-            String storeName = product.getStore().getStoreName();
-            pdtos.add(new PDTO(productID, productName, productImage, remainSeat, display,
-                    bienSoXe, phoneNumber, phoneNumber2, description, policy, tienIch, type, price,
-                    startTime, endTime, startAddress, endAddress, deleted, lastUpdate, createdAt, stopList,
-                    noticeList, orderList, storeName));
+            pdtos.add(productToPDTO(product));
         }
         return pdtos;
     }
 
-//    @Override
-//    public Page<Product> getAllProducts(int pageNo, int pageSize) {
-//        Pageable pageable = PageRequest.of(pageNo, pageSize);
-//        return productRepository.findAll(pageable);
-//    }
+    @Override
+    public PDTO getProductById(Long product_id) {
+        Product product = productRepository.findById(product_id).get();
+        return productToPDTO(product);
+    }
+
+    public PDTO productToPDTO(Product product) {
+        Long productID = product.getProductID();
+        String productName = product.getProductName();
+        String productImage = product.getProductImage();
+        int remainSeat = product.getRemainSeat();
+        boolean display = product.isDisplay();
+        String bienSoXe = product.getBienSoXe();
+        String phoneNumber = product.getPhoneNumber();
+        String phoneNumber2 = product.getPhoneNumber2();
+        String description = product.getDescription();
+        String policy = product.getPolicy();
+        String tienIch = product.getTienIch();
+        String type = product.getType();
+        int price = product.getPrice();
+        LocalTime startTime = product.getStartTime();
+        LocalTime endTime = product.getEndTime();
+        String startAddress = product.getStartAddress();
+        String endAddress = product.getEndAddress();
+        boolean deleted = product.isDeleted();
+        Date lastUpdate = product.getLastUpdate();
+        Date createdAt = product.getCreatedAt();
+        List<Stop> stopList = product.getStopList();
+        List<Notice> noticeList = product.getNoticeList();
+        List<Order> orderList = product.getOrderList();
+        String storeName = product.getStore().getStoreName();
+        return new PDTO(productID, productName, productImage, remainSeat, display,
+                bienSoXe, phoneNumber, phoneNumber2, description, policy, tienIch, type, price,
+                startTime, endTime, startAddress, endAddress, deleted, lastUpdate, createdAt, stopList,
+                noticeList, orderList, storeName);
+    }
+
 
 }

@@ -4,6 +4,7 @@ package com.OneBpy.controller.webController;
 import com.OneBpy.dtos.*;
 import com.OneBpy.models.*;
 import com.OneBpy.repositories.*;
+import com.OneBpy.response.StopDtoList;
 import com.OneBpy.services.OrderDto;
 import com.OneBpy.services.SellerService;
 import com.OneBpy.services.UserService;
@@ -83,4 +84,13 @@ public class SellerController {
         sellerService.updateNotice(noticeDTO);
         return "redirect:/management-notice";
     }
+
+
+    // Chia sẻ vị trí hiện tại
+    @PostMapping("/my-store/mark-stop")
+    public String markStop(@ModelAttribute StopDtoList stopDtoList) {
+        sellerService.markStop(stopDtoList.getStopDTOList());
+        return "redirect:/management";
+    }
+
 }

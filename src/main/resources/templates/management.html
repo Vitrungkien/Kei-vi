@@ -131,6 +131,29 @@
             line-height: 32px;
             margin: 0;
         }
+        .mark-stop-backgr {
+            display: none;
+            background-color: rgb(40,42,53, 0.6);
+            width: 1800px;
+            height: 800px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+        }
+        .mark-stop-form {
+            width: 650px;
+            background-color: #f2f2f2;
+            padding: 20px;
+            position: fixed;
+            border-radius: 10px;
+            top: 50px;
+            left: 500px;
+        }
+        .resetMarkBtn {
+            color: white;
+            background-color: black;
+            margin: 0px 0px 15px 8px;
+        }
     </style>
     <title>Management</title>
 </head>
@@ -165,7 +188,7 @@
                      th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
                     <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
                 </div>
-                <li>Quản lý đơn hàng</li>
+                <li><a th:href="@{/my-order}">Quản lý đơn hàng</a></li>
                 <li><a>Giỏ hàng</a></li>
                 <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
             </ul>
@@ -275,6 +298,9 @@
 
 <!--Danh sach products-->
 <script th:inline="javascript">
+    function displayValue(value) {
+        return (value !== null && value !== undefined) ? value : 'null';
+    }
     // Sử dụng JavaScript để gọi API từ Spring Boot và tạo bảng
     fetch('/api/v1/seller/my-store/all-product').then(response => response.json()).then(products => {
         // var products = /*[[${products}]]*/ [];
@@ -525,6 +551,20 @@
 
             <button class="show btn-action btn btn-success" id="show${product.productID}"
                 onclick="displayProduct(${product.productID})">Hiện</button>
+            <button class="show btn-action btn btn-primary"
+                onclick="openMarkStopForm(${product.productID})">Chia sẻ vị trí</button>
+
+
+        <div id="mark-stop-backgr${product.productID}" class="mark-stop-backgr">
+
+        <form action="/management/my-store/mark-stop" method="post"
+            object="stopDtoList" class="mark-stop-form" id="mark-stop-form${product.productID}"
+        >
+
+        </form>
+
+        </div>
+
 </div>`;
             const showBtn = document.getElementById(`show${product.productID}`);
             const hideBtn = document.getElementById(`hide${product.productID}`);
@@ -545,12 +585,74 @@
                 product.stopList.forEach(function (stop) {
                     const li = document.createElement('li');
                     li.innerHTML =
-                        stop['stopTime'] +
-                        ' - ' + stop['stopAddress'];
+                        displayValue(stop.stopTime) +
+                        ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                    if (displayValue(stop.rightNow) == true) {
+                        li.style.color = 'red';
+                    }
                     ul.appendChild(li);
                 });
                 stopListDiv.appendChild(ul);
             }
+
+
+            const markStopListDiv = document.getElementById(`mark-stop-form${product.productID}`);
+            const h3 = document.createElement('h3');
+            h3.textContent = 'Chia sẻ vị trí';
+            markStopListDiv.appendChild(h3);
+
+            if (product.stopList && product.stopList.length > 0) {
+                let stopCount = 0;
+                product.stopList.forEach(function (stop) {
+                    // Tạo một div mới cho điểm dừng
+                    const newStopDiv = document.createElement('div');
+                    newStopDiv.classList.add('stop-at');
+                    newStopDiv.style.display = 'flex';
+                    newStopDiv.id = 'stop-at' + stopCount;
+                    newStopDiv.innerHTML = `
+
+                    <input type="hidden" class="form-control m-2" placeholder="Nhập stopId"
+                        name="stopDTOList[${stopCount}].stopID" value="${stop.stopID}"
+                    >
+                    <input type="text" class="form-control m-2"
+                        name="stopDTOList[${stopCount}].stopAddress" value="${stop.stopAddress}"
+                        style="width: 65%;"
+                         readonly
+                    >
+                    <input type="time" class="form-control m-2 w-25"
+                        name="stopDTOList[${stopCount}].stopTime" value="${stop.stopTime}"
+                         readonly
+                    >
+                    <input type="checkbox" class="rightNow${product.productID}" style="width: 35px;"
+                        name="stopDTOList[${stopCount}].rightNow"
+                        value="${stop.rightNow}" id="rightNow${stopCount}${product.productID}"
+                        onchange="toggleInputs(${stopCount}, ${product.productID})"
+                        ${stop.rightNow ? 'checked' : ''}
+                    >
+                        `;
+
+                    stopCount++;
+                    markStopListDiv.appendChild(newStopDiv);
+                })
+
+                const resetBtn = document.createElement('button');
+                resetBtn.classList.add('resetMarkBtn');
+                resetBtn.type = 'button';
+                resetBtn.textContent = 'Tắt chia sẻ';
+                resetBtn.style.width = '100px';
+                resetBtn.onclick = function() {
+                    // Gọi hàm resetChecked và truyền tham số (ví dụ: productId)
+                    resetChecked(stopCount, product['productID']);
+                };
+                markStopListDiv.appendChild(resetBtn);
+            }
+
+            const div = document.createElement('div');
+            div.innerHTML = `<button type="submit" class="btn btn-primary" style="margin-left: 8px;">Xong</button>
+                    <button type="reset" class="btn btn-danger"
+                    onclick="closeMarkStopForm(${product.productID})">Hủy</button>`;
+            markStopListDiv.appendChild(div);
+
         });
     })
         .catch(error => console.error('Error fetching products:', error));
@@ -702,10 +804,44 @@
             console.error('Invalid product_id');
         }
     }
-
-
 </script>
 
+<script>
+    function openMarkStopForm(productID) {
+        const newNotice = document.getElementById('mark-stop-backgr' + productID);
+        newNotice.style.display = 'block';
+    }
+    function closeMarkStopForm(productID) {
+        const newNotice = document.getElementById('mark-stop-backgr' + productID);
+        newNotice.style.display = 'none';
+    }
+
+
+        function toggleInputs(stopCount, productId) {
+            // Lấy danh sách tất cả các input có kiểu checkbox
+            const checkboxes = document.querySelectorAll(`.rightNow${productId}`);
+
+            // Duyệt qua danh sách và đặt giá trị của các input
+            checkboxes.forEach(checkbox => {
+                // Nếu không phải là input được tích vào, đặt giá trị là false
+                checkbox.value = 'false';
+                checkbox.checked = false; // Bỏ tích chọn (nếu có)
+            });
+            const checkedInput = document.getElementById('rightNow' + stopCount + '' + productId);
+            checkedInput.value = 'true';
+            checkedInput.checked = true;
+        }
+        function resetChecked(stopCount, productId) {
+            const checkboxes = document.querySelectorAll(`.rightNow${productId}`);
+
+            // Duyệt qua danh sách và đặt giá trị của các input
+            checkboxes.forEach(checkbox => {
+                // Nếu không phải là input được tích vào, đặt giá trị là false
+                checkbox.value = 'false';
+                checkbox.checked = false; // Bỏ tích chọn (nếu có)
+            });
+        }
+</script>
 <!--Logout click-->
 <script>
     // Gán sự kiện click cho thẻ button

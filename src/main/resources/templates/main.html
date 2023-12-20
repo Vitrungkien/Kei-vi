@@ -58,6 +58,30 @@
             font-weight: bold;
             font-size: 16px;
         }
+        .frmDatVe-modal {
+            display: none;
+            background-color: rgb(40,42,53, 0.6);
+            width: 1800px;
+            height: 800px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 999;
+        }
+        .footer {
+            position: relative;
+            bottom: 0;
+            background-color: black;
+            color: white;
+            padding: 30px;
+            width: 100%;
+            text-align: center;
+        }
+        .search-key {
+            border-radius: 40px;
+            margin-left: 20px;
+            width: 84%;
+        }
     </style>
     <title>Đặt xe ghép</title>
 </head>
@@ -92,137 +116,70 @@
                              th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
                             <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
                         </div>
-                        <li>Quản lý đơn hàng</li>
+                        <li><a th:href="@{/my-order}">Quản lý đơn hàng</a></li>
                         <li><a>Giỏ hàng</a></li>
                         <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
                     </ul>
                 </li>
 
-                <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+                <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''USER'') or hasRole(''SELLER'')')}">
                     <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
                 </li>
             </ul>
     </div>
 
-    <div class="container">
+    <div class="container1">
+        <form th:action="@{/search-by-stop}" th:object="${searchByKeywordRq}" method="get"
+              class="searchFrm m-auto" style="width: 60%">
+
+            <input type="text" class="search-key form-control" th:field="*{keyword}" placeholder="Tìm kiếm"/>
+
+            <button type="submit" class="btn btn-primary"  style="margin-left: 12px; height: 50px;">Tìm kiếm</button>
+
+        </form>
 
         <div class="search-form">
 
             <div class="search-input">
-                <form th:action="@{/search}" th:object="${searchForm}" method="get" class="searchFrm">
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label">Điểm đón</p>
-                        <input type="text" th:field="*{startAddress}" placeholder="Nhập điểm đón"/>
-                    </div>
-                </div>
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/location.png}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label">Điểm trả</p>
-                        <input type="text" th:field="*{endAddress}" placeholder="Nhập điểm trả"/>
-                    </div>
-                </div>
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/clock.png}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label" >Giờ đi</p>
-                        <input type="time" th:field="*{startTime1}" placeholder="HH:mm:ss" />
-                    </div>
-                </div>
 
-                <div class="search-button">
-                        <button type="submit">Tìm kiếm</button>
-                </div>
+                <form th:action="@{/search-by-stop}" th:object="${searchForm}" method="get" class="searchFrm">
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label">Điểm đón</p>
+                            <input type="text" class="form-control" th:field="*{startAddress}" placeholder="Nhập điểm đón"/>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/location.png}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label">Điểm trả</p>
+                            <input type="text" class="form-control" th:field="*{endAddress}" placeholder="Nhập điểm trả"/>
+                        </div>
+                    </div>
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/clock.png}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label" >Giờ đi</p>
+                            <input type="time" class="form-control" th:field="*{startTime1}" placeholder="HH:mm:ss" />
+                        </div>
+                    </div>
+
+                    <div class="search-button">
+                            <button type="submit">Tìm kiếm</button>
+                    </div>
 
                 </form>
+
             </div>
-
-
 
         </div>
 
 
+
         <div class="filter-and-list-product">
-            <div class="left-body">
-                <div class="sap-xep">
-                    <h3>Sắp xếp</h3>
-                    <form>
-                        <p><input type="radio" name="sort" id="gio-som-nhat">Giờ sớm nhất</p>
-                        <p><input type="radio" name="sort" id="gio-muon-nhat">Giờ muộn nhất</p>
-                        <p><input type="radio" name="sort" id="gia-tang-dan">Giá tăng dần</p>
-                        <p><input type="radio" name="sort" id="gia-giam-dan">Giá giảm dần</p>
-                    </form>
-                </div>
-        
-                <div class="filter-form">
-                    <div class="filter-title">
-                        <h3>Lọc</h3>
-                        <p>Xoá lọc</p>
-                    </div>
-                    <div class="loc-thoi-gian">
-                        <h4>Giờ đi</h4>
-                        <div class="nut-loc-thoi-gian">
-                            <button>
-                                <p>Sáng sớm</p>
-                                <p>00:00 - 6:00</p>
-                            </button>
-                            <button>
-                                <p>Sáng</p>
-                                <p>6:00 - 12:00</p>
-                            </button>
-                            <button>
-                                <p>Chiều </p>
-                                <p>12:01 - 18:00</p>
-                            </button>
-                            <button>
-                                <p>Tối (183)</p>
-                                <p>18:01 - 23:59</p>
-                            </button>
-                        </div>
-                    </div>
-        
-                    <div class="loc-nha-xe">
-                        <h4>Nhà xe</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <form>
-                            <p><input type="checkbox" name="" >Hoa Huệ</p>
-                            <p><input type="checkbox" name="" >Mạnh Hà</p>
-                            <p><input type="checkbox" name="" >Bông Khoai</p>
-                            <p><input type="checkbox" name="" >Thùy Linh</p>
-
-                        </form>
-                    </div>
-        
-                    <div class="loc-diem-don"></div>
-                        <h4>Điểm đón</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <p><input type="checkbox" name="" >Tp.Lạng Sơn</p>
-                        <p><input type="checkbox" name="" >Thất Khê</p>
-                        <p><input type="checkbox" name="" >Lộc Bình</p>
-                        <p><input type="checkbox" name="" >Na Dương</p>
-                        <p><input type="checkbox" name="" >Hữu Lũng</p>
-        
-                    <div class="loc-diem-tra"></div>
-                        <h4>Điểm trả</h4>
-                        <input type="text" placeholder="Tìm trong sanh sách">
-                        <p><input type="checkbox" name="" >Bến Mỹ Đình</p>
-                        <p><input type="checkbox" name="" >Bến Yên Nghĩa</p>
-                        <p><input type="checkbox" name="" >Bến Giáp Bát</p>
-                        <p><input type="checkbox" name="" >Bến Gia Lâm</p>
-                        <p><input type="checkbox" name="" >Bến Nước Ngầm</p>
-        
-                    <div class="loc-loai-xe">
-                        <h4>Loại Xe</h4>
-                        <span><input type="checkbox" name="" >Merc</span>
-                        <span><input type="checkbox" name="" >Ford</span>
-                    </div>
-                </div>          
-            </div>
             <div class="right-body">
-                <h2>Product List</h2>
-
+                <h2 style="margin-left: 300px;">Tất cả vé</h2>
                 <div id="productList">
                     <!-- Placeholder for product list -->
                 </div>
@@ -238,7 +195,9 @@
     </div>
 
     <!-- footer -->
-    <div class="footer"></div>
+    <footer>
+        <div class="footer">Copyright 2023 by Vi Trung Kiên - B19DCVT195</div>
+    </footer>
 
 <!--Logout click-->
     <script>
@@ -283,400 +242,6 @@
             loginElement.style.display = 'block'
 
         }
-    </script>
-
-
-    <!--Lấy ra tất cả sản phẩm    -->
-    <script th:inline="javascript">
-
-        var products = []; // Khai báo mảng products ở đây
-        var pageSize = 10; // Số sản phẩm trên mỗi trang
-        var currentPage = 0;
-
-        function displayValue(value) {
-            return (value !== null && value !== undefined) ? value : 'null';
-        }
-
-        function displayProducts(page) {
-            // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
-            var start = page * pageSize;
-            var end = Math.min((page + 1) * pageSize, products.length);
-
-            // Hiển thị sản phẩm trên trang hiện tại
-            var productListDiv = document.getElementById('productList');
-            productListDiv.innerHTML = ''; // Xóa nội dung cũ
-
-            for (var i = start; i < end; i++) {
-                var productDiv = document.createElement('div');
-                productDiv.classList.add('product-div');
-                productDiv.innerHTML =
-                    `<div class="ve-xe" id="productId${products[i].productID}">
-        <div>
-            <h6 id="n-hover${products[i].productID}" onmouseover="showNoticeList(${products[i].productID})"
-         onmouseout="hideNoticeList(${products[i].productID})" class="icon-notice"
-         >Thông báo<i class="fa-solid fa-bell" style="color: #fff"></i></h6>
-            <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
-        </div>
-
-      <div class="info-ve">
-        <div class="info-ve-p1">
-          <div class="ten-nha-xe-rate">
-            <p class="ten-nha-xe">${products[i].storeName}</p>
-
-<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
-<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
-<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
-<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
-<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
-          </div>
-          <p class="price">${products[i].price}đ</p>
-        </div>
-        <p class="productName" style="font-weight: bold">Tuyến: ${products[i].productName}</p>
-        <p class="car-type">${products[i].type}</p>
-        <div class="info-ve-p2">
-          <div class="info-ve-p2-1">
-            <div class="info-p2-1-1">
-              <img class="start-icon" src="/img/clock-regular.svg" alt="" />
-              <p class="info-time">${products[i].startTime}</p>
-              <p>- ${products[i].startAddress}</p>
-            </div>
-
-            <div class="info-p2-1-1">
-              <img class="dot-dot" src="/img/dot.png" alt="" />
-              <p class="info-time" id="info-take-time">6h55m</p>
-            </div>
-            <div class="info-p2-1-1">
-              <img class="start-icon" src="/img/location.png" alt="" />
-              <p class="info-time">${products[i].endTime}</p>
-              <p>- ${products[i].endAddress}</p>
-            </div>
-          </div>
-          <div class="info-ve-p2-2">
-            <p id="blank">Còn ${products[i].remainSeat} chỗ trống</p>
-            <p class="contact">Liên hệ: ${products[i].phoneNumber} - ${products[i].phoneNumber2}</p>
-
-            <div>
-              <p id="info-button" class="info-button" onclick="showProductDetail(${products[i].productID})">
-                Thông tin chi tiết
-                <i
-                  style="transform: rotate(0deg)"
-                  id="arrow-icon${products[i].productID}"
-                  class="fa-solid fa-caret-down"
-                ></i>
-              </p>
-              <!-- <p>Thông tin chi tiết</p> -->
-              <button onclick="showOrderForm(${products[i].productID})">Đặt xe</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
-        <div id="noticeList${products[i].productID}" class="noticeList"></div>
-      <div id="productDetail${products[i].productID}" class="detail" style="display: none">
-        <div class="detail-info">
-          <ul class="list-info">
-            <li>
-                <button class="menu-detail${products[i].productID} detail-img-b" id="detail-img-b${products[i].productID}"
-                onclick="showPartDetail(${products[i].productID}, 1)">
-                  Hình ảnh
-                </button>
-
-            </li>
-            <li>
-              <button class="menu-detail${products[i].productID} tien-ich-b" id="tien-ich-b${products[i].productID}"
-              onclick="showPartDetail(${products[i].productID}, 2)">
-                Tiện ích
-              </button>
-            </li>
-            <li>
-              <button class="menu-detail${products[i].productID} diem-don-tra-b" id="diem-don-tra-b${products[i].productID}"
-              onclick="showPartDetail(${products[i].productID}, 3)">
-                Điểm đón trả
-              </button>
-            </li>
-            <li>
-              <button class="menu-detail${products[i].productID} chinh-sach-b" id="chinh-sach-b${products[i].productID}"
-              onclick="showPartDetail(${products[i].productID}, 4)"> Chính sách </button>
-            </li>
-            <li>
-              <button class="menu-detail${products[i].productID} review-b" id="review-b${products[i].productID}"
-              onclick="showPartDetail(${products[i].productID}, 5)"> Thông tin </button>
-            </li>
-          </ul>
-        </div>
-
-        <div class="five-info" id="five-info">
-          <!--Hinh anh-->
-          <div class="part-detail${products[i].productID} detai-img" id="detai-img${products[i].productID}">
-            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
-            <div class="sub-img">
-              <img src="/img/Picture1.png" alt="" />
-              <img src="@{/img/Picture1.png" alt="" />
-              <img src="/img/Picture1.png" alt="" />
-            </div>
-          </div>
-          <!--Diem don tra-->
-          <div class="part-detail${products[i].productID} diem-don-tra" id="diem-don-tra${products[i].productID}">
-            <div class="luu-y">
-              <h3>Lưu ý</h3>
-              <p>
-                Các mốc thời gian đón trả bên dưới là thời gian dự kiến. <br />
-                Lịch này có thể thay đổi tùy tình hình thực tế
-              </p>
-            </div>
-
-            <div id="stopList${products[i].productID}">
-
-            </div>
-          </div>
-          <!--Tien ich-->
-          <div class="part-detail${products[i].productID} tien-ich" id="tien-ich${products[i].productID}">
-            <ul class="list-tien-ich">
-            <h3>Tiện ích</h3>
-            ${products[i].tienIch}
-            </ul>
-          </div>
-          <!--Chinh sach -->
-          <div class="part-detail${products[i].productID} chinh-sach" id="chinh-sach${products[i].productID}">
-<!--            <h3>Chính sách nhà xe</h3>-->
-            ${products[i].policy}
-          </div>
-          <!--Review-->
-          <div class="part-detail${products[i].productID} review" id="review${products[i].productID}">
-<!--          <h3>Mô tả</h3>-->
-             ${products[i].description}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <form class="frmDatVe p-4 rounded-1 m-auto"
-            action="/api/v1/user/${products[i].productID}/order"
-            method="post" id="frmDatVe${products[i].productID}"
-            object="orderRequest"
-    >
-      <h3 class="text-center">Đặt vé</h3>
-
-      <div class="row mb-3 d-flex">
-        <p class="col-sm-3">Tên vé:</p>
-        <div class="col-sm-9">
-          <p class="">${products[i].productName}</p>
-        </div>
-      </div>
-
-      <div class="row mb-3 d-flex">
-        <p class="col-sm-3">Nhà Xe:</p>
-        <div class="col-sm-9">
-          <p class="">${products[i].storeName}</p>
-        </div>
-      </div>
-
-      <div class="row mb-3 d-flex">
-        <p class="col-sm-3">Giá vé:</p>
-        <div class="col-sm-9">
-          <p class="">${products[i].price}đ</p>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="pickUpAddress" class="col-sm-3 col-form-label">Điểm đón:</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="pickUpAddress" name="pickUpAddress"
-          placeholder="Điểm đón" required autofocus="autofocus"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="destinationAddress" class="col-sm-3 col-form-label">Điểm đến:</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="destinationAddress" name="destinationAddress"
-          placeholder="Điểm đến" required autofocus="autofocus"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="pickTime" class="col-sm-3 col-form-label">Thời gian đón:</label>
-        <div class="col-sm-9">
-          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"
-          required autofocus="autofocus"
-          />
-<!--          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"-->
-<!--       pattern="yyyy-MM-ddThh:mm" required autofocus="autofocus" />-->
-
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="message" class="col-sm-3 col-form-label">Lời nhắn:</label>
-        <div class="col-sm-9">
-          <textarea class="form-control" id="message" name="message" rows="3" ></textarea>
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="phoneNumber" class="col-sm-3 col-form-label">
-            Số điện thoại:
-        </label>
-        <div class="col-sm-9">
-          <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
-          placeholder="Số điện thoại" required autofocus="autofocus"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <label for="quantity" class="col-sm-3 col-form-label">Số lượng vé:</label>
-        <div class="col-sm-9">
-          <input type="number" class="form-control" id="quantity" name="quantity"
-          placeholder="Số lượng vé" required autofocus="autofocus"
-          />
-        </div>
-      </div>
-
-      <div class="row mb-3">
-        <div class="col-sm-6 offset-sm-3">
-          <button type="submit" class="btn btn-primary">Đặt vé</button>
-          <button type="button" class="btn btn-secondary" onclick="dismissForm(${products[i].productID})">
-            Hủy
-          </button>
-        </div>
-      </div>
-    </form>
-
-`;
-
-                productListDiv.appendChild(productDiv);
-
-                const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
-                if (products[i].stopList && products[i].stopList.length > 0) {
-                    const ul = document.createElement('ul');
-                    products[i].stopList.forEach(function (stop) {
-                        const li = document.createElement('li');
-                        li.innerHTML =
-                            displayValue(stop.stopTime) +
-                            ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
-                        if (displayValue(stop.rightNow) == true) {
-                            li.style.color = 'green';
-                        }
-                        ul.appendChild(li);
-                    });
-                    stopListDiv.appendChild(ul);
-                }
-
-                const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
-
-                if (products[i].noticeList && products[i].noticeList.length > 0) {
-                    const noticeListChild = document.createElement('div');
-                    noticeListChild.classList.add('notice-list-child');
-                    // Lấy 3 notice cuối cùng
-                    const lastThreeNotices = products[i].noticeList.slice(-3);
-
-                    lastThreeNotices.forEach(function (notice) {
-                        const noticeDiv = document.createElement('div');
-                        noticeDiv.classList.add('notice-div');
-                        var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
-                        const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
-                        noticeDiv.innerHTML = `
-                                        <h6>${notice.title}</h6>
-                                        <p>Nội dung: ${notice.content}</p>
-                                        <div class="d-flex" style="justify-content: space-between;">
-                                            <p>${status}</p>
-                                            <p>Cập nhật lúc: ${formattedLastUpdate}</p>
-                                        </div>
-
-
-                                    `;
-                        noticeListChild.appendChild(noticeDiv);
-                    });
-                    noticeListDiv.appendChild(noticeListChild);
-                }
-
-                console.log("Hien thi san pham");
-
-
-            }
-        }
-
-        function displayPagination() {
-            // Tính toán tổng số trang
-            var totalPages = Math.ceil(products.length / pageSize);
-
-            // Hiển thị liên kết phân trang
-            var paginationContainer = document.getElementById('pagination');
-            paginationContainer.innerHTML = '';
-
-            // Hiển thị nút trở về trang trước
-            var prevPageLink = document.createElement('a');
-            prevPageLink.href = '#';
-            prevPageLink.id = 'preP';
-            prevPageLink.textContent = '< Trang trước ';
-            prevPageLink.onclick = function ( event) {
-                if (currentPage > 0) {
-                    changePage(currentPage - 1,  event);
-                }
-            };
-            paginationContainer.appendChild(prevPageLink);
-
-            // Hiển thị liên kết phân trang
-            var startPage = Math.max(0, currentPage - 2);
-            var endPage = Math.min(totalPages - 1, currentPage + 2);
-
-            // for (var i = startPage; i <= endPage; i++) {
-                var pageLink = document.createElement('a');
-                pageLink.href = '#';
-                pageLink.id = 'curP';
-                // pageLink.textContent = i + 1;
-                pageLink.textContent = currentPage + 1;
-
-                // Bắt sự kiện khi nhấp vào liên kết để chuyển đến trang mới
-                // pageLink.onclick = (function (pageNumber) {
-                //     return function () {
-                //         changePage(pageNumber);
-                //     };
-                // })(i);
-
-                paginationContainer.appendChild(pageLink);
-            // }
-
-            // Hiển thị nút chuyển đến trang tiếp theo
-            var nextPageLink = document.createElement('a');
-            nextPageLink.href = '#';
-            nextPageLink.id = 'nextP';
-            nextPageLink.textContent = ' Trang sau >';
-            nextPageLink.onclick = function (event) {
-                if (currentPage < totalPages - 1) {
-                    changePage(currentPage + 1,  event);
-                }
-            };
-            paginationContainer.appendChild(nextPageLink);
-        }
-        function changePage(page, event) {
-            currentPage = page;
-            displayProducts(currentPage);
-            var curP = document.getElementById('curP');
-            curP.innerHTML = '';
-            curP.textContent = currentPage + 1;
-            event.preventDefault();
-        }
-
-        // Gọi API để lấy danh sách sản phẩm khi trang web được tải
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/all-product', true);
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                products = JSON.parse(xhr.responseText);
-                console.log("Lay san pham");
-                displayProducts(currentPage);
-                console.log("Hien thi san pham success");
-                if (products.length > 10) {
-                    displayPagination();
-                }
-                console.log("Hien thi chuyen trang");
-            }
-        };
-        xhr.send();
     </script>
 
     <script>
@@ -787,7 +352,7 @@
     }
 
     function hideAllOrderForm() {
-        const orderForms = document.querySelectorAll('.frmDatVe');
+        const orderForms = document.querySelectorAll('.frmDatVe-modal');
         orderForms.forEach(function (orderForm) {
             orderForm.style.display = 'none';
         });
@@ -802,7 +367,440 @@
 
 </script>
 
+
+
+
+
+    <!--Lấy ra tất cả sản phẩm    -->
+    <script th:inline="javascript">
+
+        var products = []; // Khai báo mảng products ở đây
+        var pageSize = 10; // Số sản phẩm trên mỗi trang
+        var currentPage = 0;
+
+        function displayValue(value) {
+            return (value !== null && value !== undefined) ? value : 'null';
+        }
+
+        function displayProducts(page) {
+            // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
+            var start = page * pageSize;
+            var end = Math.min((page + 1) * pageSize, products.length);
+
+            // Hiển thị sản phẩm trên trang hiện tại
+            var productListDiv = document.getElementById('productList');
+            productListDiv.innerHTML = ''; // Xóa nội dung cũ
+
+            // method="post" id="frmDatVe${products[i].productID}"
+
+            for (var i = start; i < end; i++) {
+
+                const timeDifferenceString = calculateTimeDifference(products[i].startTime, products[i].endTime);
+                var productDiv = document.createElement('div');
+                productDiv.classList.add('product-div');
+                productDiv.innerHTML =
+                    `<div class="ve-xe" id="productId${products[i].productID}">
+        <div>
+            <h6 id="n-hover${products[i].productID}" onmouseover="showNoticeList(${products[i].productID})"
+         onmouseout="hideNoticeList(${products[i].productID})" class="icon-notice"
+         >Thông báo<i class="fa-solid fa-bell" style="color: #fff"></i></h6>
+            <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
+        </div>
+
+      <div class="info-ve">
+        <div class="info-ve-p1">
+          <div class="ten-nha-xe-rate">
+            <p class="ten-nha-xe">${products[i].storeName}</p>
+
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+<!--            <i class="fa-solid fa-star" style="color: #ffd500"></i>-->
+          </div>
+          <p class="price">${products[i].price}đ</p>
+        </div>
+        <p class="productName" style="font-weight: bold">Tuyến: ${products[i].productName}</p>
+        <p class="car-type">${products[i].type}</p>
+        <div class="info-ve-p2">
+          <div class="info-ve-p2-1">
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/clock-regular.svg" alt="" />
+              <p class="info-time">${products[i].startTime}</p>
+              <p>- ${products[i].startAddress}</p>
+            </div>
+
+            <div class="info-p2-1-1">
+              <img class="dot-dot" src="/img/dot.png" alt="" />
+              <p class="info-time" id="info-take-time">${timeDifferenceString}</p>
+            </div>
+            <div class="info-p2-1-1">
+              <img class="start-icon" src="/img/location.png" alt="" />
+              <p class="info-time">${products[i].endTime}</p>
+              <p>- ${products[i].endAddress}</p>
+            </div>
+          </div>
+          <div class="info-ve-p2-2">
+            <p id="blank">Còn ${products[i].remainSeat} chỗ trống</p>
+            <p class="contact">Liên hệ: ${products[i].phoneNumber} - ${products[i].phoneNumber2}</p>
+
+            <div>
+              <p id="info-button" class="info-button" onclick="showProductDetail(${products[i].productID})">
+                Thông tin chi tiết
+                <i
+                  style="transform: rotate(0deg)"
+                  id="arrow-icon${products[i].productID}"
+                  class="fa-solid fa-caret-down"
+                ></i>
+              </p>
+              <!-- <p>Thông tin chi tiết</p> -->
+              <button onclick="showOrderForm(${products[i].productID})">Đặt xe</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
+        <div id="noticeList${products[i].productID}" class="noticeList"></div>
+      <div id="productDetail${products[i].productID}" class="detail" style="display: none">
+        <div class="detail-info">
+          <ul class="list-info">
+            <li>
+                <button class="menu-detail${products[i].productID} detail-img-b" id="detail-img-b${products[i].productID}"
+                onclick="showPartDetail(${products[i].productID}, 1)">
+                  Hình ảnh
+                </button>
+
+            </li>
+            <li>
+              <button class="menu-detail${products[i].productID} tien-ich-b" id="tien-ich-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 2)">
+                Tiện ích
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${products[i].productID} diem-don-tra-b" id="diem-don-tra-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 3)">
+                Điểm đón trả
+              </button>
+            </li>
+            <li>
+              <button class="menu-detail${products[i].productID} chinh-sach-b" id="chinh-sach-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 4)"> Chính sách </button>
+            </li>
+            <li>
+              <button class="menu-detail${products[i].productID} review-b" id="review-b${products[i].productID}"
+              onclick="showPartDetail(${products[i].productID}, 5)"> Thông tin </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="five-info" id="five-info">
+          <!--Hinh anh-->
+          <div class="part-detail${products[i].productID} detai-img" id="detai-img${products[i].productID}">
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <div class="sub-img">
+            </div>
+          </div>
+          <!--Diem don tra-->
+          <div class="part-detail${products[i].productID} diem-don-tra" id="diem-don-tra${products[i].productID}">
+            <div class="luu-y">
+              <h3>Lưu ý</h3>
+              <p>
+                Các mốc thời gian đón trả bên dưới là thời gian dự kiến. <br />
+                Lịch này có thể thay đổi tùy tình hình thực tế
+              </p>
+            </div>
+
+            <div id="stopList${products[i].productID}">
+
+            </div>
+          </div>
+          <!--Tien ich-->
+          <div class="part-detail${products[i].productID} tien-ich" id="tien-ich${products[i].productID}">
+            <ul class="list-tien-ich">
+            <h3>Tiện ích</h3>
+            ${products[i].tienIch}
+            </ul>
+          </div>
+          <!--Chinh sach -->
+          <div class="part-detail${products[i].productID} chinh-sach" id="chinh-sach${products[i].productID}">
+<!--            <h3>Chính sách nhà xe</h3>-->
+            ${products[i].policy}
+          </div>
+          <!--Review-->
+          <div class="part-detail${products[i].productID} review" id="review${products[i].productID}">
+<!--          <h3>Mô tả</h3>-->
+             ${products[i].description}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+<div id="frmDatVe${products[i].productID}" class="frmDatVe-modal">
+    <form class="frmDatVe p-4 rounded-1 m-auto"
+            action="/api/v1/user/${products[i].productID}/order"
+            method="post"
+            object="orderRequest">
+      <h3 class="text-center">Đặt vé</h3>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Tên vé:</p>
+        <div class="col-sm-9">
+          <p class="">${products[i].productName}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Nhà Xe:</p>
+        <div class="col-sm-9">
+          <p class="">${products[i].storeName}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Giá vé:</p>
+        <div class="col-sm-9">
+          <p class="">${products[i].price}đ</p>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="pickUpAddress" class="col-sm-3 col-form-label">Điểm đón:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="pickUpAddress" name="pickUpAddress"
+          placeholder="Điểm đón" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="destinationAddress" class="col-sm-3 col-form-label">Điểm đến:</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="destinationAddress" name="destinationAddress"
+          placeholder="Điểm đến" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="pickTime" class="col-sm-3 col-form-label">Thời gian đón:</label>
+        <div class="col-sm-9">
+          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"
+          required autofocus="autofocus"
+          />
+<!--          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"-->
+<!--       pattern="yyyy-MM-ddThh:mm" required autofocus="autofocus" />-->
+
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="message" class="col-sm-3 col-form-label">Lời nhắn:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" id="message" name="message" rows="3" ></textarea>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="phoneNumber" class="col-sm-3 col-form-label">
+            Số điện thoại:
+        </label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
+          placeholder="Số điện thoại" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <label for="quantity" class="col-sm-3 col-form-label">Số lượng vé:</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="quantity" name="quantity"
+          placeholder="Số lượng vé" required autofocus="autofocus"
+          />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-sm-6 offset-sm-3">
+          <button type="submit" class="btn btn-primary">Đặt vé</button>
+          <button type="button" class="btn btn-danger" onclick="dismissForm(${products[i].productID})">
+            Hủy
+          </button>
+        </div>
+      </div>
+    </form>
+</div>
+`;
+
+                productListDiv.appendChild(productDiv);
+
+                const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
+                if (products[i].stopList && products[i].stopList.length > 0) {
+                    const ul = document.createElement('ul');
+                    products[i].stopList.forEach(function (stop) {
+                        const li = document.createElement('li');
+                        li.innerHTML =
+                            displayValue(stop.stopTime) +
+                            ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                        if (displayValue(stop.rightNow) == true) {
+                            li.style.color = 'red';
+                        }
+                        ul.appendChild(li);
+                    });
+                    stopListDiv.appendChild(ul);
+                }
+
+                const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
+
+                if (products[i].noticeList && products[i].noticeList.length > 0) {
+                    const noticeListChild = document.createElement('div');
+                    noticeListChild.classList.add('notice-list-child');
+                    // Lấy 3 notice cuối cùng
+                    const lastThreeNotices = products[i].noticeList.slice(-3);
+
+                    lastThreeNotices.forEach(function (notice) {
+                        const noticeDiv = document.createElement('div');
+                        noticeDiv.classList.add('notice-div');
+                        var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+                        var formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+
+                        noticeDiv.innerHTML = `
+                                        <h6>${notice.title}</h6>
+                                        <p>Nội dung: ${notice.content}</p>
+                                        <div class="d-flex" style="justify-content: space-between;">
+                                            <p>${status}</p>
+                                            <p>Sửa đổi lần cuối: ${formattedLastUpdate}</p>
+                                        </div>
+
+
+                                    `;
+                        noticeListChild.appendChild(noticeDiv);
+                    });
+                    noticeListDiv.appendChild(noticeListChild);
+                }
+
+                console.log("Hien thi san pham");
+
+
+            }
+        }
+
+        function displayPagination() {
+            // Tính toán tổng số trang
+            var totalPages = Math.ceil(products.length / pageSize);
+
+            // Hiển thị liên kết phân trang
+            var paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            // Hiển thị nút trở về trang trước
+            var prevPageLink = document.createElement('a');
+            prevPageLink.href = '#';
+            prevPageLink.id = 'preP';
+            prevPageLink.textContent = '< Trang trước ';
+            prevPageLink.onclick = function ( event) {
+                if (currentPage > 0) {
+                    changePage(currentPage - 1,  event);
+                }
+            };
+            paginationContainer.appendChild(prevPageLink);
+
+            // Hiển thị liên kết phân trang
+            var startPage = Math.max(0, currentPage - 2);
+            var endPage = Math.min(totalPages - 1, currentPage + 2);
+
+            // for (var i = startPage; i <= endPage; i++) {
+            var pageLink = document.createElement('a');
+            pageLink.href = '#';
+            pageLink.id = 'curP';
+            // pageLink.textContent = i + 1;
+            pageLink.textContent = currentPage + 1;
+
+            // Bắt sự kiện khi nhấp vào liên kết để chuyển đến trang mới
+            // pageLink.onclick = (function (pageNumber) {
+            //     return function () {
+            //         changePage(pageNumber);
+            //     };
+            // })(i);
+
+            paginationContainer.appendChild(pageLink);
+            // }
+
+            // Hiển thị nút chuyển đến trang tiếp theo
+            var nextPageLink = document.createElement('a');
+            nextPageLink.href = '#';
+            nextPageLink.id = 'nextP';
+            nextPageLink.textContent = ' Trang sau >';
+            nextPageLink.onclick = function (event) {
+                if (currentPage < totalPages - 1) {
+                    changePage(currentPage + 1,  event);
+                }
+            };
+            paginationContainer.appendChild(nextPageLink);
+        }
+        function changePage(page, event) {
+            currentPage = page;
+            displayProducts(currentPage);
+            var curP = document.getElementById('curP');
+            curP.innerHTML = '';
+            curP.textContent = currentPage + 1;
+            event.preventDefault();
+        }
+
+        // Gọi API để lấy danh sách sản phẩm khi trang web được tải
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/all-product', true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                products = JSON.parse(xhr.responseText);
+                console.log("Lay san pham");
+                displayProducts(currentPage);
+                console.log("Hien thi san pham success");
+                if (products.length > 10) {
+                    displayPagination();
+                }
+                console.log("Hien thi chuyen trang");
+            }
+        };
+        xhr.send();
+
+
+        function calculateTimeDifference(startTimeString, endTimeString) {
+            // Chuyển đổi chuỗi thời gian thành số giây
+            function timeStringToSeconds(timeString) {
+                const [hours, minutes, seconds] = timeString.split(':').map(Number);
+                return hours * 3600 + minutes * 60 + seconds;
+            }
+
+            // Lấy số giây từ chuỗi thời gian
+            const startTimeInSeconds = timeStringToSeconds(startTimeString);
+            const endTimeInSeconds = timeStringToSeconds(endTimeString);
+
+            // Tính chênh lệch thời gian trong giây
+            const timeDifferenceInSeconds = endTimeInSeconds - startTimeInSeconds;
+
+            // Chuyển đổi chênh lệch thời gian thành giờ, phút, giây
+            const hours = Math.floor(timeDifferenceInSeconds / 3600);
+            const minutes = Math.floor((timeDifferenceInSeconds % 3600) / 60);
+            const seconds = Math.floor(timeDifferenceInSeconds % 60);
+
+            // Định dạng chuỗi kết quả
+            const resultString = `${hours} Giờ ${minutes} phút`;
+
+            return resultString;
+        }
+    </script>
+
 </body>
+
 
 
 

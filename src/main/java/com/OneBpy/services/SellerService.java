@@ -39,4 +39,6 @@ public interface SellerService {
 
     Notice createNotice(CreateNoticeDTO noticeDTO);
     Notice updateNotice(UpdateNoticeDTO noticeDTO);
+
+    void markStop(List<StopDTO> stopDTOList);
 }

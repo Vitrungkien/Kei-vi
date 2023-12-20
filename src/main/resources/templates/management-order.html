@@ -68,8 +68,8 @@
       color: black;
     }
     .frmDatVe {
-      background-color: rgb(64, 176, 112);
-      display: none;
+      background-color: #f2f2f2;
+      /*display: none;*/
       position: fixed;
       top: 10px;
       left: 0;
@@ -98,6 +98,17 @@
     .me1 a {
       line-height: 32px;
       margin: 0;
+    }
+
+    .frmDatVe-modal {
+      display: none;
+      background-color: rgb(40,42,53, 0.6);
+      width: 1800px;
+      height: 800px;
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      z-index: 999;
     }
   </style>
   <title>Management</title>
@@ -231,9 +242,10 @@
           break;
       }
       row.insertCell().innerHTML = `<button class="chi-tiet" onclick="showOrderForm(${order.orderId})">Xem chi tiết</button>
+<div id="frmDatVe${order.orderId}" class="frmDatVe-modal">
 <form class="frmDatVe p-4 rounded-1 m-auto"
             action="/management/my-store/${order.orderId}/except"
-            method="post" id="frmDatVe${order.orderId}"
+            method="post" id="formDatVe${order.orderId}"
             object="updatedOrder"
     >
       <h3 class="text-center">Vé ${order.productName}</h3>
@@ -263,11 +275,6 @@
         <p class="col-sm-3">Thời gian đón:</p>
         <div class="col-sm-9">
           <p class="">${formattedPickTime}</p>
-        </div>
-      </div>
-<!--          <input type="datetime-local" class="form-control" id="pickTime" name="pickTime"-->
-<!--       pattern="yyyy-MM-ddThh:mm" required autofocus="autofocus" />-->
-
         </div>
       </div>
 
@@ -333,7 +340,9 @@
           </button>
         </div>
       </div>
-    </form>
+ </form>
+</div>
+
 `;
       if (order['orderStatus'] == 'Chờ xác nhận') {
         document.getElementById('confirmButton' + order['orderId']).style.display = 'block'; // Ẩn nút nếu orderStatus khác 'Đã xác nhận'
@@ -355,14 +364,14 @@
 
 <!--Show/hide details info-->
 <script>
-  function showOrderForm(orderId) {
+  function showOrderForm(productId) {
     hideAllOrderForm();
-    const clickedForm = document.getElementById('frmDatVe' + orderId);
+    const clickedForm = document.getElementById('frmDatVe' + productId);
     clickedForm.style.display = 'block';
   }
 
   function hideAllOrderForm() {
-    const orderForms = document.querySelectorAll('.frmDatVe');
+    const orderForms = document.querySelectorAll('.frmDatVe-modal');
     orderForms.forEach(function (orderForm) {
       orderForm.style.display = 'none';
     });
@@ -381,7 +390,7 @@
 <script>
   function setActionAndSubmit(orderId, action) {
     document.getElementById('hiddenInput' + orderId).value = action;
-    document.getElementById('frmDatVe'+ orderId).submit();
+    document.getElementById('formDatVe'+ orderId).submit();
   }
 </script>
 

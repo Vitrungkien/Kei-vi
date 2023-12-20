@@ -6,11 +6,15 @@ import com.OneBpy.models.Product;
 import com.OneBpy.repositories.ProductRepository;
 import com.OneBpy.repositories.StopRepository;
 import com.OneBpy.repositories.StoreRepository;
+import com.OneBpy.response.SearchByKeywordRq;
 import com.OneBpy.response.SearchForm;
 import com.OneBpy.services.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.core.AsyncContextImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +32,64 @@ public class WebController {
     private final StopRepository stopRepository;
     private final StoreRepository storeRepository;
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(WebController.class);
     @GetMapping("/")
     public String Home(Model model) {
         model.addAttribute("searchForm", new SearchForm());
+        model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
         return "main";
     }
+
+//    @GetMapping("/search-by-stop")
+//    public String searchProducts(@ModelAttribute("searchForm") SearchForm searchForm, Model model) {
+//        LocalTime startTime2 = searchForm.getStartTime1().plusHours(1);
+//        List<Product> productList = productRepository.findProductsByTimeAndAddress(
+//                searchForm.getStartTime1(), startTime2,
+//                searchForm.getStartAddress(), searchForm.getEndAddress()
+//        );
+//        List<PDTO> products = userService.getAllProduct(productList);
+//        model.addAttribute("products", products);
+//        return "search";
+//    }
+//
+//    @GetMapping("/search-by-keywords")
+//    public String searchProductByKeyword(@ModelAttribute("searchByKeywordRq") SearchByKeywordRq searchByKeywordRq, Model model) {
+//        List<Product> productList = productRepository.findByKeyword(searchByKeywordRq.getKeyword());
+//        List<PDTO> products = userService.getAllProduct(productList);
+//        model.addAttribute("products", products);
+//        return "search";
+//    }
+
+
+    @GetMapping("/search-by-stop")
+    public String search(@ModelAttribute("searchForm") SearchForm searchForm,
+                         @ModelAttribute("searchByKeywordRq") SearchByKeywordRq searchByKeywordRq,
+                         Model model, HttpServletRequest request) {
+        logger.info("Received request to search. Form data:");
+        logger.info("searchForm: {}", searchForm);
+        logger.info("searchByKeywordRq: {}", searchByKeywordRq);
+        if (searchForm.getEndAddress() != null && searchForm.getStartAddress() != null && searchForm.getStartTime1() != null) {
+            logger.info("searchForm parameter found");
+            LocalTime startTime2 = searchForm.getStartTime1().plusHours(1);
+            List<Product> productList = productRepository.findProductsByTimeAndAddress(
+                    searchForm.getStartTime1(), startTime2,
+                    searchForm.getStartAddress(), searchForm.getEndAddress()
+            );
+            List<PDTO> products = userService.getAllProduct(productList);
+            model.addAttribute("products", products);
+            logger.info("searchForm: true");
+        } else if (searchByKeywordRq.getKeyword() != null) {
+            logger.info("searchByKeywordRq parameter found");
+            List<Product> productList = productRepository.findByKeyword(searchByKeywordRq.getKeyword());
+            List<PDTO> products = userService.getAllProduct(productList);
+            model.addAttribute("products", products);
+            logger.info("searchByKeywordRq: true");
+        }
+
+        return "search";
+    }
+
+
 
     @GetMapping("/order")
     public String Order() {
@@ -99,21 +156,31 @@ public class WebController {
 //        return "main";
 //    }
 
-    @GetMapping("/search-form")
-    public String showSearchForm(Model model) {
+//    @GetMapping("/search-form")
+//    public String showSearchForm(Model model) {
+//        model.addAttribute("searchForm", new SearchForm());
+//        return "search";
+//    }
+
+    @GetMapping("/search")
+    public String search(Model model) {
         model.addAttribute("searchForm", new SearchForm());
+        model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
         return "search";
     }
 
-    @GetMapping("/search")
-    public String searchProducts(@ModelAttribute("searchForm") SearchForm searchForm, Model model) {
-        LocalTime startTime2 = searchForm.getStartTime1().plusHours(1);
-        List<Product> productList = productRepository.findProductsByTimeAndAddress(
-                searchForm.getStartTime1(), startTime2,
-                searchForm.getStartAddress(), searchForm.getEndAddress()
-        );
-        List<PDTO> products = userService.getAllProduct(productList);
-        model.addAttribute("products", products);
-        return "search";
+    @GetMapping("/search-by-keyword")
+    public String searchByKeyword(Model model) {
+        model.addAttribute("searchForm", new SearchForm());
+        model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
+        return "search-by-keyword";
+    }
+
+
+
+
+    @GetMapping("/my-order")
+    public String myOrder() {
+        return "my-order";
     }
 }

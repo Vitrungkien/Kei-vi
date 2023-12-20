@@ -42,5 +42,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             , nativeQuery = true)
     List<Product> findAllStoreProducts(Long store_id);
 
-//    Page<Product> findAll(Pageable pageable);
+
+    @Query(value = "SELECT DISTINCT p.* FROM product_tb p " +
+            "INNER JOIN stop_tb s ON p.product_id = s.product_id AND s.stop_address LIKE %:keyword% " +
+            "ORDER BY p.start_time ASC"
+            , nativeQuery = true)
+    List<Product> findByKeyword(@Param("keyword") String keyword);
 }

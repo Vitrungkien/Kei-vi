@@ -31,13 +31,14 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/login", "/signup", "/signup-seller", "/", "/search").permitAll()
+                        .requestMatchers("/login", "/signup", "/signup-seller", "/", "/search",
+                                "/search-by-keywords", "/search-by-keyword", "/search-by-stop").permitAll()
                         .requestMatchers("/swagger-ui/**", "swagger-ui.html").permitAll()
                         .requestMatchers( "/js/**", "/css/**", "/img/**").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ROLE_ADMIN.name())
                         .requestMatchers("/api/v1/user/**").hasAnyAuthority(Role.ROLE_USER.name(), Role.ROLE_SELLER.name(), Role.ROLE_ADMIN.name())
                         .requestMatchers("/api/v1/seller/**").hasAnyAuthority(Role.ROLE_SELLER.name())
-                        .requestMatchers("/profile", "/cart", "/orders", "/order").hasAnyAuthority(
+                        .requestMatchers("/profile", "/my-order", "/orders", "/order").hasAnyAuthority(
                                 Role.ROLE_ADMIN.name(), Role.ROLE_SELLER.name(), Role.ROLE_USER.name())
                         .requestMatchers("/all-product").permitAll()
                         .anyRequest().authenticated()

@@ -7,39 +7,33 @@ body {
     font-family: var(--font-chu);
     background-color: #F2F2F2;
 }
-.container {
+.container1 {
     background-color: #F2F2F2;
-    margin: auto;
-    border: 10px solid #F2F2F2;
+    margin: 0;
+    border: none;
 }
 
 
 /* --------------------------------------- search form ----------------------------------------- */
 .search-form {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-bottom: 20px;
     margin-top: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin: 8px auto;
-    width: 85%;
+    width: 100%;
     padding: 8px 0px;
     background-color: #fff;
 }
 
 .searchFrm {
+    width: 100%;
+    padding: 5px 0;
     display: flex;
-    padding: 5px 16px;
 }
 
-.search-form .search-input {
-    /*display: flex;*/
-    /*border: 1px solid #ccc;*/
-    /*padding: 5px 16px;*/
-    /*border-radius: 5px;*/
-    
-}
+
 .input-box {
     display: flex;
     align-items: center;
@@ -60,7 +54,7 @@ body {
 
 .input-box .input-and-label input {
     /*border: none;*/
-    padding: 0;
+    /*padding: 0;*/
 }
 
 .search-form .search-button {
@@ -70,16 +64,16 @@ body {
 }
 
 .search-form .search-button button {
-    cursor: pointer;       
+    cursor: pointer;
 }
 
 .search-form .search-button button:hover {
     color: #fff;
-    background-color: #2474E5;       
+    background-color: #2474E5;
 }
 .search-form .search-button button:active {
     color: #fff;
-    background-color: #04AA6D;       
+    background-color: #04AA6D;
 }
 .search-form .input-box .search-form-icon {
     width: 24px;
@@ -116,7 +110,7 @@ body {
 
 /* ---------------------------------------- main body------------------------------------------- */
 .filter-and-list-product {
-    display: grid;
+    /*display: grid;*/
     grid-template-columns: 270px 730px;
     font-family: var(--font-chu);
     width: 95%;
@@ -186,20 +180,23 @@ body {
 
 /* ------------------------------------- main right body --------------------------------------- */
 .right-body {
-    padding: 17px;
+    padding: 0px;
     font-size: 14px;
 }
 
 
-    /* ------------------------------------------ ve xe ----------------------------------- */
+/* ------------------------------------------ ve xe ----------------------------------- */
 .ve-xe {
     display: grid;
     grid-template-columns: 20% 80%;
     background-color: #fff;
     border-radius: 10px;
-    margin: 16px 0;
     padding: 16px;
     position: relative;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+    margin: 0;
+    width: 100%;
+    margin: 16px 0;
 }
 
 .ve-xe:hover {
@@ -215,7 +212,7 @@ body {
 .ve-xe .info-ve {
     margin-left: 20px;
 }
-        /* -------------------------------- info ve p1 ---------------------------------- */
+/* -------------------------------- info ve p1 ---------------------------------- */
 .ve-xe .info-ve-p1 {
     display: flex;
     align-items: center;
@@ -244,14 +241,14 @@ body {
 .ve-xe .car-type {
     margin: auto;
 }
-        /* -------------------------------- end info ve p1 ------------------------------ */
+/* -------------------------------- end info ve p1 ------------------------------ */
 
-        /* -------------------------------- info ve p2 ---------------------------------- */
+/* -------------------------------- info ve p2 ---------------------------------- */
 .ve-xe .info-ve-p2 {
     display: grid;
     grid-template-columns: auto auto;
 }
-            /* -------------------------------- info ve p2-1 ------------------------ */
+/* -------------------------------- info ve p2-1 ------------------------ */
 .ve-xe .info-ve-p2-1 {
     display: grid;
 }
@@ -278,15 +275,15 @@ body {
 .dot-dot {
     flex-direction: column;
 }
-                /* -------------------------------- info ve p2-1-1 -------------------- */
+/* -------------------------------- info ve p2-1-1 -------------------- */
 .ve-xe .info-ve-p2-1 .info-p2-1-1 .dot-dot {
     width: 15px;
     height: 60px;
 }
-                /* --------------------------- end info ve p2-1-1 ------------------- */
-            /* -------------------------------- end info ve p2-1 -------------------- */ 
+/* --------------------------- end info ve p2-1-1 ------------------- */
+/* -------------------------------- end info ve p2-1 -------------------- */
 
-            /* ------------------------------ info ve p2-2 -------------------------- */                      
+/* ------------------------------ info ve p2-2 -------------------------- */
 .ve-xe .info-ve-p2-2 {
     padding-left: 10px;
     border-left: 1px solid #ccc;
@@ -331,25 +328,25 @@ body {
     color: #fff;
     background-color: #04AA6D;
 }
-            /* -------------------------------- end info ve p2-2 -------------------- */
+/* -------------------------------- end info ve p2-2 -------------------- */
 .ve-xe .type-pay {
     grid-column: 1/3;
     font-weight: bold;
     text-align: right;
     margin: 0;
 }
-        /* -------------------------------- info ve p2 ---------------------------------- */
-    /* --------------------------------------end ve xe ----------------------------------- */
+/* -------------------------------- info ve p2 ---------------------------------- */
+/* --------------------------------------end ve xe ----------------------------------- */
 
 
 
 
-    /* ------------------------------------- chi tiet ve xe-------------------------------- */
+/* ------------------------------------- chi tiet ve xe-------------------------------- */
 .detail {
     grid-column: 1/3;
     /*display: none;*/
 }
-        /* ------------------------------------- menu thong tin------------------------ */
+/* ------------------------------------- menu thong tin------------------------ */
 .detail-info {
     grid-column: 1/3;
 }
@@ -366,7 +363,7 @@ body {
     padding: 0px 20px;
 }
 .list-info .menu-detail {
-   
+
 }
 
 .list-info button {
@@ -375,33 +372,30 @@ body {
     background-color: #fff;
     cursor: pointer;
 }
-        /* ------------------------------ end menu thong tin ---------------------------- */
+/* ------------------------------ end menu thong tin ---------------------------- */
 
 
 
 
-        /* ---------------------------- 5 thong tin trong menu -------------------------- */
+/* ---------------------------- 5 thong tin trong menu -------------------------- */
 
 .five-info {
 
 }
-            /* ------------------------------chi tiet anh---------------------------- */
+/* ------------------------------chi tiet anh---------------------------- */
 .detai-img {
-   border: 1px solid #ccc;
-   display: flex;
-} 
+    border: 1px solid #ccc;
+    display: flex;
+}
 .main-detail-img {
 
 }
 .detai-img .main-detail-img {
-    max-width: 80%;
+    max-width: 25%;
     height: auto;
-    /*margin-left: auto;*/
-    /*margin-right: auto;*/
     width: 50%;
     display: flex;
     padding: 5px;
-    /* grid-column: 1/3; */
 }
 .detai-img .sub-img {
     display: flex;
@@ -412,9 +406,9 @@ body {
 .detai-img .sub-img img {
     padding: 10px;
 }
-            /* ------------------------------ end chi tiet anh------------------------ */
+/* ------------------------------ end chi tiet anh------------------------ */
 
-            /* ------------------------------ diem don tra---------------------------- */
+/* ------------------------------ diem don tra---------------------------- */
 .diem-don-tra {
     grid-template-columns: auto auto;
     border: 1px solid #ccc;
@@ -431,10 +425,10 @@ body {
 .diem-tra {
 
 }
-            /* ------------------------------end diem don tra------------------------ */
+/* ------------------------------end diem don tra------------------------ */
 
 
-            /* ---------------------------------tien ich----------------------------- */
+/* ---------------------------------tien ich----------------------------- */
 .tien-ich {
     border: 1px solid #ccc;
     display: none;
@@ -443,9 +437,9 @@ body {
     padding: 15px;
     /*list-style: none;*/
 }
-            /* --------------------------------- end tien ich------------------------ */            
+/* --------------------------------- end tien ich------------------------ */
 
-            /* -------------------------------chinh sach----------------------------- */
+/* -------------------------------chinh sach----------------------------- */
 .chinh-sach {
     border: 1px solid #ccc;
     display: none;
@@ -455,10 +449,10 @@ body {
 .chinh-sach ul {
 
 }
-            /* ------------------------------- end chinh sach------------------------ */
+/* ------------------------------- end chinh sach------------------------ */
 
 
-            /* ---------------------------------- danh gia -------------------------- */
+/* ---------------------------------- danh gia -------------------------- */
 .review {
     border: 1px solid #ccc;
     display: none;
@@ -512,21 +506,32 @@ body {
     margin-top: 0px;
 
 }
-            /* ------------------------------- danh gia ----------------------------- */
-        /* ---------------------------- 5 thong tin trong menu --------------------------- */
-    /* ---------------------------------- end chi tiet ve xe -------------------------------- */
+/* ------------------------------- danh gia ----------------------------- */
+/* ---------------------------- 5 thong tin trong menu --------------------------- */
+/* ---------------------------------- end chi tiet ve xe -------------------------------- */
 /* -------------------------------------- end main right body ----------------------------------- */
 
 .frmDatVe {
-    background-color: rgb(64, 176, 112);
-    display: none;
+    background-color: #f2f2f2;
+    color: black;
+    font-weight: bold;
+    /*display: none;*/
     position: fixed;
     top: 10px;
     left: 0;
     transform: translateX(91%);
     width: 40%;
-    color: white;
     z-index: 999;
+}
+
+.footer {
+    position: relative;
+    bottom: 0;
+    background-color: black;
+    color: white;
+    padding: 30px;
+    width: 100%;
+    text-align: center;
 }
 
 
