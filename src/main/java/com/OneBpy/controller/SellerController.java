@@ -1,20 +1,14 @@
-package com.OneBpy.controller.webController;
+package com.OneBpy.controller;
 
 //import ch.qos.logback.core.model.Model;
 import com.OneBpy.dtos.*;
-import com.OneBpy.models.*;
 import com.OneBpy.repositories.*;
-import com.OneBpy.response.StopDtoList;
-import com.OneBpy.services.OrderDto;
+import com.OneBpy.dtos.StopDtoList;
 import com.OneBpy.services.SellerService;
 import com.OneBpy.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/management")
 @Controller
@@ -47,7 +41,7 @@ public class SellerController {
         return "redirect:/management";
     }
 
-    //Cập nhật sản phẩm
+//Cập nhật sản phẩm
     @PostMapping("/my-store/{product_id}/update-product")
     public String updateProduct(@PathVariable("product_id") Long product_id,
                                 @ModelAttribute ProductDTO productDTO) {

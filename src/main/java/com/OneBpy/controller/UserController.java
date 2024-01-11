@@ -1,4 +1,4 @@
-package com.OneBpy.controller.webController;
+package com.OneBpy.controller;
 
 import com.OneBpy.dtos.OrderRequest;
 import com.OneBpy.models.Order;
@@ -52,15 +52,15 @@ public class UserController {
 //    }
 
 
-
     // Dat hang (active)
     @PostMapping("/{product_id}/order")
     public String creatOrder(@PathVariable("product_id") Long product_id,
                              @ModelAttribute OrderRequest orderRequest)
     {
-        Order newOrder = userService.createOrder(product_id, orderRequest);
+        userService.createOrder(product_id, orderRequest);
         return "redirect:/";
     }
+
 
     //Search product by time and address
     @GetMapping("/{product_id}")

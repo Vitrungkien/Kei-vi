@@ -1,4 +1,4 @@
-package com.OneBpy.controller.webController;
+package com.OneBpy.controller;
 
 
 import com.OneBpy.models.Role;

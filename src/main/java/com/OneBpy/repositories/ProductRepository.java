@@ -1,6 +1,5 @@
 package com.OneBpy.repositories;
 
-import com.OneBpy.dtos.ProductDTOS;
 import com.OneBpy.models.Product;
 import com.OneBpy.models.Store;
 import org.springframework.data.domain.Page;
@@ -43,9 +42,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllStoreProducts(Long store_id);
 
 
-    @Query(value = "SELECT DISTINCT p.* FROM product_tb p " +
-            "INNER JOIN stop_tb s ON p.product_id = s.product_id AND s.stop_address LIKE %:keyword% " +
+    @Query(value =  "SELECT DISTINCT p.* " +
+            "FROM product_tb p " +
+            "INNER JOIN stop_tb s ON p.product_id = s.product_id " +
+            "INNER JOIN store_tb st ON p.store_id = st.store_id " +
+            "WHERE (s.stop_address LIKE %:keyword% OR p.start_address LIKE %:keyword% " +
+            "OR p.end_address LIKE %:keyword% OR st.store_name LIKE %:keyword% " +
+            "OR p.bien_so_xe LIKE %:keyword%) " +
             "ORDER BY p.start_time ASC"
             , nativeQuery = true)
     List<Product> findByKeyword(@Param("keyword") String keyword);
+
+
 }

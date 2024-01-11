@@ -1,4 +1,4 @@
-package com.OneBpy.response;
+package com.OneBpy.dtos;
 
 import lombok.Data;
 

@@ -25,4 +25,7 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             "ORDER BY n.created_at DESC"
             , nativeQuery = true)
     List<NoticeDTO> getAllStoreNotice(@Param("store_id") Long store_id);
+
+    @Query(value = "SELECT n.* FROM notice_tb n ORDER BY n.last_update DESC", nativeQuery = true)
+    List<Notice> getAllActiveNotice();
 }

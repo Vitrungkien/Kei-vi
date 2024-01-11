@@ -14,6 +14,9 @@
             crossorigin="anonymous"
     />
     <style>
+        body {
+            background-color: #F2F2F2;
+        }
         #frmDatVe {
             background-color: rgb(64, 176, 112);
         }
@@ -21,7 +24,7 @@
             /*max-height: 266px;*/
         }
         .notice-div {
-
+            border-top: 2px solid;
         }
         .noticeList {
             max-width: 375px;
@@ -31,20 +34,21 @@
             left: 16px;
             z-index: 999;
             display: none;
+            box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+            background-color: antiquewhite;
         }
         .notice-list-child {
-            background-color: lightgreen;
             border-radius: 10px;
             padding: 10px;
         }
-        .icon-notice {
-            background-color: #007AFF;
-            padding: 5px;
-            color: white;
-            border-radius: 3px;
-            display: flex;
-            justify-content: space-around;
-        }
+        /*.icon-notice {*/
+        /*    background-color: #007AFF;*/
+        /*    padding: 5px;*/
+        /*    color: white;*/
+        /*    border-radius: 3px;*/
+        /*    display: flex;*/
+        /*    justify-content: space-around;*/
+        /*}*/
         #curP {
             text-decoration: none;
             font-weight: bold;
@@ -58,13 +62,33 @@
             font-weight: bold;
             font-size: 16px;
         }
-        .frmDatVe {
+        .frmDatVe-modal {
             display: none;
+            background-color: rgb(40,42,53, 0.6);
+            width: 1800px;
+            height: 800px;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 999;
+        }
+        .frmDatVe {
+            /*display: none;*/
         }
         .search-key {
-            border-radius: 40px;
-            margin-left: 20px;
-            width: 84%;
+            /*border-radius: 40px;*/
+            /*margin-left: 20px;*/
+            /*width: 84%;*/
+        }
+        .ten-nha-xe {
+            font-weight: 500;
+            color: green;
+        }
+        #all-notice {
+            overflow-y: hidden;
+        }
+        #all-notice:hover {
+            overflow-y: auto;
         }
     </style>
     <title>Đặt xe ghép</title>
@@ -72,7 +96,7 @@
 <body>
 <div class="header">
     <div class="left-menu">
-        <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>
+<!--        <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>-->
     </div>
     <ul class="right-menu">
         <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
@@ -84,7 +108,7 @@
                 <li>Thuê xe tự lái</li>
             </ul>
         </li>
-        <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
+        <li class="main-menu"><a class="main-menu-a" href="">Giới thiệu</a></li>
         <li class="main-menu">
             <a class="main-menu-a" href="">Tin tức</a>
             <ul class="sub-main-menu">
@@ -95,13 +119,13 @@
         <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
             <a class="main-menu-a" href="" >Tôi</a>
             <ul class="sub-main-menu sub-main-menu-toi">
-                <li><a th:href="@{/profile}">My Profile</a></li>
+                <li><a th:href="@{/profile}">Tài khoản</a></li>
                 <div id="management" class="some-element"
                      th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
                     <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
                 </div>
-                <li>Quản lý đơn hàng</li>
-                <li><a>Giỏ hàng</a></li>
+                <li th:if="${#authorization.expression('hasRole(''USER'')')}"><a th:href="@{/my-order}" >Quản lý đơn hàng</a></li>
+<!--                <li><a>Giỏ hàng</a></li>-->
                 <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
             </ul>
         </li>
@@ -112,71 +136,93 @@
     </ul>
 </div>
 
-<div class="container1">
+<div class="row" >
+    <div  class="col-lg-3"
+          style="width: 20%; margin: 24px;"
+    >
+        <div class="row" style="background-color: #fff; border-radius: 10px">
+            <h2 class="">Nhà xe hợp tác</h2>
+            <div id="nha-xe" style="max-height: 3300px; overflow-y: auto; border-radius: 10px;">
+                <!--        Danh sách nhà xe... -->
+            </div>
+        </div>
+    </div>
 
-    <div>
+    <div class="container1 col-lg-6"
+         style="padding: 0; margin: 30px; width: 50%;"
+    >
         <form th:action="@{/search-by-stop}" th:object="${searchByKeywordRq}" method="get"
-                   class="searchFrm m-auto" style="width: 60%">
+              class="searchFrm" >
 
-            <input type="text" class="search-key form-control" th:field="*{keyword}" placeholder="Tìm kiếm"/>
+            <input type="text" class="search-key form-control" th:field="*{keyword}"
+                   placeholder="Tìm kiếm" style="border-radius: 40px; width: 87%;"/>
 
             <button type="submit" class="btn btn-primary"  style="margin-left: 12px; height: 50px;">Tìm kiếm</button>
 
         </form>
-    </div>
 
-    <div class="search-form">
+        <div class="search-form">
 
-        <div class="search-input">
+            <div class="search-input">
 
-            <form th:action="@{/search-by-stop}" th:object="${searchForm}" method="get" class="searchFrm">
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label">Điểm đón</p>
-                        <input type="text" class="form-control" th:field="*{startAddress}" placeholder="Nhập điểm đón"/>
+                <form th:action="@{/search-by-stop}" th:object="${searchForm}" method="get"
+                      class="searchFrm" >
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/clock-regular.svg}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label">Điểm đón</p>
+                            <input type="text" class="form-control" th:field="*{startAddress}" placeholder="Nhập điểm đón"/>
+                        </div>
                     </div>
-                </div>
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/location.png}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label">Điểm trả</p>
-                        <input type="text" class="form-control" th:field="*{endAddress}" placeholder="Nhập điểm trả"/>
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/location.png}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label">Điểm trả</p>
+                            <input type="text" class="form-control" th:field="*{endAddress}" placeholder="Nhập điểm trả"/>
+                        </div>
                     </div>
-                </div>
-                <div class="input-box">
-                    <img class="search-form-icon" th:src="@{./img/clock.png}" alt="">
-                    <div class="input-and-label">
-                        <p class="input-box-label" >Giờ đi</p>
-                        <input type="time" class="form-control" th:field="*{startTime1}" placeholder="HH:mm:ss" />
+                    <div class="input-box">
+                        <img class="search-form-icon" th:src="@{./img/clock.png}" alt="">
+                        <div class="input-and-label">
+                            <p class="input-box-label" >Giờ đi</p>
+                            <input type="time" class="form-control" th:field="*{startTime1}" placeholder="HH:mm:ss" />
+                        </div>
                     </div>
-                </div>
 
-                <div class="search-button">
-                    <button type="submit">Tìm kiếm</button>
-                </div>
+                    <div class="search-button">
+                        <button type="submit">Tìm kiếm</button>
+                    </div>
 
-            </form>
+                </form>
+
+            </div>
 
         </div>
 
-    </div>
-
-
-    <div class="filter-and-list-product">
-
         <div class="right-body">
-            <h2 style="margin-left: 300px">Kết quả tìm kiếm</h2>
-
+            <h2 style="">Kết quả tìm kiếm</h2>
             <div id="productList">
                 <!-- Placeholder for product list -->
             </div>
 
             <div id="pagination" style="text-align: center;">
-
+                <!--                    Phân trang tại đây...-->
             </div>
 
         </div>
+
+    </div>
+
+    <!--        Thông báo-->
+    <div class="col-lg-3"
+         style="width: 20%; margin: 24px;  right: 0">
+        <div class="row" style="background-color: #fff; border-radius: 10px">
+            <h2>Thông báo</h2>
+            <div id="all-notice" style="max-height: 3300px">
+                <!--            Danh sách thông báo...-->
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -237,32 +283,50 @@
     var products = []; // Khai báo mảng products ở đây
     var pageSize = 10; // Số sản phẩm trên mỗi trang
     var currentPage = 0;
+    // Gọi API để lấy danh sách sản phẩm khi trang web được tải
 
+    /*<![CDATA[*/
+    products = /*[[${products}]]*/ [];
+    /*]]>*/
+    console.log("Lay san pham");
+    // console.log(products);
+    displayProducts(currentPage);
+
+    //Hiển thị giá trị nếu khác null
     function displayValue(value) {
         return (value !== null && value !== undefined) ? value : 'null';
     }
 
+    //Hiển thị 10 sản phẩm thỏa mãn kết quả
     function displayProducts(page) {
-        // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
-        var start = page * pageSize;
-        var end = Math.min((page + 1) * pageSize, products.length);
+        if (products.length > 0) {
+            console.log("co value");
+            // Tính toán vị trí bắt đầu và kết thúc của danh sách sản phẩm trên trang
+            var start = page * pageSize;
+            var end = Math.min((page + 1) * pageSize, products.length);
 
-        // Hiển thị sản phẩm trên trang hiện tại
-        var productListDiv = document.getElementById('productList');
-        productListDiv.innerHTML = ''; // Xóa nội dung cũ
+            // Hiển thị sản phẩm trên trang hiện tại
+            var productListDiv = document.getElementById('productList');
+            productListDiv.innerHTML = ''; // Xóa nội dung cũ
 
-        for (var i = start; i < end; i++) {
-            var productDiv = document.createElement('div');
-            productDiv.classList.add('product-div');
+            for (var i = start; i < end; i++) {
+                var productDiv = document.createElement('div');
+                productDiv.classList.add('product-div');
 
-            const timeDifferenceString = calculateTimeDifference(products[i].startTime, products[i].endTime);
-            productDiv.innerHTML =
-                `<div class="ve-xe" id="productId${products[i].productID}">
+                const timeDifferenceString = calculateTimeDifference(products[i].startTime, products[i].endTime);
+                const formattedStartTime = moment(products[i].startTime, "HH:mm:ss").format('HH:mm');
+                const formattedEndTime = moment(products[i].endTime, "HH:mm:ss").format('HH:mm');
+                productDiv.innerHTML =
+                    `<div class="ve-xe" id="productId${products[i].productID}">
         <div>
-            <h6 id="n-hover${products[i].productID}" onmouseover="showNoticeList(${products[i].productID})"
-         onmouseout="hideNoticeList(${products[i].productID})" class="icon-notice"
+
+        <h6 id="n-hover${products[i].productID}" onclick="showNoticeList(${products[i].productID})"
+         class="icon-notice"
          >Thông báo<i class="fa-solid fa-bell" style="color: #fff"></i></h6>
-            <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />
+
+
+<!--            <img id="anh-xe" src="/img/Picture1.png" alt="Anh xe" />-->
+            <img id="anh-xe" src="${products[i].productImage}" alt="Anh xe" />
         </div>
 
       <div class="info-ve">
@@ -283,7 +347,7 @@
           <div class="info-ve-p2-1">
             <div class="info-p2-1-1">
               <img class="start-icon" src="/img/clock-regular.svg" alt="" />
-              <p class="info-time">${products[i].startTime}</p>
+              <p class="info-time">${formattedStartTime}</p>
               <p>- ${products[i].startAddress}</p>
             </div>
 
@@ -293,7 +357,7 @@
             </div>
             <div class="info-p2-1-1">
               <img class="start-icon" src="/img/location.png" alt="" />
-              <p class="info-time">${products[i].endTime}</p>
+              <p class="info-time">${formattedEndTime}</p>
               <p>- ${products[i].endAddress}</p>
             </div>
           </div>
@@ -316,7 +380,9 @@
         </div>
       </div>
       <p class="type-pay">KHÔNG CẦN THANH TOÁN TRƯỚC</p>
-        <div id="noticeList${products[i].productID}" class="noticeList"></div>
+        <div id="noticeList${products[i].productID}" class="noticeList">
+               <h5 style="margin: 10px; text-align: center">Thông báo</h5>
+        </div>
       <div id="productDetail${products[i].productID}" class="detail" style="display: none">
         <div class="detail-info">
           <ul class="list-info">
@@ -353,10 +419,10 @@
         <div class="five-info" id="five-info">
           <!--Hinh anh-->
           <div class="part-detail${products[i].productID} detai-img" id="detai-img${products[i].productID}">
-            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
-            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
-            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
-            <img class="main-detail-img" src="/img/Picture1.png" alt="" />
+            <img class="main-detail-img" src="https://static.vexere.com/production/images/1691571338555.jpeg" alt="" />
+            <img class="main-detail-img" src="https://static.vexere.com/production/images/1691571338859.jpeg" alt="" />
+            <img class="main-detail-img" src="https://static.vexere.com/production/images/1691571339090.jpeg" alt="" />
+            <img class="main-detail-img" src="https://static.vexere.com/production/images/1692701522841.jpeg" alt="" />
             <div class="sub-img">
 
             </div>
@@ -395,22 +461,22 @@
         </div>
       </div>
     </div>
-
+</div>
+<div id="frmDatVe${products[i].productID}" class="frmDatVe-modal">
     <form class="frmDatVe p-4 rounded-1 m-auto"
             action="/api/v1/user/${products[i].productID}/order"
-            method="post" id="frmDatVe${products[i].productID}"
-            object="orderRequest"
-    >
+            method="post"
+            object="orderRequest">
       <h3 class="text-center">Đặt vé</h3>
 
-      <div class="row mb-3 d-flex">
+      <div class="row d-flex">
         <p class="col-sm-3">Tên vé:</p>
         <div class="col-sm-9">
           <p class="">${products[i].productName}</p>
         </div>
       </div>
 
-      <div class="row mb-3 d-flex">
+      <div class="row d-flex">
         <p class="col-sm-3">Nhà Xe:</p>
         <div class="col-sm-9">
           <p class="">${products[i].storeName}</p>
@@ -468,6 +534,7 @@
         <div class="col-sm-9">
           <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
           placeholder="Số điện thoại" required autofocus="autofocus"
+
           />
         </div>
       </div>
@@ -484,67 +551,88 @@
       <div class="row mb-3">
         <div class="col-sm-6 offset-sm-3">
           <button type="submit" class="btn btn-primary">Đặt vé</button>
-          <button type="button" class="btn btn-secondary" onclick="dismissForm(${products[i].productID})">
+          <button type="button" class="btn btn-danger" onclick="dismissForm(${products[i].productID})">
             Hủy
           </button>
         </div>
       </div>
     </form>
-
+</div>
 `;
 
-            productListDiv.appendChild(productDiv);
+                productListDiv.appendChild(productDiv);
 
-            const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
-            if (products[i].stopList && products[i].stopList.length > 0) {
-                const ul = document.createElement('ul');
-                products[i].stopList.forEach(function (stop) {
-                    const li = document.createElement('li');
-                    li.innerHTML =
-                        displayValue(stop.stopTime) +
-                        ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
-                    if (displayValue(stop.rightNow) == true) {
-                        li.style.color = 'green';
-                    }
-                    ul.appendChild(li);
-                });
-                stopListDiv.appendChild(ul);
-            }
+                const stopListDiv = document.getElementById(`stopList${products[i].productID}`);
+                if (products[i].stopList && products[i].stopList.length > 0) {
+                    const ul = document.createElement('ul');
+                    products[i].stopList.forEach(function (stop) {
+                        const li = document.createElement('li');
+                        const formattedStopTime = moment(stop.stopTime, "HH:mm:ss").format('HH:mm');
+                        li.innerHTML =
+                            displayValue(formattedStopTime) +
+                            ' - ' + displayValue(stop.stopAddress) + (displayValue(stop.rightNow) ? ' - Vị trí hiện tại' : '') ;
+                        if (displayValue(stop.rightNow) == true) {
+                            li.style.color = 'red';
+                        }
+                        ul.appendChild(li);
+                    });
+                    stopListDiv.appendChild(ul);
+                }
 
-            const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
+                const noticeListDiv = document.getElementById(`noticeList${products[i].productID}`);
 
-            if (products[i].noticeList && products[i].noticeList.length > 0) {
-                const noticeListChild = document.createElement('div');
-                noticeListChild.classList.add('notice-list-child');
-                // Lấy 3 notice cuối cùng
-                const lastThreeNotices = products[i].noticeList.slice(-3);
+                if (products[i].noticeList && products[i].noticeList.length > 0) {
 
-                lastThreeNotices.forEach(function (notice) {
-                    const noticeDiv = document.createElement('div');
-                    noticeDiv.classList.add('notice-div');
-                    var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
-                    const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
-                    noticeDiv.innerHTML = `
-                                        <h6>${notice.title}</h6>
-                                        <p>Nội dung: ${notice.content}</p>
-                                        <div class="d-flex" style="justify-content: space-between;">
-                                            <p>${status}</p>
-                                            <p>Cập nhật lúc: ${formattedLastUpdate}</p>
-                                        </div>
+                    const noticeListChild = document.createElement('div');
+                    noticeListChild.classList.add('notice-list-child');
+                    // Lấy 3 notice cuối cùng
+                    const lastThreeNotices = products[i].noticeList.slice(-3);
+
+                    lastThreeNotices.forEach(function (notice) {
+                        const noticeDiv = document.createElement('div');
+                        noticeDiv.classList.add('notice-div');
+                        var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+                        const formattedLastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+                        noticeDiv.innerHTML = `
+                      <h6 style="color: green">${notice.storeName}</h6>
+                      <h6 style="color: red">Thông báo: ${notice.title}</h6>
+                      <p>${notice.content}</p>
+                      <p>${notice.expired ? 'Hết hiệu lực' : 'Còn hiệu lực'}</p>
+                      <p>Sửa đổi lần cuối: ${formattedLastUpdate}</p>
 
 
                                     `;
-                    noticeListChild.appendChild(noticeDiv);
-                });
-                noticeListDiv.appendChild(noticeListChild);
+                        noticeListChild.appendChild(noticeDiv);
+                    });
+                    noticeListDiv.appendChild(noticeListChild);
+                }
+                else {
+                    const nullNotice = document.createElement('p');
+                    nullNotice.style.marginLeft = '20px';
+                    nullNotice.textContent = 'Không có thông báo nào gần đây';
+                    noticeListDiv.appendChild(nullNotice);
+                }
+
+                console.log("Hien thi san pham");
+
+
             }
-
-            console.log("Hien thi san pham");
-
-
+        }
+        else {
+            var productListDiv = document.getElementById('productList');
+            var div = document.createElement('p');
+            div.innerHTML =
+                `<p>Xin lỗi về sự bất tiện này. Hiện chưa có chuyến
+            xe nào phù hợp với từ khóa bạn tìm kiếm. Vui lòng thử lại với từ khóa khác hoặc tìm kiếm chuyến xe khác</p>`;
+            productListDiv.appendChild(div);
+            console.log("no value");
         }
     }
-
+    if (products.length > 10) {
+        displayPagination();
+        console.log("Da chuyen trang");
+    }
+    //Phân trang nếu sản phẩm > 10
     function displayPagination() {
         // Tính toán tổng số trang
         var totalPages = Math.ceil(products.length / pageSize);
@@ -589,6 +677,7 @@
         };
         paginationContainer.appendChild(nextPageLink);
     }
+    //Chuyển trang
     function changePage(page, event) {
         currentPage = page;
         displayProducts(currentPage);
@@ -597,20 +686,6 @@
         curP.textContent = currentPage + 1;
         event.preventDefault();
     }
-
-    // Gọi API để lấy danh sách sản phẩm khi trang web được tải
-
-    /*<![CDATA[*/
-    products = /*[[${products}]]*/ [];
-    /*]]>*/
-    console.log("Lay san pham");
-    displayProducts(currentPage);
-    console.log("Hien thi san pham success");
-    if (products.length > 10) {
-        displayPagination();
-    }
-    console.log("Hien thi chuyen trang");
-
 
     //Tính tổng thời gian đi
     function calculateTimeDifference(startTimeString, endTimeString) {
@@ -639,10 +714,19 @@
     }
 </script>
 
+
+<!--    Ẩn hiện thông báo bằng hover-->
 <script>
     // Hàm để hiển thị thẻ chứa noticeList
     function showNoticeList(id) {
-        document.getElementById('noticeList' + id).style.display = 'block';
+        var noticeList = document.getElementById('noticeList' + id);
+        if (noticeList.style.display == 'block') {
+            noticeList.style.display = 'none';
+        }
+        else {
+            noticeList.style.display = 'block';
+        }
+
     }
 
     // Hàm để ẩn thẻ chứa noticeList
@@ -747,7 +831,7 @@
     }
 
     function hideAllOrderForm() {
-        const orderForms = document.querySelectorAll('.frmDatVe');
+        const orderForms = document.querySelectorAll('.frmDatVe-modal');
         orderForms.forEach(function (orderForm) {
             orderForm.style.display = 'none';
         });
@@ -762,8 +846,66 @@
 
 </script>
 
+<script>
+    function displayValue(value) {
+        return (value !== null && value !== undefined) ? value : 'null';
+    }
+    // Gọi API để lấy danh sách sản phẩm khi trang web được tải
+    var notices = [];
+    var xhe1 = new XMLHttpRequest();
+    xhe1.open('GET', '/all-notice', true);
+    xhe1.onreadystatechange = function () {
+        if (xhe1.readyState == 4 && xhe1.status == 200) {
+            notices = JSON.parse(xhe1.responseText);
+            const allNotice = document.getElementById('all-notice');
+            notices.forEach(function (notice) {
+                var lastUpdate = moment(notice['lastUpdate']).format('HH:mm DD/MM/YYYY');
+                const noticeDiv = document.createElement('div');
+                noticeDiv.classList.add('notice-div');
+                console.log(notice.noticeName);
+                noticeDiv.innerHTML = `
+          <h6 style="color: green">${notice.storeName}</h6>
+          <h6 style="color: red">Thông báo: ${notice.title}</h6>
+          <p>${notice.content}</p>
+          <p>${notice.expired ? 'Hết hiệu lực' : 'Còn hiệu lực'}</p>
+          <p>Sửa đổi lần cuối: ${lastUpdate}</p>
+        `;
 
+                allNotice.appendChild(noticeDiv);
+            })
+        }
+    };
+    xhe1.send();
+</script>
 
+<script>
+    // Gọi API để lấy danh sách sản phẩm khi trang web được tải
+    var storeNames = [];
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('GET', '/all-store-name', true);
+    xhr2.onreadystatechange = function () {
+        if (xhr2.readyState == 4 && xhr2.status == 200) {
+            storeNames = JSON.parse(xhr2.responseText);
+            const listNhaXe = document.getElementById('nha-xe');
+            storeNames.forEach(function (storeName) {
+                const p = document.createElement('p');
+                p.innerText = storeName;
+                p.classList = 'ten-nha-xe';
+                listNhaXe.appendChild(p);
+            });
+
+        }
+    };
+    xhr2.send();
+</script>
+
+<!--<script th:inline="javascript">-->
+
+<!--    var currentUser = /*[[${currentUser}]]*/ null;-->
+
+<!--    console.log(currentUser.firstName + " " + currentUser.lastName);-->
+<!--    value="${currentUser.phoneNumber ? currentUser.phoneNumber : ''}"-->
+<!--</script>-->
 </body>
 
 </html>

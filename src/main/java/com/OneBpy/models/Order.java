@@ -24,6 +24,7 @@ public class Order {
     private int price;
     private int totalPrice;
     private String orderStatus;
+    private Date lastUpdate;
     private Date createdAt;
 
     @ManyToOne

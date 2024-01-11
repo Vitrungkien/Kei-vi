@@ -1,4 +1,4 @@
-package com.OneBpy.controller.webController;
+package com.OneBpy.controller;
 
 import com.OneBpy.dtos.*;
 import com.OneBpy.models.ResponseObject;
@@ -53,7 +53,7 @@ public class AuthenticationController {
         String token = jwtAuthenticationResponse.getToken();
         // Thêm token vào cookie
         Cookie cookie = new Cookie("Authorization", token);
-        cookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(5)); // Thời gian sống của token
+        cookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(15)); // Thời gian sống của token
         cookie.setPath("/");
 //        cookie.setHttpOnly(true);
 //        cookie.setSecure(true);
@@ -64,54 +64,11 @@ public class AuthenticationController {
         return "redirect:/";
     }
 
-
-
-//    @PostMapping("/login")
-//    public ResponseEntity<JwtAuthenticationResponse> signIn(@ModelAttribute("signInRequest") SignInRequest signInRequest,
-//                                                            HttpServletResponse response) throws IOException, JSONException {
-//        JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.signIn(signInRequest);
-//        String token = jwtAuthenticationResponse.getToken();
-//        // Thêm token vào cookie
-//        Cookie cookie = new Cookie("Authorization", token);
-////        cookie.setHttpOnly(true);
-//        cookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(5)); // Thời gian sống của token
-//        cookie.setPath("/");
-//        response.addCookie(cookie);
-//        response.addHeader("Authorization", "Bearer " + token );
-//
-////        Optional<User> optionalUser = userRepository.findByEmail(signInRequest.getEmail());
-////        if (optionalUser.isPresent()) {
-////            response.getWriter().write(new JSONObject()
-////                    .put("userId", optionalUser.get().getUserID())
-////                    .put("role", optionalUser.get().getRole())
-////                    .toString()
-////            );
-////            response.addHeader("Authorization", "Bearer " + token );
-////        }
-//        return ResponseEntity.ok(authenticationService.signIn(signInRequest));
-//    }
-
-
-
-//    @PostMapping("/login")
-//    public ResponseEntity<JwtAuthenticationResponse> signIn(@RequestBody SignInRequest signInRequest) {
-//        return ResponseEntity.ok(authenticationService.signIn(signInRequest));
-//    }
-//    @PostMapping("/login")
-//    public void logIn(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
-//         authenticationService.logIn(signInRequest, response);
-//    }
-
     @PostMapping("/signup")
     public String signup(@ModelAttribute("signUpRequest") SignUpRequest signUpRequest) {
         authenticationService.signUp(signUpRequest);
         return "login";
     }
-
-//    @PostMapping("/signup")
-//    public ResponseEntity<User> signup(@RequestBody SignUpRequest signUpRequest) {
-//        return ResponseEntity.ok(authenticationService.signUp(signUpRequest));
-//    }
 
     @PostMapping("/signup-seller")
     public String signupSeller(@ModelAttribute("signUpRequest") SignUpRequest signUpRequest) {

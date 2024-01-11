@@ -246,11 +246,11 @@
                     >
                     <input type="text" class="form-control m-2" placeholder="Nhập địa chỉ"
                         name="stopList[${stopCount}].stopAddress" value="${stop.stopAddress}"
-                        required
+                        id="stopAddress${stopCount}"    required
                     >
                     <input type="time" class="form-control m-2 w-25"
                         name="stopList[${stopCount}].stopTime" value="${stop.stopTime}"
-                        required
+                        id="stopTime${stopCount}"    required
                     >
                     <input type="hidden" class="form-control m-2"
                         name="stopList[${stopCount}].deleted"
@@ -315,6 +315,11 @@
                     deleteButton.addEventListener('click', function () {
                         // Xóa điểm dừng khi nút xóa được nhấp
                         deletedInput.value = 'true';
+                        addressInput.value = null;
+                        addressInput.required = false;
+
+                        timeInput.value = null;
+                        timeInput.required = false;
                         newStopDiv.style.display = 'none';
                     });
 
@@ -343,6 +348,10 @@
     function removeStop(num) {
         const stop = document.getElementById('stop-at' + num);
         const deleted = document.getElementById('deleted' + num);
+        const stopAddress = document.getElementById('stopAddress' + num);
+        const stopTime = document.getElementById('stopTime' + num);
+        stopAddress.required = false;
+        stopTime.required = false;
         deleted.value = 'true';
         stop.style.display = 'none';
     }

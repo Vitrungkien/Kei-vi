@@ -73,8 +73,8 @@
       position: fixed;
       top: 10px;
       left: 0;
-      transform: translateX(91%);
-      width: 40%;
+      /*transform: translateX(91%);*/
+      width: 50%;
     }
     .btn-order {
       display: none;
@@ -115,7 +115,8 @@
 </head>
 <body>
 <div class="header">
-  <div class="left-menu"><a href=""><i class="fa-solid fa-car-side fa-shake fa-xl" style="color: #f2de02;"></i></a>
+  <div class="left-menu">
+    <!--            <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>-->
   </div>
   <ul class="right-menu">
     <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
@@ -127,7 +128,7 @@
         <li>Thuê xe tự lái</li>
       </ul>
     </li>
-    <li class="main-menu"><a class="main-menu-a" href="">Về chúng tôi</a></li>
+    <li class="main-menu"><a class="main-menu-a" href="">Giới thiệu</a></li>
     <li class="main-menu">
       <a class="main-menu-a" href="">Tin tức</a>
       <ul class="sub-main-menu">
@@ -135,15 +136,22 @@
         <li>Thông báo bảo trì 30/12</li>
       </ul>
     </li>
-    <li class="main-menu">
-      <a class="main-menu-a" href="">Tôi</a>
+    <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+      <a class="main-menu-a" href="" >Tôi</a>
       <ul class="sub-main-menu sub-main-menu-toi">
-        <li>My Profile</li>
-        <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
-        <li>Quản lý đơn hàng</li>
-        <li>Giỏ hàng</li>
-        <li>Đăng xuất</li>
+        <li><a th:href="@{/profile}">My Profile</a></li>
+        <div id="management" class="some-element"
+             th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+          <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+        </div>
+        <li><a th:href="@{/my-order}">Quản lý đơn hàng</a></li>
+        <li><a>Giỏ hàng</a></li>
+        <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
       </ul>
+    </li>
+
+    <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''USER'') or hasRole(''SELLER'')')}">
+      <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
     </li>
   </ul>
 </div>
@@ -356,6 +364,9 @@
         document.getElementById('cancelButton' + order['orderId']).style.display = 'block';
         document.getElementById('totalPrices' + order['orderId']).style.display = 'flex';
       }
+      if (order['orderStatus'] == 'Đã hoàn thành' || order['orderStatus'] == 'Đã hủy') {
+        document.getElementById('totalPrices' + order['orderId']).style.display = 'flex';
+      }
 
     });
   })
@@ -391,6 +402,52 @@
   function setActionAndSubmit(orderId, action) {
     document.getElementById('hiddenInput' + orderId).value = action;
     document.getElementById('formDatVe'+ orderId).submit();
+  }
+</script>
+
+
+<!--Logout click-->
+<script>
+  // Gán sự kiện click cho thẻ button
+  document.getElementById('logoutButton').addEventListener('click', function () {
+    // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+    fetch('/logout', {
+      method: 'POST',
+      credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+    })
+            .then(response => {
+              if (response.ok) {
+                // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+              } else {
+                console.error('Logout failed:', response.status);
+              }
+            })
+            .catch(error => console.error('Error during logout:', error));
+  });
+</script>
+
+<!--Handle render Ui for Guest-->
+<script>
+  // Kiểm tra xem có cookie có tên "Authorization" hay không
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // Lấy giá trị của cookie "Authorization"
+  const authToken = getCookie('Authorization');
+
+  // Lấy phần tử cần ẩn
+  const meElement = document.getElementById('me');
+  const loginElement = document.getElementById('login');
+
+  // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
+  if (!authToken) {
+    meElement.style.display = 'none'; // Ẩn phần tử
+    loginElement.style.display = 'block'
+
   }
 </script>
 

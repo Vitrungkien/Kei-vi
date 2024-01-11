@@ -1,4 +1,4 @@
-package com.OneBpy.controller.webController;
+package com.OneBpy.controller;
 
 //import ch.qos.logback.core.model.Model;
 import com.OneBpy.dtos.*;
@@ -40,9 +40,10 @@ public class SellerData {
 
     //Lấy danh sách sản phẩm chưa bị xóa mềm của cửa hàng(checked)
     @GetMapping("/my-store/all-product")
-    public List<Product> getAllProduct(){
+    public List<PDTO> getAllProduct(){
         Long store_id = userService.getCurrentUser().getStore().getStoreID();
-        return productRepository.findAllStoreProducts(store_id);
+        List<Product> productList = productRepository.findAllStoreProducts(store_id);
+        return userService.getAllProduct(productList);
     }
     //Lấy danh sách all sản phẩm của cửa hàng
 //    @GetMapping("/my-store/all-product")

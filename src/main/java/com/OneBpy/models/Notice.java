@@ -17,6 +17,7 @@ public class Notice {
     private String title;
     private String content;
     private Date createdAt;
+    private String storeName;
     private boolean expired;
     private Date lastUpdate;
 

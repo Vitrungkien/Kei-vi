@@ -55,7 +55,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = true)
     @JsonManagedReference  // Đánh dấu mối quan hệ quản lý
-//    @JsonIgnore
     private List<Notice> noticeList;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

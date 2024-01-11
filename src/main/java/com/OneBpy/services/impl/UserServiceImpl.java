@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         Product product = sellerService.getProductById(product_id);
         int price = product.getPrice();
         newOrder.setPrice(price);
-        newOrder.setTotalPrice(price*orderRequest.getQuantity());
+        newOrder.setTotalPrice(price * orderRequest.getQuantity());
         newOrder.setProduct(product);
         int remainSeat = product.getRemainSeat();
         remainSeat -= orderRequest.getQuantity();

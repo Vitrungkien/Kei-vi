@@ -105,7 +105,7 @@ public class SellerServiceImpl implements SellerService {
     @Override
     public Product updateProduct(ProductDTO productDTO, Long product_id) {
         Product updateProduct = getProductById(product_id);
-        Product product = putProduct(updateProduct, productDTO);
+        putProduct(updateProduct, productDTO);
         List<StopDTO> stopList = productDTO.getStopList();
         if (stopList.size() > 0) {
             for (StopDTO stop : stopList) {
@@ -244,6 +244,7 @@ public class SellerServiceImpl implements SellerService {
             order.setOrderStatus("Đã hoàn thành");
         }
         else order.setOrderStatus("Error");
+        order.setLastUpdate(new Date());
         orderRepository.save(order);
     }
 
@@ -269,12 +270,12 @@ public class SellerServiceImpl implements SellerService {
         newNotice.setTitle(noticeDTO.getTitle());
         newNotice.setContent(noticeDTO.getContent());
         newNotice.setExpired(false);
+        newNotice.setStoreName(userService.getCurrentUser().getStore().getStoreName());
         newNotice.setLastUpdate(new Date());
         Long productID = noticeDTO.getProductID();
         newNotice.setProduct(getProductById(productID));
         return noticeRepository.save(newNotice);
     }
-
     @Override
     public Notice updateNotice(UpdateNoticeDTO noticeDTO) {
         Long noticeID = noticeDTO.getNoticeID();

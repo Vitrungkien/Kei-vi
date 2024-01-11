@@ -41,4 +41,6 @@ public interface SellerService {
     Notice updateNotice(UpdateNoticeDTO noticeDTO);
 
     void markStop(List<StopDTO> stopDTOList);
+
+
 }
