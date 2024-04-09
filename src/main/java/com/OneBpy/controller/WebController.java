@@ -33,7 +33,6 @@ public class WebController {
     public String Home(Model model) {
         model.addAttribute("searchForm", new SearchForm());
         model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
-
         return "main";
     }
     @GetMapping("/search-by-stop")
@@ -54,13 +53,6 @@ public class WebController {
             List<PDTO> products = userService.getAllProduct(productList);
             model.addAttribute("products", products);
         }
-
-//        try {
-//            User user = userService.getCurrentUser();
-//            model.addAttribute("currentUser", user);
-//        } catch (NoSuchElementException e) {
-//            logger.info("user: anonymous");
-//        }
         return "search";
     }
 
@@ -128,9 +120,6 @@ public class WebController {
         model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
         return "search";
     }
-
-
-
 
     @GetMapping("/my-order")
     public String myOrder() {

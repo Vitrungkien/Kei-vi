@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class MeController {
     private final UserService userService;
 
-
     @GetMapping
     User myProfile() {
         return userService.getCurrentUser();

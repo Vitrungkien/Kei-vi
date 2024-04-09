@@ -1,6 +1,5 @@
 package com.OneBpy.repositories;
 
-import com.OneBpy.dtos.OrderDtos;
 import com.OneBpy.models.Order;
 import com.OneBpy.services.OrderDto;
 import org.springframework.data.jpa.repository.JpaRepository;

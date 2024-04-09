@@ -11,6 +11,5 @@ public interface AuthenticationService {
     User signUp(SignUpRequest signUpRequest);
     User signUpSeller(SignUpRequest signUpRequest);
     JwtAuthenticationResponse logIn(SignInRequest signInRequest);
-//    void logIn(SignInRequest signInRequest, HttpServletResponse response);
     JwtAuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
 }

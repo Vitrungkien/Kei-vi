@@ -19,14 +19,6 @@ public class SellerController {
     private final SellerService sellerService;
     private final OrderRepository orderRepository;
 
-
-    //Excepted order
-//    @PostMapping("/my-store/{order_id}/except")
-//    public String except(@PathVariable("order_id") Long order_id, @ModelAttribute OrderRequest orderRequest) {
-//        sellerService.exceptedOrder(order_id, orderRequest);
-//                return "redirect:/management";
-//    }
-
     // Xac nhan don hang
     @PostMapping("/my-store/{order_id}/except")
     public String except(@PathVariable("order_id") Long order_id, @ModelAttribute UpdatedOrder updatedOrder) {
@@ -34,14 +26,14 @@ public class SellerController {
         return "redirect:/management-order";
     }
 
-//    Thêm sản phẩm
+    //    Thêm sản phẩm
     @PostMapping("/my-store/add-product")
     public String addProduct(@ModelAttribute ProductDTO productDTO) {
         sellerService.addProduct(productDTO);
         return "redirect:/management";
     }
 
-//Cập nhật sản phẩm
+    //Cập nhật sản phẩm
     @PostMapping("/my-store/{product_id}/update-product")
     public String updateProduct(@PathVariable("product_id") Long product_id,
                                 @ModelAttribute ProductDTO productDTO) {

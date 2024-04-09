@@ -52,6 +52,4 @@ public class HomeController {
         return storeRepository.getAllStorename();
     }
 
-
-
 }

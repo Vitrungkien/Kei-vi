@@ -20,37 +20,11 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-//@CrossOrigin("*")
 public class UserController {
 
     private final UserService userService;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-
-//    @PostMapping("/{product_id}/order")
-//    public ResponseEntity<ResponseObject> creatOrder(@PathVariable("product_id") Long product_id,
-//                                                    @ModelAttribute OrderRequest orderRequest)
-//    {
-//
-//        Order newOrder = userService.createOrder(product_id, orderRequest);
-//
-//        return ResponseEntity.ok(new ResponseObject("ok",
-//                "Đặt vé " + product_id + " thành công", newOrder));
-//    }
-
-    @GetMapping
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hi user");
-    }
-
-
-//    @GetMapping("/cart")
-//    public ResponseEntity<ResponseObject> getCart()
-//    {
-//        List<Order> orderList = userService.getCart();
-//        return ResponseEntity.ok(new ResponseObject("ok", "Get cart Successfully", orderList));
-//    }
-
 
     // Dat hang (active)
     @PostMapping("/{product_id}/order")

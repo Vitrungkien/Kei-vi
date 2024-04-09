@@ -41,12 +41,6 @@ public class UserServiceImpl implements UserService {
         this.sellerService = sellerService;
     }
 
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        return email -> userRepository.findByEmail(email)
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found" + email));
-//    }
-
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {

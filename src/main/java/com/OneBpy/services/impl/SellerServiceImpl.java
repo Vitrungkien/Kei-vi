@@ -29,15 +29,6 @@ public class SellerServiceImpl implements SellerService {
         this.userService = userService;
     }
 
-//    @Override
-//    public Product addProduct(AddProductRequest addProductRequest) {
-//        Product newProduct = new Product();
-//        putProduct(newProduct, addProductRequest);
-//        newProduct.setStore(userService.getCurrentUser().getStore());
-//        return productRepository.save(newProduct);
-//    }
-
-
     // Thêm 1 sản phẩm
     @Override
     public Product addProduct(ProductDTO productDTO) {
@@ -92,15 +83,6 @@ public class SellerServiceImpl implements SellerService {
         return stopRepository.save(newStop);
     }
 
-//    @Override
-//    public Product updateProduct(AddProductRequest addProductRequest, Long product_id) {
-//        Optional<Product> product = productRepository.findById(product_id);
-//        Product updateProduct = product.get();
-//        putProduct(updateProduct, addProductRequest);
-//        return productRepository.save(updateProduct);
-//    }
-
-
     //Cập nhật sản phẩm
     @Override
     public Product updateProduct(ProductDTO productDTO, Long product_id) {
@@ -121,41 +103,6 @@ public class SellerServiceImpl implements SellerService {
         }
         return productRepository.save(updateProduct);
     }
-
-
-
-//    public void putProduct(Product updateProduct, AddProductRequest addProductRequest) {
-//        updateProduct.setProductName(addProductRequest.getProductName());
-//        updateProduct.setProductImage(addProductRequest.getProductImage());
-//        updateProduct.setRemainSeat(addProductRequest.getRemainSeat());
-//        updateProduct.setDisplay(false);
-//        updateProduct.setBienSoXe(addProductRequest.getBienSoXe());
-//        updateProduct.setPhoneNumber(addProductRequest.getPhoneNumber());
-//        updateProduct.setDescription(addProductRequest.getDescription());
-//        updateProduct.setPrice(addProductRequest.getPrice());
-//        updateProduct.setStartTime(addProductRequest.getStartTime());
-//        updateProduct.setEndTime(addProductRequest.getEndTime());
-//        updateProduct.setStartAddress(addProductRequest.getStartAddress());
-//        updateProduct.setEndAddress(addProductRequest.getEndAddress());
-//    }
-
-//    @Override
-//    public Stop addStop(AddStopRequest addStopRequest, Long product_id) {
-//        Stop newStop = new Stop();
-//        newStop.setStopTime(addStopRequest.getStopTime());
-//        newStop.setStopAddress(addStopRequest.getStopAddress());
-//        Optional<Product> product = productRepository.findById(product_id);
-//        newStop.setProduct(product.get());
-//        return stopRepository.save(newStop);
-//    }
-
-//    @Override
-//    public Stop updateStop(AddStopRequest addStopRequest, Long stop_id) {
-//        Stop updateStop = getStopById(stop_id);
-//        updateStop.setStopTime(addStopRequest.getStopTime());
-//        updateStop.setStopAddress(addStopRequest.getStopAddress());
-//        return stopRepository.save(updateStop);
-//    }
 
     // Cập nhật 1 điểm dừng
     @Override
@@ -276,6 +223,7 @@ public class SellerServiceImpl implements SellerService {
         newNotice.setProduct(getProductById(productID));
         return noticeRepository.save(newNotice);
     }
+
     @Override
     public Notice updateNotice(UpdateNoticeDTO noticeDTO) {
         Long noticeID = noticeDTO.getNoticeID();

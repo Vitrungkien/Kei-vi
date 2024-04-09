@@ -22,9 +22,6 @@ public interface UserService {
     User getUserById(Long user_id);
 
     Order createOrder(Long product_id, OrderRequest orderRequest);
-    //List<Product> findProductsByTimeAndAddress(String startTime, String endTime, String address);
-
-//    Page<Product> getAllProducts(int pageNo, int pageSize);
 
     List<PDTO> getAllProduct(List<Product> productList);
     PDTO getProductById(Long product_id);
