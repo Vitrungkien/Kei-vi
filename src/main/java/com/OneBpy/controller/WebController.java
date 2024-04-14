@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -28,33 +29,14 @@ public class WebController {
     private final StoreRepository storeRepository;
     private final UserService userService;
     private final NoticeRepository noticeRepository;
-    private static final Logger logger = LoggerFactory.getLogger(WebController.class);
+//    private static final Logger logger = LoggerFactory.getLogger(WebController.class);
     @GetMapping("/")
     public String Home(Model model) {
         model.addAttribute("searchForm", new SearchForm());
         model.addAttribute("searchByKeywordRq", new SearchByKeywordRq());
         return "main";
     }
-    @GetMapping("/search-by-stop")
-    public String search(@ModelAttribute("searchForm") SearchForm searchForm,
-                         @ModelAttribute("searchByKeywordRq") SearchByKeywordRq searchByKeywordRq,
-                         Model model) {
-        if (searchForm.getEndAddress() != null && searchForm.getStartAddress() != null &&
-                searchForm.getStartTime1() != null) {
-            LocalTime startTime2 = searchForm.getStartTime1().plusHours(1);
-            List<Product> productList = productRepository.findProductsByTimeAndAddress(
-                    searchForm.getStartTime1(), startTime2,
-                    searchForm.getStartAddress(), searchForm.getEndAddress()
-            );
-            List<PDTO> products = userService.getAllProduct(productList);
-            model.addAttribute("products", products);
-        } else if (searchByKeywordRq.getKeyword() != null) {
-            List<Product> productList = productRepository.findByKeyword(searchByKeywordRq.getKeyword());
-            List<PDTO> products = userService.getAllProduct(productList);
-            model.addAttribute("products", products);
-        }
-        return "search";
-    }
+
 
 
     @GetMapping("/order")

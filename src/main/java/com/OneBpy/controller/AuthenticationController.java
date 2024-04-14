@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +30,12 @@ public class AuthenticationController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(WebController.class);
     @PostMapping("/login")
-    public String signIn(@ModelAttribute("signInRequest") SignInRequest signInRequest,
+    public ResponseEntity<ResponseObject> signIn(@RequestBody SignInRequest signInRequest,
                                                             HttpServletResponse response) throws IOException, JSONException {
         JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.logIn(signInRequest);
-        String token = jwtAuthenticationResponse.getToken();
+        String token = jwtAuthenticationResponse.getToken();//@ModelAttribute("signInRequest")
         // Thêm token vào cookie
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setMaxAge((int) TimeUnit.MINUTES.toSeconds(60)); // Thời gian sống của token
@@ -49,7 +53,9 @@ public class AuthenticationController {
         response.addHeader("Role", role);
         response.addHeader("Authorization", "Bearer " + token );
 
-        return "redirect:/";
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("ok", "Đăng nhập thành công", jwtAuthenticationResponse)
+        );
     }
 
     @PostMapping("/signup")
@@ -71,6 +77,7 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        logger.info(String.valueOf(request.getLocalPort()));
         CookieUtil.clearCookie(response, "Authorization");
         return ResponseEntity.ok("Logout successful");
     }
