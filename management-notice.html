@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/management.css}">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+    }
+
+    button {
+      border: none;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    th {
+      background-color: #212529;
+      color: white;
+      padding: 10px;
+    }
+    td {
+      border: 2px solid #eae6e6;
+      padding: 5px 5px 5px 10px;
+      max-width: 200px;
+    }
+    .me1:hover{
+      background-color: #ccc;
+      color: black;
+    }
+    .me {
+      cursor: pointer;
+      margin: 0;
+    }
+    #tb-order {
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    #qltb {
+      background-color: #ccc;
+      color: black;
+    }
+    #qltb a {
+      color: black;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+    .me1 {
+      height: 50px;
+      padding: 8px 20px;
+    }
+    .me1 a {
+      line-height: 32px;
+      margin: 0;
+    }
+    .new-notice-form {
+      width: 650px;
+      background-color: #f2f2f2;
+      padding: 20px;
+      position: fixed;
+      border-radius: 10px;
+      top: 110px;
+      left: 500px;
+    }
+    .update-notice-form {
+      /*display: none;*/
+      width: 650px;
+      background-color: #f2f2f2;
+      padding: 20px;
+      position: fixed;
+      border-radius: 10px;
+      top: 139px;
+      left: 500px;
+    }
+    #productID-option {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      height: 1cm;
+    }
+    .is-expired {
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      height: 1cm;
+    }
+    .update-notice-div {
+      display: none;
+      background-color: rgb(40,42,53, 0.6);
+      width: 1800px;
+      height: 800px;
+      position: fixed;
+      top: 0px;
+      left: 0px;
+    }
+  </style>
+  <title>Management</title>
+</head>
+<body>
+<div class="header">
+  <div class="left-menu">
+    <!--            <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>-->
+  </div>
+  <ul class="right-menu">
+    <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
+    <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
+    <li class="main-menu">
+      <a class="main-menu-a" href="">Thuê xe</a>
+      <ul class="sub-main-menu">
+        <li>Hợp đồng du lịch</li>
+        <li>Thuê xe tự lái</li>
+      </ul>
+    </li>
+    <li class="main-menu"><a class="main-menu-a" href="">Giới thiệu</a></li>
+    <li class="main-menu">
+      <a class="main-menu-a" href="">Tin tức</a>
+      <ul class="sub-main-menu">
+        <li>Thông báo nghỉ tết</li>
+        <li>Thông báo bảo trì 30/12</li>
+      </ul>
+    </li>
+    <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+      <a class="main-menu-a" href="" >Tôi</a>
+      <ul class="sub-main-menu sub-main-menu-toi">
+        <li><a th:href="@{/profile}">My Profile</a></li>
+        <div id="management" class="some-element"
+             th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+          <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+        </div>
+        <li><a th:href="@{/my-order}">Quản lý đơn hàng</a></li>
+        <li><a>Giỏ hàng</a></li>
+        <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
+      </ul>
+    </li>
+
+    <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''USER'') or hasRole(''SELLER'')')}">
+      <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
+    </li>
+  </ul>
+</div>
+
+<div class="">
+  <div class="col-2 position-fixed bg-dark top-0 text-white p-0" style="height: 713px;">
+    <div class="me row ">
+      <h5 class="me1 " id="qlsp" ><a th:href="@{/management}">Quản lý sản phẩm</a></h5>
+    </div>
+    <div class="me row " >
+      <h5 class="me1 " id="qldh" ><a th:href="@{/management-order}">Quản lý đơn hàng</a></h5>
+    </div>
+    <div class="me row " >
+      <h5 class="me1 " id="qltb" ><a th:href="@{/management-notice}">Quản lý thông báo</a></h5>
+    </div>
+  </div>
+  <div class="col-10 ms-auto p-4" style="background-color: #fff;">
+
+    <div class="thong-bao" id="thong-bao">
+      <h1>Thông báo</h1>
+
+      <div class="row-cols-8 them-sua-sp" id="new-notice-div">
+
+      </div>
+
+      <table class="row-cols-1" id="tb-notice">
+        <tr>
+          <th>STT</th>
+          <th>ID</th>
+          <th>Tên vé</th>
+          <th>Giờ đi</th>
+          <th>Biển số</th>
+          <th>Tiêu đề</th>
+          <th>Nội dung</th>
+          <th>Ngày tạo</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </table>
+    </div>
+
+
+  </div>
+</div>
+</body>
+
+<!--Danh sách thông báo-->
+<script th:inline="javascript">
+
+  // Sử dụng JavaScript để gọi API từ Spring Boot và tạo bảng
+  fetch('/api/v1/seller/my-store/all-notices').then(response => response.json()).then(notices => {
+    const tableOrder = document.getElementById('tb-notice');
+    var stt = 1;
+    notices.forEach(notice => {
+      const formattedStartTime = moment(notice['startTime'], "HH:mm:ss").format('HH:mm');
+      const formattedCreatedAt = moment(notice['createdAt']).format('HH:mm DD/MM/YYYY');
+      const row = tableOrder.insertRow();
+      row.insertCell().textContent = stt++;
+      row.insertCell().textContent = notice['noticeId'];
+      row.insertCell().textContent = notice['productName'];
+      row.insertCell().textContent = formattedStartTime;
+      row.insertCell().textContent = notice['bienSoXe'];
+      row.insertCell().textContent = notice['title'];
+      row.insertCell().textContent = notice['content'];
+      row.insertCell().textContent = formattedCreatedAt;
+      var status = notice['expired'] ? 'Hết hiệu lực' : 'Còn hiệu lực';
+      row.insertCell().textContent = status;
+      row.insertCell().innerHTML = `
+      <button class="btn btn-primary" onclick="openNoticeForm(${notice.noticeId})"> Sửa </button>
+
+      <div id="update-notice-frm${notice.noticeId}" class="update-notice-div">
+
+        <form action="/management/my-store/update-notice" method="post"
+            object="noticeDTO" class="update-notice-form"
+        >
+          <h3 style="align-content: center">Sửa thông báo</h3>
+          <div class="row mb-3">
+            <label for="title${notice.noticeId}" class="form-label">Tiêu đề:</label>
+            <input type="text" id="title${notice.noticeId}" name="title" class="form-control" value="${notice.title}" required/>
+          </div>
+          <div class="row mb-3">
+            <label for="content${notice.noticeId}" class="form-label">Nội dung:</label>
+            <textarea id="content${notice.noticeId}" name="content" class="form-control">${notice.content}</textarea><br/>
+          </div>
+
+          <div class="row mb-3">
+            <label for="expired${notice.noticeId}" class="form-label">Hiệu lực:</label>
+            <select id="expired${notice.noticeId}" name="expired" class="is-expired w-100 ">
+            </select>
+          </div>
+          <input type="hidden" id="noticeID${notice.noticeId}" name="noticeID" class="form-control" value="${notice.noticeId}" required/>
+          <button type="submit" class="btn btn-primary">Xong</button>
+          <button type="button" class="btn btn-danger" onclick="closeUpdateNotice(${notice.noticeId})">Hủy</button>
+        </form>
+
+      </div>
+
+`;
+      if (status == 'Còn hiệu lực') {
+        row.style.backgroundColor = '#cbf7d7';
+      }
+      else {
+        row.style.backgroundColor = '#ccc';
+      }
+
+      const expiredElment = document.getElementById(`expired${notice.noticeId}`);
+      if (notice['expired']) {
+        const option1 = document.createElement('option');
+        option1.value = 'true';
+        option1.text = 'Hết hiệu lực';
+        expiredElment.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = 'false';
+        option2.text = 'Còn hiệu lực';
+
+
+        expiredElment.appendChild(option2);
+      }
+      else {
+        const option1 = document.createElement('option');
+        option1.value = 'false';
+        option1.text = 'Còn hiệu lực';
+        const option2 = document.createElement('option');
+        option2.value = 'true';
+        option2.text = 'Hết hiệu lực';
+        expiredElment.appendChild(option1);
+        expiredElment.appendChild(option2);
+      }
+
+    });
+  })
+          .catch(error => console.error('Error fetching notices:', error));
+
+
+  function openNoticeForm(noticeID) {
+    const newNotice = document.getElementById('update-notice-frm' + noticeID);
+    newNotice.style.display = 'block';
+  }
+  function closeUpdateNotice(noticeID) {
+    const newNotice = document.getElementById('update-notice-frm' + noticeID);
+    newNotice.style.display = 'none';
+  }
+</script>
+
+
+
+
+
+
+<!--Tạo form thông báo-->
+<script th:inline="javascript">
+  fetch('/api/v1/seller/my-store/all-product').then(response => response.json()).then(products => {
+    const newNoticeDiv = document.getElementById('new-notice-div');
+    newNoticeDiv.innerHTML = `
+<button class="add btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-notice">
+    Tạo thông báo mới
+</button>
+     <div class="modal" id="new-notice" >
+       <div class="modal-dialog">
+            <div class="modal-content">
+        <form action="/management/my-store/create-notice" method="post" object="noticeDTO"
+            class="new-notice-form">
+
+          <div class="modal-header">
+            <h3 style="align-content: center">Tạo thông báo mới</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <label for="title" class="form-label">Tiêu đề:</label>
+              <input type="text" id="title" name="title" class="form-control" required/>
+            </div>
+            <div class="row mb-3">
+              <label for="content" class="form-label">Nội dung:</label>
+              <textarea id="content" name="content" class="form-control"></textarea>
+            </div>
+            <div class="row mb-3">
+              <label for="productID-option" class="form-label">Vé:</label>
+              <select id="productID-option" name="productID" class=" w-100 ">
+      <!--            option ...-->
+              </select>
+            </div>
+           </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Xong</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+          </div>
+        </form>
+            </div>
+        </div>
+    </div>
+    `;
+
+    const productIDOption = document.getElementById('productID-option');
+    products.forEach(product => {
+      const option = document.createElement('option');
+      option.value = product['productID'];
+      const formattedStartTime = moment(product['startTime'], "HH:mm:ss").format('HH:mm');
+      option.text = product['productName'] + ' - ' +  formattedStartTime +  (product.bienSoXe ? ` - ${product.bienSoXe}` : '');
+      productIDOption.appendChild(option);
+    });
+  })
+          .catch(error => console.error('Error fetching products:', error));
+
+
+  function closeNoticeForm() {
+    const newNotice = document.getElementById('new-notice');
+    newNotice.style.display = 'none';
+  }
+</script>
+
+<!--Logout click-->
+<script>
+  // Gán sự kiện click cho thẻ button
+  document.getElementById('logoutButton').addEventListener('click', function () {
+    // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+    fetch('/logout', {
+      method: 'POST',
+      credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+    })
+            .then(response => {
+              if (response.ok) {
+                // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+              } else {
+                console.error('Logout failed:', response.status);
+              }
+            })
+            .catch(error => console.error('Error during logout:', error));
+  });
+</script>
+
+<!--Handle render Ui for Guest-->
+<script>
+  // Kiểm tra xem có cookie có tên "Authorization" hay không
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // Lấy giá trị của cookie "Authorization"
+  const authToken = getCookie('Authorization');
+
+  // Lấy phần tử cần ẩn
+  const meElement = document.getElementById('me');
+  const loginElement = document.getElementById('login');
+
+  // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
+  if (!authToken) {
+    meElement.style.display = 'none'; // Ẩn phần tử
+    loginElement.style.display = 'block'
+
+  }
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</html>
+

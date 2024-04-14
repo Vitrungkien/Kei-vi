@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>My Profile</title>
+    <style>
+      body {
+        background-color: #eee;
+      }
+    </style>
+</head>
+<body>
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+          <div class="row">
+            <div class="col">
+              <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="/">Home</a></li>
+                  <li class="breadcrumb-item"><a href="/">Tôi</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+      
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-body text-center" style="height: 340px; display: flex">
+                  <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1rwKj98gbsXaZk7BuvBNrld9UvmIt07E&ehbc=2E312F" 
+                    width="640" 
+                    height="480">
+                </iframe>
+                  <video width="400" controls>
+                    <source src="./assets/img/myvideo.mp4" type="video/mp4">
+                    Your browser does not support HTML video.
+                  </video>
+                  <iframe width="560" height="315" 
+                  src="https://www.youtube.com/embed/y-ueVqgeq9M?si=jgje_XNOhVMMWb4U" 
+                  title="YouTube video player" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerpolicy="strict-origin-when-cross-origin" 
+                  allowfullscreen></iframe>
+
+
+                  <!-- <iframe width="700" height="600" 
+                  src="https://www.buomtv.app/movie/MKMP-505/146651" 
+                  title="Learn HTML video" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerpolicy="strict-origin-when-cross-origin" 
+                  allowfullscreen></iframe>                   -->
+                  <!-- <img src="./img/user.png" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 250px; margin: auto"> -->
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">ID</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="user-id"><!--User ID--></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Full Name </p>
+                    </div>
+                    <div class="col-sm-9">
+                      <!--Full Name-->
+                      <p class="text-muted mb-0" id="full-name"><!--Full Name--></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Email</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="email"><!--Email--></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Phone</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="phone-number"><!--Phone Number--></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Vai trò</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="role"><!--Vai trò--></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Ngày tạo</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0" id="created-at"><!--Created At--></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+      // Fetch data from the API
+      fetch('http://localhost:8080/api/v1/me')
+              .then(response => response.json())
+              .then(data => {
+                // Update HTML content with data from the API
+                document.getElementById('user-id').innerText = data.userID;
+                document.getElementById('email').innerText = data.email;
+                document.getElementById('full-name').innerText = data.firstName + ' ' + data.lastName;
+                // document.getElementById('full-name1').innerText = data.firstName + ' ' + data.lastName;
+                document.getElementById('phone-number').innerText = data.phoneNumber;
+                document.getElementById('role').innerText = data.role;
+                var formattedCreatedAt = moment(data.createdAt).format('HH:mm:ss DD/MM/YYYY');
+                document.getElementById('created-at').innerText = formattedCreatedAt;
+
+                // Update authorities if needed
+                var authoritiesDiv = document.getElementById('authorities');
+                data.authorities.forEach(authority => {
+                  var p = document.createElement('p');
+                  p.innerText = 'Authority: ' + authority.authority;
+                  authoritiesDiv.appendChild(p);
+                });
+              })
+              .catch(error => console.error('Error fetching data:', error));
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+</body>
+</html>

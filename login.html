@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Đăng Nhập</title>
+
+	<link rel="stylesheet"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		crossorigin="anonymous">
+		
+	<meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' fonts.googleapis.com;">
+
+
+</head>
+<body>
+
+	<!-- create navigation bar ( header) -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/"> Đăng nhập </a>
+			</div>
+		</div>
+	</nav>
+	
+	<br>
+	<br>
+	<div class = "container">
+		<div class = "row">
+			<div class = "col-md-6 col-md-offset-3">
+				<h1> Đăng nhập </h1>
+
+
+				<form>
+					<div th:if="${param.error}">
+						<div class="alert alert-danger">Tài khoản hoặc mật khẩu không hợp lệ</div>
+					</div>
+					<div th:if="${param.logout}">
+						<div class="alert alert-info">Đăng xuất thành công!</div>
+					</div>
+
+					<div class="form-group">
+						<label for="email"> Email </label> :
+						<input type="text" class="form-control" id="email" name="email"
+							   placeholder="Nhập email" autofocus="autofocus"  />
+					</div>
+					<div class="form-group">
+						<label for="password">Mật khẩu</label>:
+						<input type="password" id="password" name="password" class="form-control"
+							   placeholder="Nhập mật khẩu" />
+					</div>
+
+
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-6 col-sm-offset-3">
+								<input type="submit" name="login-submit" id="login-btn" class="form-control btn btn-primary" value="Đăng nhập" />
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<div class="form-group">
+					<span>Chưa có tài khoản? <a href="/signup">Đăng ký tại đây</a></span>
+					<br>
+					<span>Bạn là nhà xe? <a href="/signup-seller">Đăng ký bán tại đây</a></span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+
+handleLoginForm();
+
+function handleLoginForm() {
+    var loginBtn = document.querySelector('#login-btn');
+    loginBtn.onclick = function(e) {
+        e.preventDefault();
+        var email = document.querySelector('input[name="email"]').value;
+		var password = document.querySelector('input[name="password"]').value;
+        console.log(email, password);
+        var dataForm = {
+            email, 
+			password
+        }
+
+        console.log(dataForm);
+        loginFunc(dataForm);
+        return false;
+    }
+}
+
+function loginFunc(data) {
+    
+    var options = {
+            method: "POST", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        }
+
+    console.log(data);
+    fetch('http://localhost:8080/api/v1/auth/login', options)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(dataResponse => {		
+        window.location.href = "./index.html"; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+		var token = dataResponse.data["token"];
+		setCookie('Authorization', token, 3);
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+}
+
+function setCookie(name, value, minutes) {
+    const date = new Date();
+    date.setTime(date.getTime() + (minutes * 60 * 1000)); // Thời gian hết hạn của cookie
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/management.css}">
+  <link rel="stylesheet" th:href="@{/css/header.css}">
+  <!--    <link rel="stylesheet" th:href="@{/css/update.css}">-->
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+    }
+
+    button {
+      border: none;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    th {
+      background-color: #212529;
+      color: white;
+      padding: 10px;
+    }
+    td {
+      border: 2px solid #eae6e6;
+      padding: 5px 5px 5px 10px;
+      max-width: 200px;
+    }
+    .me1:hover{
+      background-color: #ccc;
+      color: black;
+    }
+    .me2:hover {
+      background-color: #564e4e;
+    }
+    .me {
+      cursor: pointer;
+      margin: 0;
+    }
+    .don-hang {
+      /*display: none;*/
+    }
+    .chi-tiet {
+      background-color: #55acee;
+    }
+    .max-column {
+      max-width: 150px;
+    }
+    #tb-order {
+      max-height: 800px;
+      overflow-y: auto;
+    }
+    #qlsp {
+      /*background-color: #ccc;*/
+      /*color: black;*/
+    }
+    #qldh {
+      background-color: #ccc;
+      color: black;
+    }
+    #qldh a {
+      color: black;
+    }
+    .frmDatVe {
+      background-color: #f2f2f2;
+      /*display: none;*/
+      position: fixed;
+      top: 10px;
+      left: 0;
+      /*transform: translateX(91%);*/
+      width: 50%;
+    }
+    .btn-order {
+      display: none;
+      margin: 5px;
+    }
+    .btn-secondary {
+      margin: 5px;
+    }
+    .totalPrice {
+      display: none;
+    }
+    a {
+      color: white;
+      text-decoration: none;
+    }
+    .me1 {
+      /*padding: 10px;*/
+      height: 50px;
+      padding: 8px 20px;
+    }
+    .me1 a {
+      line-height: 32px;
+      margin: 0;
+    }
+
+    .frmDatVe-modal {
+      display: none;
+      background-color: rgb(40,42,53, 0.6);
+      width: 1800px;
+      height: 800px;
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      z-index: 999;
+    }
+  </style>
+  <title>Management</title>
+</head>
+<body>
+<div class="header">
+  <div class="left-menu">
+    <!--            <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>-->
+  </div>
+  <ul class="right-menu">
+    <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
+    <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
+    <li class="main-menu">
+      <a class="main-menu-a" href="">Thuê xe</a>
+      <ul class="sub-main-menu">
+        <li>Hợp đồng du lịch</li>
+        <li>Thuê xe tự lái</li>
+      </ul>
+    </li>
+    <li class="main-menu"><a class="main-menu-a" href="">Giới thiệu</a></li>
+    <li class="main-menu">
+      <a class="main-menu-a" href="">Tin tức</a>
+      <ul class="sub-main-menu">
+        <li>Thông báo nghỉ tết</li>
+        <li>Thông báo bảo trì 30/12</li>
+      </ul>
+    </li>
+    <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
+      <a class="main-menu-a" href="" >Tôi</a>
+      <ul class="sub-main-menu sub-main-menu-toi">
+        <li><a th:href="@{/profile}">My Profile</a></li>
+        <div id="management" class="some-element"
+             th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
+          <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
+        </div>
+        <li><a th:href="@{/my-order}">Quản lý đơn hàng</a></li>
+        <li><a>Giỏ hàng</a></li>
+        <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
+      </ul>
+    </li>
+
+    <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''USER'') or hasRole(''SELLER'')')}">
+      <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
+    </li>
+  </ul>
+</div>
+
+<div class="">
+  <div class="col-2 position-fixed bg-dark top-0 text-white p-0" style="height: 713px;">
+    <div class="me row ">
+      <h5 class="me1 " id="qlsp" ><a th:href="@{/management}">Quản lý sản phẩm</a></h5>
+    </div>
+    <div class="me row " >
+      <h5 class="me1 " id="qldh" ><a th:href="@{/management-order}">Quản lý đơn hàng</a></h5>
+      <ul class="" id="subOrder" style="display: none; margin-left: 15px;">
+        <li class="me2">Tất cả đơn hàng</li>
+        <li class="me2">Đơn chờ xác nhận</li>
+        <li class="me2">Đơn đã đã xác nhận</li>
+        <li class="me2">Đơn đã hoàn thành</li>
+      </ul>
+    </div>
+    <div class="me row " >
+      <h5 class="me1 " id="qltb" ><a th:href="@{/management-notice}">Quản lý thông báo</a></h5>
+    </div>
+  </div>
+  <div class="col-10 ms-auto p-4" style="background-color: #fff;">
+
+    <div class="don-hang" id="don-hang">
+      <h1>Đơn hàng</h1>
+
+      <table class="row-cols-1" id="tb-order">
+        <tr>
+          <th>STT</th>
+          <th>ID</th>
+          <th>Tên vé</th>
+          <th class="max-column">Điểm đón</th>
+          <th class="max-column">Điểm trả</th>
+          <th>Giờ đón</th>
+          <th>Số điện thoại</th>
+          <!--                        <th>Lời nhắn</th>-->
+          <th>Số vé</th>
+          <th>Tổng tiền</th>
+          <th>Ngày tạo</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </table>
+    </div>
+
+
+  </div>
+</div>
+</body>
+
+
+<!--Danh sach don hang-->
+<script th:inline="javascript">
+  // Sử dụng JavaScript để gọi API từ Spring Boot và tạo bảng
+  fetch('/api/v1/seller/my-store/all-order').then(response => response.json()).then(orders => {
+    const tableOrder = document.getElementById('tb-order');
+    var stt = 1;
+    orders.forEach(order => {
+      const formattedPickTime = moment(order['pickTime']).format('HH:mm DD/MM/YYYY');
+      const formattedCreatedAt = moment(order['createdAt']).format('HH:mm DD/MM/YYYY');
+      const row = tableOrder.insertRow();
+      row.insertCell().textContent = stt++;
+      row.insertCell().textContent = order['orderId'];
+      row.insertCell().textContent = order['productName'];
+      row.insertCell().textContent = order['pickUpAddress'];
+      row.insertCell().textContent = order['destinationAddress'];
+
+      row.insertCell().textContent = formattedPickTime;
+      row.insertCell().textContent = order['phoneNumber'];
+      // row.insertCell().textContent = order['message'];
+      row.insertCell().textContent = order['quantity'];
+      row.insertCell().textContent = order['totalPrice'];
+      row.insertCell().textContent = formattedCreatedAt;
+      row.insertCell().textContent = order['orderStatus'];
+
+      // Kiểm tra orderStatus để đặt màu nền
+      switch (order['orderStatus']) {
+        case 'Chờ xác nhận':
+          row.style.backgroundColor = '#f7f699';
+          break;
+        case 'Đã xác nhận':
+          row.style.backgroundColor = '#abe4f7';
+          break;
+        case 'Đã hoàn thành':
+          row.style.backgroundColor = '#cbf7d7';
+          // row.style.backgroundColor = '#04AA6D';
+          // row.style.color = '#fff';
+          break;
+        case 'Đã hủy':
+          row.style.backgroundColor = '#f5b0b0';
+          // row.style.backgroundColor = '#AD171C';
+          // row.style.color = '#fff';
+          break;
+        default:
+          break;
+      }
+      row.insertCell().innerHTML = `<button class="chi-tiet" onclick="showOrderForm(${order.orderId})">Xem chi tiết</button>
+<div id="frmDatVe${order.orderId}" class="frmDatVe-modal">
+<form class="frmDatVe p-4 rounded-1 m-auto"
+            action="/management/my-store/${order.orderId}/except"
+            method="post" id="formDatVe${order.orderId}"
+            object="updatedOrder"
+    >
+      <h3 class="text-center">Vé ${order.productName}</h3>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Giá vé:</p>
+        <div class="col-sm-9">
+          <p class="">${order.price}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Điểm đón:</p>
+        <div class="col-sm-9">
+          <p class="">${order.pickUpAddress}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Điểm đến:</p>
+        <div class="col-sm-9">
+          <p class="">${order.destinationAddress}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Thời gian đón:</p>
+        <div class="col-sm-9">
+          <p class="">${formattedPickTime}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Lời nhắn:</p>
+        <div class="col-sm-9">
+          <p class="">${order.message}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Số điện thoại:</p>
+        <div class="col-sm-9">
+          <p class="">${order.phoneNumber}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Số lượng:</p>
+        <div class="col-sm-9">
+          <p class="">${order.quantity}</p>
+        </div>
+      </div>
+
+      <div class="totalPrice row mb-3" id="confirmPrice${order.orderId}">
+        <label for="totalPrice" class="col-sm-3 col-form-label">Tổng tiền:</label>
+        <div class="col-sm-9">
+          <input type="number" step="10000" class="form-control" id="totalPrice" name="totalPrice"
+          placeholder="Tổng tiền" required autofocus="autofocus" value="${order.totalPrice}"
+          />
+        </div>
+      </div>
+
+      <div class="totalPrice row mb-3" id="totalPrices${order.orderId}">
+        <p class="col-sm-3">Tổng tiền:</p>
+        <div class="col-sm-9">
+          <p class="">${order.totalPrice}</p>
+        </div>
+      </div>
+
+      <div class="row mb-3 d-flex">
+        <p class="col-sm-3">Trạng thái:</p>
+        <div class="col-sm-9">
+          <p class="order-status" id="order-status">${order.orderStatus}</p>
+        </div>
+      </div>
+
+      <input type="hidden" id="hiddenInput${order.orderId}" name="orderAction" value="Xác nhận">
+
+      <div class="row mb-3">
+        <div class="col-sm-9 offset-sm-3 d-flex">
+          <button type="button" class="btn-order btn btn-primary" id="confirmButton${order.orderId}"
+           onclick="setActionAndSubmit(${order.orderId}, 'Xác nhận')" >Xác nhận</button>
+
+          <button type="button" class="btn-order btn btn-success" id="completedButton${order.orderId}"
+           onclick="setActionAndSubmit(${order.orderId}, 'Hoàn thành')">Hoàn thành</button>
+
+          <button type="button" class="btn-order btn btn-danger" id="cancelButton${order.orderId}"
+           onclick="setActionAndSubmit(${order.orderId}, 'Hủy')">Hủy đơn</button>
+
+          <button type="button" class="btn btn-secondary" onclick="dismissForm(${order.orderId})">
+            Thoát
+          </button>
+        </div>
+      </div>
+ </form>
+</div>
+
+`;
+      if (order['orderStatus'] == 'Chờ xác nhận') {
+        document.getElementById('confirmButton' + order['orderId']).style.display = 'block'; // Ẩn nút nếu orderStatus khác 'Đã xác nhận'
+        document.getElementById('cancelButton' + order['orderId']).style.display = 'block';
+        // document.getElementById('confirmPrice' + order['orderId']).type = 'number';
+        document.getElementById('confirmPrice' + order['orderId']).style.display = 'flex';
+
+      }
+      if (order['orderStatus'] == 'Đã xác nhận') {
+        document.getElementById('completedButton' + order['orderId']).style.display = 'block';
+        document.getElementById('cancelButton' + order['orderId']).style.display = 'block';
+        document.getElementById('totalPrices' + order['orderId']).style.display = 'flex';
+      }
+      if (order['orderStatus'] == 'Đã hoàn thành' || order['orderStatus'] == 'Đã hủy') {
+        document.getElementById('totalPrices' + order['orderId']).style.display = 'flex';
+      }
+
+    });
+  })
+          .catch(error => console.error('Error fetching orders:', error));
+</script>
+
+<!--Show/hide details info-->
+<script>
+  function showOrderForm(productId) {
+    hideAllOrderForm();
+    const clickedForm = document.getElementById('frmDatVe' + productId);
+    clickedForm.style.display = 'block';
+  }
+
+  function hideAllOrderForm() {
+    const orderForms = document.querySelectorAll('.frmDatVe-modal');
+    orderForms.forEach(function (orderForm) {
+      orderForm.style.display = 'none';
+    });
+  }
+
+  function dismissForm(orderId) {
+    // Get the form element
+    var formDatVe = document.getElementById('frmDatVe' + orderId);
+    // Change the display property of the form to none
+    formDatVe.style.display = "none";
+  }
+
+</script>
+
+<!--Hàm để thiết lập giá trị cho trường input ẩn và submit form-->
+<script>
+  function setActionAndSubmit(orderId, action) {
+    document.getElementById('hiddenInput' + orderId).value = action;
+    document.getElementById('formDatVe'+ orderId).submit();
+  }
+</script>
+
+
+<!--Logout click-->
+<script>
+  // Gán sự kiện click cho thẻ button
+  document.getElementById('logoutButton').addEventListener('click', function () {
+    // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
+    fetch('/logout', {
+      method: 'POST',
+      credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
+    })
+            .then(response => {
+              if (response.ok) {
+                // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
+                window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+              } else {
+                console.error('Logout failed:', response.status);
+              }
+            })
+            .catch(error => console.error('Error during logout:', error));
+  });
+</script>
+
+<!--Handle render Ui for Guest-->
+<script>
+  // Kiểm tra xem có cookie có tên "Authorization" hay không
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  }
+
+  // Lấy giá trị của cookie "Authorization"
+  const authToken = getCookie('Authorization');
+
+  // Lấy phần tử cần ẩn
+  const meElement = document.getElementById('me');
+  const loginElement = document.getElementById('login');
+
+  // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
+  if (!authToken) {
+    meElement.style.display = 'none'; // Ẩn phần tử
+    loginElement.style.display = 'block'
+
+  }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</html>
+
