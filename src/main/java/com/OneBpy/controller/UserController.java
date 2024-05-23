@@ -26,15 +26,26 @@ public class UserController {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
 
-    // Dat hang (active)
-    @PostMapping("/{product_id}/order")
-    public String creatOrder(@PathVariable("product_id") Long product_id,
-                             @ModelAttribute OrderRequest orderRequest)
+
+    @GetMapping("/my-orders")
+    public ResponseEntity<ResponseObject> getUserOrders()
     {
-        userService.createOrder(product_id, orderRequest);
-        return "redirect:/";
+        Long userId = userService.getCurrentUser().getUserID();
+        return ResponseEntity.ok(
+                new ResponseObject("ok", "Get my orders successfully"
+                , orderRepository.getAllUserOrder(userId))
+        );
     }
 
+    // Dat hang
+    @PostMapping("/{product_id}/order")
+    public ResponseEntity<ResponseObject> creatOrder(@PathVariable("product_id") Long product_id,
+                             @RequestBody OrderRequest orderRequest) {
+        return ResponseEntity.ok(
+                new ResponseObject("ok", ""
+                , userService.createOrder(product_id, orderRequest))
+        );
+    }
 
     //Search product by time and address
     @GetMapping("/{product_id}")

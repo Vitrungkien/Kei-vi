@@ -35,7 +35,6 @@ import java.util.Map;
 public class HomeController {
     private final ProductRepository productRepository;
     private final UserService userService;
-    private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
     private final NoticeRepository noticeRepository;
 
@@ -47,15 +46,12 @@ public class HomeController {
         return userService.getAllProduct(productList);
     }
 
-    @GetMapping("/my-orders")
-    public List<OrderDto> getUserOrders()
-    {
-        Long userId = userService.getCurrentUser().getUserID();
-        return orderRepository.getAllUserOrder(userId);
-    }
     @GetMapping("/my-order/{product_id}")
-    public PDTO getProductOfOrder(@PathVariable("product_id") Long product_id) {
-        return userService.getProductById(product_id);
+    public ResponseEntity<ResponseObject> getProductOfOrder(@PathVariable("product_id") Long product_id) {
+        return ResponseEntity.ok(
+                new ResponseObject("ok", "lay ve da mua thanh cong"
+                ,userService.getProductById(product_id))
+        );
     }
 
 
@@ -88,11 +84,17 @@ public class HomeController {
 
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ResponseObject("Fail", "Wrong request form", "")
+                    new ResponseObject("Fail", "Bad request form", "")
             );
         }
 
         List<PDTO> products = userService.getAllProduct(productList);
+
+        if (products.isEmpty()) {
+            return ResponseEntity.ok().body(
+                    new ResponseObject("Fail", "Not Found", "")
+            );
+        }
         return ResponseEntity.ok().body(
                 new ResponseObject("ok", "Tim kiem thanh cong", products)
         );

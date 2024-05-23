@@ -1,11 +1,14 @@
 package com.OneBpy.services.impl;
 
+import com.OneBpy.controller.SellerController;
 import com.OneBpy.dtos.*;
 import com.OneBpy.models.*;
 import com.OneBpy.repositories.*;
 import com.OneBpy.services.SellerService;
 import com.OneBpy.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class SellerServiceImpl implements SellerService {
     private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final NoticeRepository noticeRepository;
+    private static final Logger logger = LoggerFactory.getLogger(SellerServiceImpl.class);
     private UserService userService;
 
     @Autowired
@@ -177,7 +182,7 @@ public class SellerServiceImpl implements SellerService {
 
     // Cập nhật trạng thái đơn hàng
     @Override
-    public void exceptedOrder(Long order_id, UpdatedOrder updatedOrder) {
+    public Order exceptedOrder(Long order_id, UpdatedOrder updatedOrder) {
         Order order = orderRepository.getById(order_id);
         String action = updatedOrder.getOrderAction();
         if (action.equals("Hủy")) {
@@ -192,22 +197,35 @@ public class SellerServiceImpl implements SellerService {
         }
         else order.setOrderStatus("Error");
         order.setLastUpdate(new Date());
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
 
     // Ẩn/hiện sản phẩm
+//    @Override
+//    public Product displayStatus(Long product_id, HideShowProduct hideShowProduct) {
+//        Product product = getProductById(product_id);
+//        product.setDisplay(hideShowProduct.isDisplay());
+//        return productRepository.save(product);
+//    }
     @Override
-    public Product displayStatus(Long product_id, HideShowProduct hideShowProduct) {
+    public Product displayStatus(Long product_id) {
         Product product = getProductById(product_id);
-        product.setDisplay(hideShowProduct.isDisplay());
+        product.setDisplay(!product.isDisplay());
         return productRepository.save(product);
     }
 
+    //Xoa mem san pham
+//    @Override
+//    public Product softRemoveProduct(Long product_id, RemoveProductDTO removeProductDTO) {
+//        Product product = getProductById(product_id);
+//        product.setDeleted(removeProductDTO.isDeleted());
+//        return productRepository.save(product);
+//    }
     @Override
-    public Product softRemoveProduct(Long product_id, RemoveProductDTO removeProductDTO) {
+    public Product softRemoveProduct(Long product_id) {
         Product product = getProductById(product_id);
-        product.setDeleted(removeProductDTO.isDeleted());
+        product.setDeleted(true);
         return productRepository.save(product);
     }
 
@@ -235,11 +253,24 @@ public class SellerServiceImpl implements SellerService {
         return noticeRepository.save(updateNotice);
     }
 
+//    @Override
+//    public void markStop(List<StopDTO> stopDTOList) {
+//        for (StopDTO stop : stopDTOList) {
+//            Long stopId = stop.getStopID();
+//            updateStop(stop, stopId);
+//        }
+//    }
     @Override
-    public void markStop(List<StopDTO> stopDTOList) {
-        for (StopDTO stop : stopDTOList) {
-            Long stopId = stop.getStopID();
-            updateStop(stop, stopId);
+    public void markStop(List<Object> stopList) {
+        for (Object obj : stopList) {
+            Map x =  (Map<String, String>) obj;
+            String stopId = (String)x.get("stopId");
+            Long stopID = Long.parseLong(stopId);
+            String isRightNow = (String)x.get("rightNow");
+            Stop stop = stopRepository.findById(stopID).get();
+            stop.setRightNow(Boolean.parseBoolean(isRightNow));
+            stopRepository.save(stop);
+//            logger.info("right now: " + stop.isRightNow());
         }
     }
 }

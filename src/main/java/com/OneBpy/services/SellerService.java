@@ -25,17 +25,20 @@ public interface SellerService {
     Store creatStore(User seller);
 
     //Cập nhật trạng thái đơn hàng
-    void exceptedOrder(Long order_id, UpdatedOrder updatedOrder);
+    Order exceptedOrder(Long order_id, UpdatedOrder updatedOrder);
 
     //Cập nhật trạng thái hiển thị
-    Product displayStatus(Long product_id, HideShowProduct hideShowProduct);
+//    Product displayStatus(Long product_id, HideShowProduct hideShowProduct);
+    Product displayStatus(Long product_id);
 
-    Product softRemoveProduct(Long product_id, RemoveProductDTO removeProductDTO);
+//    Product softRemoveProduct(Long product_id, RemoveProductDTO removeProductDTO);
+    Product softRemoveProduct(Long product_id);
 
     Notice createNotice(CreateNoticeDTO noticeDTO);
     Notice updateNotice(UpdateNoticeDTO noticeDTO);
 
-    void markStop(List<StopDTO> stopDTOList);
+//    void markStop(List<StopDTO> stopDTOList);
+    void markStop(List<Object> stopList);
 
 
 }

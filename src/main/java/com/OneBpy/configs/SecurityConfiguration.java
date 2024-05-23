@@ -71,9 +71,17 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500", "http://127.0.0.1:5501", "http://127.0.0.1:3000")); // Origin making the request
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://127.0.0.1:5500",
+                "http://127.0.0.1:5501",
+                "http://127.0.0.1:3000",
+                "https://vitrungkien.github.io/")); // Origin making the request
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token")); // Adjust as needed
+        configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"
+                , "Cookie"
+                , "Authorization"
+                , "credentials"
+                , "cookie")); // Adjust as needed
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

@@ -41,7 +41,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             , nativeQuery = true)
     List<Product> findAllStoreProducts(Long store_id);
 
-
+    //Tìm kiếm bằng từ khóa
     @Query(value =  "SELECT DISTINCT p.* " +
             "FROM product_tb p " +
             "INNER JOIN stop_tb s ON p.product_id = s.product_id " +

@@ -480,37 +480,37 @@
         </div>
       </div>
     </div>
-            <button class="update btn-action btn btn-primary"> <a href="/management/${product.productID}/update-product" >Sửa</a> </button>
-            <button class="delete btn-action btn btn-danger"
-                data-bs-toggle="modal" data-bs-target="#myModal${product.productID}"
-            >Xóa</button>
-            <!-- The Modal -->
-<div class="modal" id="myModal${product.productID}">
-  <div class="modal-dialog">
-    <div class="modal-content">
+                <button class="update btn-action btn btn-primary"> <a href="/management/${product.productID}/update-product" >Sửa</a> </button>
+                <button class="delete btn-action btn btn-danger"
+                    data-bs-toggle="modal" data-bs-target="#myModal${product.productID}"
+                >Xóa</button>
+                <!-- The Modal -->
+    <div class="modal" id="myModal${product.productID}">
+      <div class="modal-dialog">
+        <div class="modal-content">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Xóa vé</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Xóa vé</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            Bạn có chắc chắn muốn xóa vé này?
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+            onclick="softDelete('true', ${product.productID})"
+          >Đồng ý</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
+          </div>
+
+        </div>
       </div>
-
-      <!-- Modal body -->
-      <div class="modal-body">
-        Bạn có chắc chắn muốn xóa vé này?
-      </div>
-
-      <!-- Modal footer -->
-      <div class="modal-footer">
-      <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-        onclick="softDelete('true', ${product.productID})"
-      >Đồng ý</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Đóng</button>
-      </div>
-
     </div>
-  </div>
-</div>
             <button class="hide btn-action btn btn-dark" id="hide${product.productID}"
                 onclick="hideProduct(${product.productID})">Ẩn</button>
 
