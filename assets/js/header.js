@@ -39,7 +39,7 @@ render(`
                 </li>
 
                 <li class="main-menu" id="login">
-                    <a class="main-menu-a" href="/login.html">Đăng nhập</a>
+                    <a class="main-menu-a" href="./signin.html">Đăng nhập</a>
                 </li>
             </ul>`);
 
@@ -74,7 +74,8 @@ function renderRoleUI() {
 function render(header) {
     var myheader = document.querySelector('#header');
     if (!myheader) console.log('nullheader');
-    return myheader.innerHTML = header;
+    myheader.innerHTML = header;
+    isGuest();
 }
 
 
@@ -96,7 +97,8 @@ function handleLogout() {
               // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
               console.log("logout successful!");
               document.cookie = "Authorization" + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-              window.location.href = "./login.html"; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+            //   window.location.href = "./login.html"; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+              window.location.href = "./signin.html";
               
             } else {
               console.error("Logout failed:", response.status);
@@ -106,6 +108,27 @@ function handleLogout() {
       });
     }
 }
+
+function isGuest() {
+    if(!isExistCookie('Authorization')) {
+        document.querySelector('#me').remove();
+    }
+    else {
+        document.querySelector('#login').remove();
+    }
+}
+
+function isExistCookie(cookieName) {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        if (cookie.startsWith(cookieName + '=')) {
+            return true;
+        }  
+    }
+    return false;
+}
+
 
 
 

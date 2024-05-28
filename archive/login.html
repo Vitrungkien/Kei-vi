@@ -10,7 +10,7 @@
 		crossorigin="anonymous">
 		
 	<meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline' fonts.googleapis.com;">
-
+	
 
 </head>
 <body>
@@ -40,12 +40,12 @@
 
 
 				<form>
-					<div th:if="${param.error}">
+					<!-- <div if="${param.error}">
 						<div class="alert alert-danger">Tài khoản hoặc mật khẩu không hợp lệ</div>
 					</div>
 					<div th:if="${param.logout}">
 						<div class="alert alert-info">Đăng xuất thành công!</div>
-					</div>
+					</div> -->
 
 					<div class="form-group">
 						<label for="email"> Email </label> :
@@ -69,14 +69,15 @@
 				</form>
 
 				<div class="form-group">
-					<span>Chưa có tài khoản? <a href="/signup">Đăng ký tại đây</a></span>
+					<span>Chưa có tài khoản? <a href="/signup.html">Đăng ký tại đây</a></span>
 					<br>
-					<span>Bạn là nhà xe? <a href="/signup-seller">Đăng ký bán tại đây</a></span>
+					<span>Bạn là nhà xe? <a href="/signup-seller.html">Đăng ký bán tại đây</a></span>
 				</div>
 			</div>
 		</div>
 	</div>
 
+</body>
 	<script>
 
 handleLoginForm();
@@ -87,16 +88,18 @@ function handleLoginForm() {
         e.preventDefault();
         var email = document.querySelector('input[name="email"]').value;
 		var password = document.querySelector('input[name="password"]').value;
-        console.log(email, password);
-        var dataForm = {
-            email, 
-			password
-        }
+        var dataForm = {email, password};
 
-        console.log(dataForm);
         loginFunc(dataForm);
         return false;
     }
+}
+
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  let expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
 function loginFunc(data) {
@@ -104,33 +107,29 @@ function loginFunc(data) {
     var options = {
             method: "POST", 
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json", 
+				
             },
             body: JSON.stringify(data)
         }
 
-    console.log(data);
+    // console.log(data);
     fetch('http://localhost:8080/api/v1/auth/login', options)
       .then(function(response) {
         return response.json();
       })
-      .then(dataResponse => {		
-        window.location.href = "./index.html"; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
+      .then(dataResponse => {	
 		var token = dataResponse.data["token"];
-		setCookie('Authorization', token, 3);
+		// console.log(token);
+		setCookie('Authorization', token, 3);	
+        window.location.href = "./index.html"; 
       })
       .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
       });
 }
 
-function setCookie(name, value, minutes) {
-    const date = new Date();
-    date.setTime(date.getTime() + (minutes * 60 * 1000)); // Thời gian hết hạn của cookie
-    const expires = "expires=" + date.toUTCString();
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-}
+
 
 	</script>
-</body>
 </html>

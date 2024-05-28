@@ -1,0 +1,35 @@
+
+body {
+    font-family: sans-serif;
+}
+
+.container {
+    /* width: 500px;
+    margin: 0 auto; */
+}
+
+.form-control {
+    /* width: 100%; */
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.btn {
+    background-color: #000000;
+    color: #ffffff;
+}
+.btn-primary {
+    background-color: #0080ff;
+}
+.stop-at {
+    display: flex;
+}
+.addPform {
+    margin-left: 20px;
+}

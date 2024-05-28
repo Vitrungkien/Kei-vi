@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/management.css}">
-    <link rel="stylesheet" th:href="@{/css/header.css}">
-    <!--    <link rel="stylesheet" th:href="@{/css/update.css}">-->
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" href="./assets/css/management.css">
+    <link rel="stylesheet" href="./assets/css/header.css">
+    <link rel="stylesheet" href="./assets/css/home.css">
+    <script src="./assets/js/httpMethod.js"></script>
+    <script src="./lib/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="./lib/moment.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
@@ -109,46 +111,8 @@
     <title>Management</title>
 </head>
 <body>
-<div class="header">
-    <div class="left-menu">
-<!--        <a th:href="@{/}"><img th:src="@{/img/logo2.png}" alt=""></a>-->
-    </div>
-    <ul class="right-menu">
-        <li class="main-menu"><a class="main-menu-a" th:href="@{/}">Trang chủ</a></li>
-        <li class="main-menu"><a class="main-menu-a" href="">Gửi hàng</a></li>
-        <li class="main-menu">
-            <a class="main-menu-a" href="">Thuê xe</a>
-            <ul class="sub-main-menu">
-                <li>Hợp đồng du lịch</li>
-                <li>Thuê xe tự lái</li>
-            </ul>
-        </li>
-        <li class="main-menu"><a class="main-menu-a" href="">Giới thiệu</a></li>
-        <li class="main-menu">
-            <a class="main-menu-a" href="">Tin tức</a>
-            <ul class="sub-main-menu">
-                <li>Thông báo nghỉ tết</li>
-                <li>Thông báo bảo trì 30/12</li>
-            </ul>
-        </li>
-        <li class="main-menu" id="me" th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'') or hasRole(''USER'')')}">
-            <a class="main-menu-a" href="" >Tôi</a>
-            <ul class="sub-main-menu sub-main-menu-toi">
-                <li><a th:href="@{/profile}">Tài khoản</a></li>
-                <div id="management" class="some-element"
-                     th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SELLER'')')}">
-                    <li><a th:href="@{/management}">Quản lý sản phẩm</a></li>
-                </div>
-                <li th:if="${#authorization.expression('hasRole(''USER'')')}"><a th:href="@{/my-order}" >Quản lý đơn hàng</a></li>
-<!--                <li><a>Giỏ hàng</a></li>-->
-                <li id="logoutButton"> <a href="">Đăng xuất</a> </li>
-            </ul>
-        </li>
+<div class="header" id="header">
 
-        <li class="main-menu" id="login" th:unless="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''USER'') or hasRole(''SELLER'')')}">
-            <a class="main-menu-a" th:href="@{/login}">Đăng nhập</a>
-        </li>
-    </ul>
 </div>
 
         <div class="">
@@ -178,6 +142,8 @@
 
         </div>
     </div>
+<script src="./assets/js/header.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </body>
 
 
@@ -187,9 +153,12 @@
         return (value !== null && value !== undefined) ? value : 'null';
     }
     // Sử dụng JavaScript để gọi API từ Spring Boot và tạo bảng
-    fetch('/my-orders').then(response => response.json()).then(orders => {
+    fetch(serverPort + '/api/v1/user/my-orders', getAuth)
+    .then(response => response.json())
+    .then(response => {
         const tableOrder = document.getElementById('tb-order');
         var stt = 1;
+        var orders = response.data;
         orders.forEach(order => {
             // var orderProduct = [];
             var productId = order['productID'];
@@ -347,11 +316,14 @@
             //     document.getElementById('cancelButton' + order['orderId']).style.display = 'block';
             // }
 
-            fetch('/my-order/' + productId).then(response => response.json()).then(product => {
-                const timeDifferenceString = calculateTimeDifference(product['startTime'], product['endTime']);
-                const orderProductDetail = document.getElementById('order-product' + orderId);
-                const formattedStartTime = moment(product.startTime, "HH:mm:ss").format('HH:mm');
-                const formattedEndTime = moment(product.endTime, "HH:mm:ss").format('HH:mm');
+            fetch(serverPort + '/my-order/' + productId, getAuth)
+            .then(response => response.json())
+            .then(response => {
+              var product = response.data;
+              const timeDifferenceString = calculateTimeDifference(product['startTime'], product['endTime']);
+              const orderProductDetail = document.getElementById('order-product' + orderId);
+              const formattedStartTime = moment(product.startTime, "HH:mm:ss").format('HH:mm');
+              const formattedEndTime = moment(product.endTime, "HH:mm:ss").format('HH:mm');
                 orderProductDetail.innerHTML = `
 <button class="btn-action btn btn-info m-1" style="width: 108px;"
  onclick="showDetailProduct(${product.productID})">Chi tiết vé</button>
@@ -376,17 +348,17 @@
         <div class="info-ve-p2">
           <div class="info-ve-p2-1">
             <div class="info-p2-1-1">
-              <img class="start-icon" src="/img/clock-regular.svg" alt="" />
+              <img class="start-icon" src="./assets/img/clock-regular.svg" alt="" />
               <p class="info-time">${formattedStartTime}</p>
               <p>- ${product.startAddress}</p>
             </div>
 
             <div class="info-p2-1-1">
-              <img class="dot-dot" src="/img/dot.png" alt="" />
+              <img class="dot-dot" src="./assets/img/dot.png" alt="" />
               <p class="info-time" id="info-take-time">${timeDifferenceString}</p>
             </div>
             <div class="info-p2-1-1">
-              <img class="start-icon" src="/img/location.png" alt="" />
+              <img class="start-icon" src="./assets/img/location.png" alt="" />
               <p class="info-time">${formattedEndTime}</p>
               <p>- ${product.endAddress}</p>
             </div>
@@ -660,53 +632,10 @@
 
 </script>
 
-<!--Logout click-->
-<script>
-    // Gán sự kiện click cho thẻ button
-    document.getElementById('logoutButton').addEventListener('click', function () {
-        // Gửi yêu cầu POST đến endpoint /logout khi người dùng nhấn vào nút đăng xuất
-        fetch('/logout', {
-            method: 'POST',
-            credentials: 'same-origin' // Đảm bảo gửi cookie (nếu có) kèm theo yêu cầu
-        })
-            .then(response => {
-                if (response.ok) {
-                    // Nếu đăng xuất thành công, bạn có thể thực hiện các bước cần thiết
-                    window.location.href = '/'; // Chuyển hướng đến trang đăng nhập, ví dụ '/login'
-                } else {
-                    console.error('Logout failed:', response.status);
-                }
-            })
-            .catch(error => console.error('Error during logout:', error));
-    });
-</script>
-
-<!--Handle render Ui for Guest-->
-<script>
-    // Kiểm tra xem có cookie có tên "Authorization" hay không
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    // Lấy giá trị của cookie "Authorization"
-    const authToken = getCookie('Authorization');
-
-    // Lấy phần tử cần ẩn
-    const meElement = document.getElementById('me');
-    const loginElement = document.getElementById('login');
-
-    // Kiểm tra và ẩn phần tử nếu không có cookie "Authorization"
-    if (!authToken) {
-        meElement.style.display = 'none'; // Ẩn phần tử
-        loginElement.style.display = 'block'
-
-    }
-</script>
 
 <script>
     function calculateTimeDifference(startTimeString, endTimeString) {
+
         // Chuyển đổi chuỗi thời gian thành số giây
         function timeStringToSeconds(timeString) {
             const [hours, minutes, seconds] = timeString.split(':').map(Number);
@@ -732,6 +661,6 @@
     }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 </html>
 

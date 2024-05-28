@@ -13,10 +13,10 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-.add {
+/* .add {
     background-color: #04AA6D;
     color: #fff
-}
+} */
 .search-btn {
     background-color: #FFD333;
     color: black;
@@ -70,21 +70,158 @@ table img {
     width: 56px;
     height: 42px;
 }
-th {
+/* th {
     background-color: antiquewhite;
     padding: 5px;
-}
-td {
-    /*background-color: aliceblue;*/
+} */
+/* td {
+    background-color: aliceblue;
     padding: 5px;
-}
-table, td {
+} */
+/* table, td {
     border: 1px solid black;
     border-collapse: collapse;
-}
-
+} */
 table {
+    border: 1px solid black;
+    border-collapse: collapse;
     padding-bottom: 2000px;
 }
 
 
+
+
+
+
+
+
+
+
+
+.add {
+    background-color: #2474E5;
+    color: #fff
+}
+/* .search-btn {
+    background-color: #FFD333;
+    color: black;
+    width: 60px;
+} */
+
+/* .tim-sp {
+    padding: 10px;
+} */
+/* .them-sua-sp {
+    padding: 10px;
+} */
+
+/* .delete {
+    background-color: red;
+    color: #fff;
+} */
+
+td {
+    border: 2px solid #eae6e6;
+    padding: 5px 5px 5px 10px;
+    max-width: 250px;
+}
+th {
+    background-color: #212529;
+    color: white;
+    padding: 10px;
+}
+
+.me1:hover{
+    background-color: #ccc;
+    color: black;
+}
+.me2:hover {
+    background-color: #564e4e;
+}
+.me {
+    cursor: pointer;
+    margin: 0;
+}
+.don-hang {
+    /* display: none; */
+}
+.chi-tiet {
+    background-color: #55acee;
+}
+.max-column {
+    max-width: 150px;
+}
+#tb-order {
+    max-height: 800px;
+    overflow-y: auto;
+}
+#qlsp {
+    background-color: #ccc;
+    /*color: black;*/
+}
+#qlsp a {
+    color: black;
+}
+
+.btn-secondary {
+    margin: 5px;
+}
+/* .totalPrice {
+    display: none;
+} */
+
+.ve-xe {
+    position: absolute;
+    width: 800px;
+    left: -950px;
+    top: -237px;
+    display: none;
+    background-color: #fff;
+    border-radius: 5px;
+    margin: 16px 0;
+    padding: 16px;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.5);
+
+}
+
+.actions {
+    display: flex;
+    position: relative;
+}
+
+.me1 {
+    /*padding: 10px;*/
+    height: 50px;
+    padding: 8px 20px;
+}
+.me1 a {
+    line-height: 32px;
+    margin: 0;
+}
+.mark-stop-backgr {
+    display: none;
+    background-color: rgb(40,42,53, 0.6);
+    width: 1800px;
+    height: 800px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+.mark-stop-form {
+    width: 650px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    position: fixed;
+    border-radius: 10px;
+    top: 50px;
+    left: 200px;
+}
+.stop-at {
+    height: 50px;
+}
+.resetMarkBtn {
+    color: white;
+    background-color: black;
+    /*margin: 0px 0px 15px 8px;*/
+    margin-left: 8px;
+}

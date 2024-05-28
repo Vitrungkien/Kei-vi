@@ -5,6 +5,7 @@ body {
 .header {
     display: flex;
     background-color: #2474E5;
+    background: linear-gradient(45deg, #00dbde, #fc00ff);
     justify-content: space-between;
     align-items: center;
     margin: auto;

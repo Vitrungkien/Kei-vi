@@ -1,0 +1,91 @@
+
+body {
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+}
+
+button {
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+th {
+  background-color: #212529;
+  color: white;
+  padding: 10px;
+}
+td {
+  border: 2px solid #eae6e6;
+  padding: 5px 5px 5px 10px;
+  max-width: 200px;
+}
+.me1:hover{
+  background-color: #ccc;
+  color: black;
+}
+.me {
+  cursor: pointer;
+  margin: 0;
+}
+#tb-order {
+  max-height: 800px;
+  overflow-y: auto;
+}
+#qltb {
+  background-color: #ccc;
+  color: black;
+}
+#qltb a {
+  color: black;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+.me1 {
+  height: 50px;
+  padding: 8px 20px;
+}
+.me1 a {
+  line-height: 32px;
+  margin: 0;
+}
+.new-notice-form {
+  width: 650px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  position: fixed;
+  border-radius: 10px;
+  top: 110px;
+  left: 500px;
+}
+.update-notice-form {
+  /*display: none;*/
+  width: 650px;
+  background-color: #f2f2f2;
+  padding: 20px;
+  position: fixed;
+  border-radius: 10px;
+  top: 139px;
+  left: 500px;
+}
+#productID-option {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  height: 1cm;
+}
+.is-expired {
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  height: 1cm;
+}
+.update-notice-div {
+  display: none;
+  background-color: rgb(40,42,53, 0.6);
+  width: 1800px;
+  height: 800px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}

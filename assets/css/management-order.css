@@ -1,0 +1,99 @@
+
+body {
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
+}
+
+button {
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+th {
+  background-color: #212529;
+  color: white;
+  padding: 10px;
+}
+td {
+  border: 2px solid #eae6e6;
+  padding: 5px 5px 5px 10px;
+  max-width: 200px;
+}
+.me1:hover{
+  background-color: #ccc;
+  color: black;
+}
+.me2:hover {
+  background-color: #564e4e;
+}
+.me {
+  cursor: pointer;
+  margin: 0;
+}
+.don-hang {
+  /*display: none;*/
+}
+.chi-tiet {
+  background-color: #55acee;
+}
+.max-column {
+  max-width: 150px;
+}
+#tb-order {
+  max-height: 800px;
+  overflow-y: auto;
+}
+#qlsp {
+  /*background-color: #ccc;*/
+  /*color: black;*/
+}
+#qldh {
+  background-color: #ccc;
+  color: black;
+}
+#qldh a {
+  color: black;
+}
+.frmDatVe {
+  background-color: #f2f2f2;
+  /*display: none;*/
+  position: fixed;
+  top: 10px;
+  left: 0;
+  /*transform: translateX(91%);*/
+  width: 50%;
+}
+.btn-order {
+  display: none;
+  margin: 5px;
+}
+.btn-secondary {
+  margin: 5px;
+}
+.totalPrice {
+  display: none;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+.me1 {
+  /*padding: 10px;*/
+  height: 50px;
+  padding: 8px 20px;
+}
+.me1 a {
+  line-height: 32px;
+  margin: 0;
+}
+
+.frmDatVe-modal {
+  display: none;
+  background-color: rgb(40,42,53, 0.6);
+  width: 1800px;
+  height: 800px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 999;
+}
